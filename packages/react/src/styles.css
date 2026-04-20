@@ -234,7 +234,11 @@
 .ms-table-wrapper {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  overflow: hidden;
+  overflow-x: auto;  /* narrow viewports scroll sideways instead of clipping */
+}
+.ms-table-wrapper--scroll {
+  overflow-y: auto;
+  position: relative;
 }
 .ms-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .ms-table thead th {
@@ -243,6 +247,12 @@
   font-weight: 500; font-size: 11px; color: var(--fg3);
   letter-spacing: 0.04em; text-transform: uppercase;
   border-bottom: 1px solid var(--border-subtle);
+}
+/* Sticky header when the wrapper is a vertical scroller */
+.ms-table-wrapper--scroll .ms-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 .ms-table tbody td { padding: 11px 14px; color: var(--fg2); }
 .ms-table tbody tr + tr td { border-top: 1px solid var(--border-subtle); }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Table } from '@monoset/react';
 import {
   EASE_STANDARD, EASE_EMPHASIS, EASE_EXIT, DUR,
   fadeUp, hoverLift, pressDown,
@@ -13,8 +14,8 @@ import {
 function PageIntroduction({ setPage }) {
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em",
-                    textTransform:"uppercase", marginBottom:12 }}>Getting Started</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em",
+                    textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Getting Started</div>
       <H1>Introduction</H1>
       <Lead>Monoset is a design system for teams that want their product to look like their product, not like the design system. One neutral ramp, one typeface, and the usual set of components, done the way you'd build them anyway if you had the afternoon.</Lead>
       <div data-ms="intro-pillars" style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:12, margin:"24px 0 32px" }}>
@@ -65,7 +66,7 @@ function PageIntroduction({ setPage }) {
 function PageInstallation() {
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Getting Started</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Getting Started</div>
       <H1>Installation</H1>
       <Lead>Three ways in, depending on how deep you're going. The starter CLI is the fastest for a new project, the React kit is the usual pick, and the tokens-only package is there if you're not using React.</Lead>
 
@@ -130,10 +131,16 @@ export default function App() {
       <Divider/>
 
       <H2 id="fonts">Fonts</H2>
-      <P>Two families, both open source: Inter for words, JetBrains Mono for code and numbers. The website self-hosts them via <InlineCode>@fontsource/inter</InlineCode> and <InlineCode>@fontsource/jetbrains-mono</InlineCode>; in your app you can do the same or drop in any other method that works for you.</P>
-      <Code filename="index.html">{`<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>`}</Code>
-      <P>If the extra Google Fonts request bothers you, grab the WOFF2 files, drop them in <InlineCode>/fonts/</InlineCode>, and swap the <InlineCode>@import</InlineCode> at the top of <InlineCode>colors_and_type.css</InlineCode> for an <InlineCode>@font-face</InlineCode> block.</P>
+      <P>Inter for UI, JetBrains Mono for code. Both open source, both self-hosted. The easiest path is <InlineCode>@fontsource</InlineCode>: one CSS import per weight, files get bundled by Vite, zero third-party requests.</P>
+      <Code filename="terminal">{`npm install @fontsource/inter @fontsource/jetbrains-mono`}</Code>
+      <Code filename="src/main.jsx">{`import "@fontsource/inter/latin-400.css";
+import "@fontsource/inter/latin-500.css";
+import "@fontsource/inter/latin-600.css";
+import "@fontsource/inter/latin-700.css";
+import "@fontsource/jetbrains-mono/latin-400.css";
+import "@fontsource/jetbrains-mono/latin-500.css";
+import "@fontsource/jetbrains-mono/latin-600.css";`}</Code>
+      <P>Prefer Google Fonts instead? Drop a <InlineCode>&lt;link&gt;</InlineCode> into your HTML head and skip the npm packages. The tokens work either way.</P>
     </div>
   );
 }
@@ -141,7 +148,7 @@ export default function App() {
 function PageUsage() {
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Getting Started</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Getting Started</div>
       <H1>Basic usage</H1>
       <Lead>A quick end-to-end example: a sign-in card built with Monoset tokens and primitives.</Lead>
 
@@ -185,15 +192,15 @@ function PageUsage() {
 }`}</Code>
 
       <H2 id="dark">Dark theme</H2>
-      <P>Stick <InlineCode>data-theme="dark"</InlineCode> on any element and the semantic tokens flip for everything inside it. No class overrides, no ThemeProvider. Do it on <InlineCode>&lt;html&gt;</InlineCode> for a whole-app switch, or on a single panel for an inverted card.</P>
-      <Code>{`<div data-theme="dark">
+      <P>Add the <InlineCode>monoset-dark</InlineCode> class to any element and the semantic tokens flip for everything inside it. No ThemeProvider, no context. Put it on <InlineCode>&lt;html&gt;</InlineCode> for a whole-app switch, or on a single panel for an inverted card.</P>
+      <Code>{`<div className="monoset-dark">
   <Button variant="primary">Inverted surface</Button>
 </div>`}</Code>
       <Preview bg="var(--mono-1000)">
-        <div data-theme="dark" style={{ display:"flex", gap:8 }}>
+        <div className="monoset-dark" style={{ display:"flex", gap:8 }}>
           <DemoButton variant="primary">Save</DemoButton>
           <DemoButton variant="secondary">Cancel</DemoButton>
-          <DemoBadge variant="outline">v0.1</DemoBadge>
+          <DemoBadge variant="outline">v0.2</DemoBadge>
         </div>
       </Preview>
     </div>
@@ -220,7 +227,7 @@ function PageColors() {
   ];
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Foundations</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Foundations</div>
       <H1>Colors</H1>
       <Lead>One 12-step neutral ramp. Backgrounds, text, borders, and shadows all pull from it. No hues and no gradients. The constraint is the whole point.</Lead>
 
@@ -276,7 +283,7 @@ var(--mono-1000) /* #09090b */`}</Code>
 function PageTypography() {
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Foundations</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Foundations</div>
       <H1>Typography</H1>
       <Lead>Inter for UI and body, JetBrains Mono for code. A scale from 11px to 64px (hit ratios, not arbitrary sizes) with two ways to create contrast: tone and size. Weight does some of the work too, but tone carries it.</Lead>
 
@@ -313,13 +320,13 @@ function PageTypography() {
       <H2 id="families">Families</H2>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:24 }}>
         <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, padding:"20px 18px" }}>
-          <div style={{ fontSize:10, fontFamily:"var(--font-mono)", color:"var(--fg3)", marginBottom:10 }}>SANS · INTER</div>
+          <div style={{ fontSize:10, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:10 }}>Sans · Inter</div>
           <div style={{ fontSize:36, fontWeight:600, letterSpacing:"-0.02em", lineHeight:1 }}>Aa Gg</div>
           <div style={{ fontSize:36, fontWeight:400, letterSpacing:"-0.01em", lineHeight:1, color:"var(--fg2)" }}>01 &amp;!</div>
           <div style={{ fontSize:11, color:"var(--fg3)", marginTop:10 }}>Weights 400 / 500 / 600 / 700 · Variable</div>
         </div>
         <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, padding:"20px 18px" }}>
-          <div style={{ fontSize:10, fontFamily:"var(--font-mono)", color:"var(--fg3)", marginBottom:10 }}>MONO · JETBRAINS MONO</div>
+          <div style={{ fontSize:10, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:10 }}>Mono · JetBrains Mono</div>
           <div style={{ fontFamily:"var(--font-mono)", fontSize:28, fontWeight:500, lineHeight:1.1 }}>Aa Gg</div>
           <div style={{ fontFamily:"var(--font-mono)", fontSize:28, fontWeight:400, lineHeight:1.1, color:"var(--fg2)" }}>01 []</div>
           <div style={{ fontSize:11, color:"var(--fg3)", marginTop:10 }}>Code, tokens, numeric UI</div>
@@ -340,7 +347,7 @@ font-family: var(--font-mono);
 function PageSpacing() {
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Foundations</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Foundations</div>
       <H1>Spacing &amp; radii</H1>
       <Lead>A 4px base grid with named tokens. Components snap to these values; resist the urge to sneak in a stray 7px padding because it "looks better". It usually doesn't, and the system falls apart one off-grid value at a time.</Lead>
 
@@ -372,7 +379,7 @@ function PageSpacing() {
 function PageMotion() {
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Foundations</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Foundations</div>
       <H1>Motion</H1>
       <Lead>Three durations and one easing curve. Fast and quiet by design: no springs, no bounces, nothing that hangs around for 900ms. Motion should confirm what just happened, then get out of the way.</Lead>
 
@@ -422,7 +429,7 @@ function PageFramerMotion() {
 
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Foundations</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Foundations</div>
       <H1>Framer Motion</H1>
       <Lead>Reach for Framer Motion when CSS transitions hit their limit, like FLIP layout animations or anything that needs to interrupt itself mid-play. Same rules as the CSS tokens: short durations, one curve, no springs.</Lead>
 
@@ -502,8 +509,8 @@ export const pressDown = { filter: "brightness(0.88)", transition: { duration: D
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0, transition: { duration: DUR.slow, ease: EASE_EMPHASIS } }}
                   exit={{ opacity: 0, transition: { duration: DUR.base, ease: EASE_EXIT } }}
-                  style={{ padding:"16px 20px", background:"var(--bg-subtle)", border:"1px solid var(--border-subtle)",
-                           borderRadius:8, fontSize:13, color:"var(--fg2)" }}>
+                  style={{ padding:"14px 20px", background:"var(--bg-subtle)", border:"1px solid var(--border-subtle)",
+                           borderRadius:8, fontSize:13, lineHeight:1.2, color:"var(--fg2)" }}>
                   Smooth in. Quiet out.
                 </motion.div>
               )}
@@ -559,7 +566,7 @@ export const pressDown = { filter: "brightness(0.88)", transition: { duration: D
           { k:"Don't", text:"Animate color + transform + scale at once. Pick one. Quiet over expressive." },
         ].map((r,i) => (
           <div key={i} style={{ border:"1px solid var(--border-subtle)", borderRadius:6, padding:"14px 16px" }}>
-            <div style={{ fontSize:11, fontFamily:"var(--font-mono)", letterSpacing:"0.08em", textTransform:"uppercase",
+            <div style={{ fontSize:11, letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:600,
                           color: r.k==="Do" ? "var(--fg1)" : "var(--fg3)", marginBottom:6 }}>{r.k}</div>
             <div style={{ fontSize:13, color:"var(--fg2)", lineHeight:1.6 }}>{r.text}</div>
           </div>
@@ -605,7 +612,7 @@ function EnterDemo() {
 function PageButtons() {
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Button</H1>
       <Lead>Four variants across three sizes. Keep labels short (two or three words) and write them in sentence case. All-caps looks shouty in a monotone system.</Lead>
 
@@ -674,7 +681,7 @@ function PageInputs() {
   const [focused, setFocused] = useState(false);
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Input</H1>
       <Lead>Text fields, textareas, selects. Wrap them in a <InlineCode>Field</InlineCode> and you get the label, helper text, and error state wired up. Otherwise you'll end up copy-pasting the same aria boilerplate around every input.</Lead>
 
@@ -725,7 +732,7 @@ function PageInputs() {
 function PageBadges() {
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Badge</H1>
       <Lead>Small labels for status, counts, and category tags. Three variants, all monotone, because a badge that screams louder than the thing it's on defeats the point.</Lead>
 
@@ -756,7 +763,7 @@ function PageBadges() {
 
       <H2 id="tags">Tags</H2>
       <Preview>
-        {["design","monotone","v0.1"].map(t => (
+        {["design","monotone","v0.2"].map(t => (
           <span key={t} style={{ fontSize:12, color:"var(--fg2)", background:"var(--bg-muted)", borderRadius:4,
                                   padding:"3px 8px", display:"inline-flex", alignItems:"center", gap:6 }}>
             {t}<span style={{ color:"var(--fg3)", cursor:"pointer" }}>×</span>
@@ -770,7 +777,7 @@ function PageBadges() {
 function PageCards() {
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Card</H1>
       <Lead>A surface container. Outline by default. Use the elevated variant when a card needs to feel lifted off the page, or the inset variant inside forms and modals where the surrounding panel already does the grouping.</Lead>
 
@@ -813,7 +820,7 @@ function PageToggles() {
   const [sw, setSw] = useState(true);
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Checkbox &amp; Switch</H1>
       <Lead>Two similar-looking controls with different semantics. Use a checkbox when the choice is part of a form that gets submitted. Use a switch when flipping it takes effect right away, like email notifications or dark mode.</Lead>
 
@@ -831,7 +838,7 @@ function PageToggles() {
                   animate={{ opacity: 1, scale: 1, transition: { duration: DUR.fast, ease: EASE_EMPHASIS } }}
                   exit={{ opacity: 0, scale: 0.6, transition: { duration: DUR.fast, ease: EASE_EXIT } }}
                   style={{ display:"inline-flex" }}>
-                  <Icon name="check" size={11}/>
+                  <Icon name="check" size={11} strokeWidth={3}/>
                 </motion.span>
               )}
             </AnimatePresence>
@@ -865,54 +872,74 @@ function PageToggles() {
 
 function PageTable() {
   const rows = [
-    { name:"Ada Turing",   email:"ada@monoset.dev",   role:"Admin",  status:"active",  mrr:"$240" },
-    { name:"Grace Hopper", email:"grace@monoset.dev", role:"Member", status:"pending", mrr:"$120" },
-    { name:"Linus Bell",   email:"linus@monoset.dev", role:"Viewer", status:"paused",  mrr:"$0" },
+    { name:"Ada Turing",     email:"ada@monoset.dev",     role:"Admin",  status:"active",  mrr:"$240" },
+    { name:"Grace Hopper",   email:"grace@monoset.dev",   role:"Member", status:"pending", mrr:"$120" },
+    { name:"Linus Bell",     email:"linus@monoset.dev",   role:"Viewer", status:"paused",  mrr:"$0"   },
+    { name:"Margaret Clarke",email:"margaret@monoset.dev",role:"Admin",  status:"active",  mrr:"$320" },
+    { name:"Donald Keene",   email:"donald@monoset.dev",  role:"Member", status:"active",  mrr:"$180" },
+    { name:"Rosa Park",      email:"rosa@monoset.dev",    role:"Viewer", status:"pending", mrr:"$0"   },
+    { name:"Hedy Lamarr",    email:"hedy@monoset.dev",    role:"Admin",  status:"active",  mrr:"$420" },
+    { name:"Alan Turing",    email:"alan@monoset.dev",    role:"Member", status:"paused",  mrr:"$0"   },
+    { name:"Katherine Goble",email:"katherine@monoset.dev",role:"Member",status:"active",  mrr:"$160" },
   ];
-  const colors = ["var(--mono-800)","var(--mono-600)","var(--mono-700)"];
+  const palette = ["var(--mono-800)","var(--mono-600)","var(--mono-700)","var(--mono-900)","var(--mono-500)"];
   const statusColor = { active:"var(--status-success)", pending:"var(--status-warning)", paused:"var(--fg3)" };
+  const renderRow = (r, i) => (
+    <tr key={r.email}>
+      <td>
+        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+          <span style={{ width:24, height:24, borderRadius:"50%", background:palette[i % palette.length], color:"#fff",
+                         display:"inline-flex", alignItems:"center", justifyContent:"center",
+                         fontSize:10, fontWeight:600, flexShrink:0 }}>{r.name.split(" ").map(s=>s[0]).join("")}</span>
+          <div><div style={{ color:"var(--fg1)", fontWeight:500 }}>{r.name}</div>
+               <div style={{ color:"var(--fg3)", fontSize:11 }}>{r.email}</div></div>
+        </div>
+      </td>
+      <td style={{ color:"var(--fg2)" }}>{r.role}</td>
+      <td>
+        <span style={{ fontSize:11, fontWeight:500, padding:"2px 8px", borderRadius:999, background:"var(--bg-muted)",
+                       color:statusColor[r.status]||"var(--fg2)", border:"1px solid var(--border-subtle)",
+                       display:"inline-flex", alignItems:"center", gap:4 }}>
+          <span style={{ width:5, height:5, borderRadius:"50%", background:statusColor[r.status]||"var(--fg2)" }}/>
+          {r.status.charAt(0).toUpperCase()+r.status.slice(1)}
+        </span>
+      </td>
+      <td style={{ fontFamily:"var(--font-mono)", fontSize:12, color:"var(--fg2)" }}>{r.mrr}</td>
+    </tr>
+  );
+  const header = (
+    <thead><tr>{["Name","Role","Status","MRR"].map(h=>(<th key={h}>{h}</th>))}</tr></thead>
+  );
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Table</H1>
-      <Lead>Dense rows with hairline separators. Hover shifts the row background by one tone, just enough to track across a long table without making it look like a spreadsheet.</Lead>
+      <Lead>Dense rows with hairline separators. Pass `maxHeight` and the wrapper caps its height with the header pinned. Narrower viewports scroll sideways.</Lead>
 
       <H2 id="example-table">Example</H2>
-      <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden", marginBottom:16 }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
-          <thead><tr style={{ background:"var(--bg-subtle)" }}>
-            {["Name","Role","Status","MRR"].map(h=>(
-              <th key={h} style={{ padding:"9px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)",
-                                   letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
-            ))}
-          </tr></thead>
-          <tbody>
-            {rows.map((r,i)=>(
-              <tr key={r.email} style={{ borderBottom:i<rows.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"11px 14px" }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                    <span style={{ width:24, height:24, borderRadius:"50%", background:colors[i], color:"#fff",
-                                   display:"inline-flex", alignItems:"center", justifyContent:"center",
-                                   fontSize:10, fontWeight:600 }}>{r.name.split(" ").map(s=>s[0]).join("")}</span>
-                    <div><div style={{ color:"var(--fg1)", fontWeight:500 }}>{r.name}</div>
-                         <div style={{ color:"var(--fg3)", fontSize:11 }}>{r.email}</div></div>
-                  </div>
-                </td>
-                <td style={{ padding:"11px 14px", color:"var(--fg2)" }}>{r.role}</td>
-                <td style={{ padding:"11px 14px" }}>
-                  <span style={{ fontSize:11, fontWeight:500, padding:"2px 8px", borderRadius:999, background:"var(--bg-muted)",
-                                 color:statusColor[r.status]||"var(--fg2)", border:"1px solid var(--border-subtle)",
-                                 display:"inline-flex", alignItems:"center", gap:4 }}>
-                    <span style={{ width:5, height:5, borderRadius:"50%", background:statusColor[r.status]||"var(--fg2)" }}/>
-                    {r.status.charAt(0).toUpperCase()+r.status.slice(1)}
-                  </span>
-                </td>
-                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:12, color:"var(--fg2)" }}>{r.mrr}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div style={{ marginBottom:16 }}>
+        <Table>
+          {header}
+          <tbody>{rows.slice(0, 3).map(renderRow)}</tbody>
+        </Table>
       </div>
+      <Code language="jsx">{`<Table>
+  <thead>…</thead>
+  <tbody>{rows.map(…)}</tbody>
+</Table>`}</Code>
+
+      <H2 id="scroll-table">Scrollable with sticky header</H2>
+      <P>Pass <InlineCode>maxHeight</InlineCode> and the wrapper caps its height and scrolls. The <InlineCode>thead</InlineCode> stays pinned.</P>
+      <div style={{ marginBottom:16 }}>
+        <Table maxHeight={220}>
+          {header}
+          <tbody>{rows.map(renderRow)}</tbody>
+        </Table>
+      </div>
+      <Code language="jsx">{`<Table maxHeight={220}>
+  <thead>…</thead>
+  <tbody>{rows.map(…)}</tbody>
+</Table>`}</Code>
     </div>
   );
 }
@@ -922,7 +949,7 @@ function PageTabs() {
   const [seg, setSeg] = useState("week");
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Tabs</H1>
       <Lead>Underline tabs for page-level navigation like Account, Billing, Security. Segmented tabs for inline switches inside a panel. Don't mix the two on one page; they start competing for attention.</Lead>
 
@@ -981,7 +1008,7 @@ function PageAlerts() {
   const dismiss = (id) => setToasts(t => t.filter(x => x.id !== id));
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Alert &amp; Toast</H1>
       <Lead>Inline alerts sit in the layout and stay there until the problem is fixed. Toasts pop in, say their piece, and disappear. Both stay monotone. No red-green traffic light; the icon and the copy do the work.</Lead>
 
@@ -1048,7 +1075,7 @@ function PageAlerts() {
 function PageAvatars() {
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Avatar</H1>
       <Lead>Initials on a neutral background. Three sizes. They stack, and when the group gets crowded an overflow chip shows how many more there are.</Lead>
 
@@ -1087,7 +1114,7 @@ function PageAvatars() {
 function PageAccordion() {
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Accordion</H1>
       <Lead>A disclosure pattern. The headings stay visible, the bodies collapse by default. Keyboard and screen reader behavior comes from Radix, so you don't have to wire any of it yourself.</Lead>
 
@@ -1120,7 +1147,7 @@ function PageSlider() {
   const [slider, setSlider] = useState(42);
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Slider</H1>
       <Lead>A range input. Good for values that feel continuous, like volume or opacity. The thumb is small on purpose; put the current value next to the label so people don't have to squint at it.</Lead>
 
@@ -1148,7 +1175,7 @@ function PageToggle() {
   const [view, setView] = useState("grid");
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Toggle group</H1>
       <Lead>A segmented control. Use it when the options are mutually exclusive and you can fit them on one line. Past four options it gets cramped; a Select does that job better.</Lead>
 
@@ -1222,7 +1249,7 @@ function PageKbd() {
 
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Kbd</H1>
       <Lead>Renders a keyboard shortcut. The little <InlineCode>⌘K</InlineCode> chip you see in search bars and menus. Use it anywhere a user might reach for the mouse when they didn't have to.</Lead>
 
@@ -1284,7 +1311,7 @@ function PageKbd() {
 function PageSpinner() {
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Components</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Spinner</H1>
       <Lead>For waits longer than ~400ms when you don't have a better placeholder. Anything faster, skip it; a spinner that flashes for 80ms just looks broken.</Lead>
 
@@ -1401,7 +1428,7 @@ After:
 `;
   return (
     <div>
-      <div style={{ fontSize:11, fontFamily:"var(--font-mono)", color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Guides</div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Guides</div>
       <H1>LLM naming prompt</H1>
       <Lead>Paste the prompt below into any coding agent to add stable <InlineCode>data-ms</InlineCode> names to your app. With stable names in place, your Playwright tests, your analytics selectors, and your next design-tool integration stop breaking every time someone renames a className.</Lead>
 

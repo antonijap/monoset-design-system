@@ -121,7 +121,16 @@ interface TabsTriggerProps extends React.ComponentPropsWithoutRef<typeof RTabs.T
 declare const TabsTrigger: react.ForwardRefExoticComponent<TabsTriggerProps & react.RefAttributes<HTMLButtonElement>>;
 declare const TabsContent: react.ForwardRefExoticComponent<RTabs.TabsContentProps & react.RefAttributes<HTMLDivElement>>;
 
-declare const Table: react.ForwardRefExoticComponent<TableHTMLAttributes<HTMLTableElement> & react.RefAttributes<HTMLTableElement>>;
+interface TableProps extends TableHTMLAttributes<HTMLTableElement> {
+    /**
+     * Cap the visible height of the table. When the rows overflow, the
+     * wrapper scrolls and the thead stays pinned. Accepts any CSS length.
+     */
+    maxHeight?: number | string;
+    /** Apply a className to the outer scrolling wrapper. */
+    wrapperClassName?: string;
+}
+declare const Table: react.ForwardRefExoticComponent<TableProps & react.RefAttributes<HTMLTableElement>>;
 
 /** Wrap your app in <ToastProvider>…</ToastProvider> to enable toasts. */
 declare function ToastProvider({ children }: {

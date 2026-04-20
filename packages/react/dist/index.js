@@ -244,8 +244,20 @@ var TabsContent = RTabs.Content;
 import { forwardRef as forwardRef11 } from "react";
 import { jsx as jsx11 } from "react/jsx-runtime";
 var Table = forwardRef11(
-  function Table2({ className, children, ...rest }, ref) {
-    return /* @__PURE__ */ jsx11("div", { className: "ms-table-wrapper", children: /* @__PURE__ */ jsx11("table", { ref, className: cx("ms-table", className), ...rest, children }) });
+  function Table2({ className, children, maxHeight, wrapperClassName, ...rest }, ref) {
+    const style = maxHeight !== void 0 ? { maxHeight: typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight } : void 0;
+    return /* @__PURE__ */ jsx11(
+      "div",
+      {
+        className: cx(
+          "ms-table-wrapper",
+          maxHeight !== void 0 && "ms-table-wrapper--scroll",
+          wrapperClassName
+        ),
+        style,
+        children: /* @__PURE__ */ jsx11("table", { ref, className: cx("ms-table", className), ...rest, children })
+      }
+    );
   }
 );
 

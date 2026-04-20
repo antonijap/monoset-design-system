@@ -11,7 +11,7 @@ export const fadeUp = {
   hidden:  { opacity: 0, y: 8 },
   visible: { opacity: 1, y: 0, transition: { duration: DUR.slow, ease: EASE_EMPHASIS } },
 };
-export const hoverLift = { y: -2, transition: { duration: DUR.fast, ease: EASE_STANDARD } };
+export const hoverLift = { transition: { duration: DUR.fast, ease: EASE_STANDARD } };
 // Monoset press: shade one step, no scale, no translate. Brightness works on any color.
 export const pressDown = { filter: "brightness(0.88)", transition: { duration: DUR.fast, ease: EASE_STANDARD } };
 
@@ -67,7 +67,7 @@ export function CopyButton({ text, style }) {
 /* ─── CODE BLOCK ──────────────────────────────────────────────────────── */
 export function Code({ children, language="bash", filename }) {
   return (
-    <div style={{ background:"var(--mono-1000)", borderRadius:8, overflow:"hidden", fontSize:13, marginBottom:0 }}>
+    <div style={{ background:"var(--mono-1000)", borderRadius:8, overflow:"hidden", fontSize:13, marginBottom:18 }}>
       {filename && (
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
                       padding:"8px 16px", borderBottom:"1px solid #27272b" }}>
@@ -132,9 +132,9 @@ export function Step({ n, title, children }) {
     <div style={{ display:"flex", gap:16, marginBottom:24 }}>
       <div style={{ width:28, height:28, borderRadius:"50%", border:"1px solid var(--border)",
                     display:"flex", alignItems:"center", justifyContent:"center",
-                    fontSize:12, fontWeight:600, flexShrink:0, marginTop:2 }}>{n}</div>
+                    fontSize:12, fontWeight:600, flexShrink:0 }}>{n}</div>
       <div style={{ flex:1 }}>
-        <div style={{ fontSize:14, fontWeight:600, marginBottom:8 }}>{title}</div>
+        <div style={{ fontSize:14, fontWeight:600, lineHeight:"28px", marginBottom:8 }}>{title}</div>
         {children}
       </div>
     </div>

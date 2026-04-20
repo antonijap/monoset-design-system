@@ -347,8 +347,20 @@ var TabsContent = RTabs.Content;
 var import_react11 = require("react");
 var import_jsx_runtime11 = require("react/jsx-runtime");
 var Table = (0, import_react11.forwardRef)(
-  function Table2({ className, children, ...rest }, ref) {
-    return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { className: "ms-table-wrapper", children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("table", { ref, className: cx("ms-table", className), ...rest, children }) });
+  function Table2({ className, children, maxHeight, wrapperClassName, ...rest }, ref) {
+    const style = maxHeight !== void 0 ? { maxHeight: typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight } : void 0;
+    return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+      "div",
+      {
+        className: cx(
+          "ms-table-wrapper",
+          maxHeight !== void 0 && "ms-table-wrapper--scroll",
+          wrapperClassName
+        ),
+        style,
+        children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("table", { ref, className: cx("ms-table", className), ...rest, children })
+      }
+    );
   }
 );
 
