@@ -1,0 +1,187 @@
+:root {
+  --sidebar-w: 260px;
+  --header-h: 60px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--fg1);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--mono-900); color: #fff; }
+
+img { max-width: 100%; display: block; }
+
+/* ============================================================================
+   Wide-only bento side columns (hide on anything narrower than ~1400)
+   ============================================================================ */
+@media (max-width: 1399px) {
+  [data-ms="bento-wide-col"] { display: none !important; }
+  [data-ms="bento-wide-wrap"] { grid-template-columns: 1fr !important; }
+}
+
+/* ============================================================================
+   Mobile layout -768px and below
+   ============================================================================ */
+@media (max-width: 768px) {
+  /* Hero header: tighten padding, hide center nav, hide wordmark text */
+  [data-ms="hero-header"] { padding: 0 16px !important; gap: 12px !important; }
+  [data-ms="hero-nav"] { display: none !important; }
+  [data-ms="hero-header-actions"] { gap: 6px !important; }
+
+  /* Hero body: smaller padding, smaller headline */
+  [data-ms="hero-body"] { padding: 64px 20px 32px !important; }
+  [data-ms="hero-title"] { font-size: 40px !important; line-height: 1.08 !important; margin-bottom: 16px !important; }
+  [data-ms="hero-lead"] { font-size: 15px !important; margin-bottom: 24px !important; }
+  [data-ms="hero-eyebrow"] { margin-bottom: 20px !important; }
+
+  /* Hero CTA row: stack vertically and full-width */
+  [data-ms="hero-ctas"] { flex-direction: column !important; width: 100%; gap: 8px !important; align-items: stretch !important; }
+  [data-ms="hero-ctas"] > * { width: 100% !important; justify-content: center !important; }
+
+  /* Bento grid: single column */
+  [data-ms="bento"] { padding: 48px 24px 48px !important; }
+  [data-ms="bento-grid"] {
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto !important;
+    gap: 14px !important;
+  }
+  [data-ms="bento-grid"] > * {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+  }
+
+  /* Feature strip: single column */
+  [data-ms="features"] {
+    grid-template-columns: 1fr !important;
+    padding: 32px 16px !important;
+    gap: 20px !important;
+  }
+
+  /* Theme (light/dark) row: stack */
+  [data-ms="theme-grid"] {
+    grid-template-columns: 1fr !important;
+  }
+  [data-ms="theme-section"] { padding: 0 16px 48px !important; }
+
+  /* Footer: stack */
+  [data-ms="hero-footer"] {
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 20px 16px !important;
+    text-align: center;
+  }
+
+  /* Individual bento tiles: size down internal paddings / type */
+  [data-ms="bento-analytics"] { padding: 20px 20px 18px !important; }
+  [data-ms="bento-analytics"] [data-ms="analytics-value"] { font-size: 34px !important; }
+
+  [data-ms="bento-player"] { grid-column: 1 / -1 !important; }
+  [data-ms="bento-player-art"] { aspect-ratio: auto !important; height: 140px !important; }
+  [data-ms="bento-colors-swatches"] { min-height: 140px !important; }
+  [data-ms="bento-typography-aa"] { font-size: 72px !important; }
+
+  /* Calendar: hide week grid, show mobile agenda list */
+  [data-ms="calendar-week"] { display: none !important; }
+  [data-ms="calendar-agenda"] { display: flex !important; }
+
+  /* Docs layout: let the whole page scroll naturally -no nested scroller */
+  [data-ms="docs-layout"] {
+    height: auto !important;
+    min-height: 100vh !important;
+  }
+  [data-ms="docs-layout"] > div {
+    grid-template-columns: 1fr !important;
+    overflow: visible !important;
+    min-height: 0 !important;
+  }
+  [data-ms="docs-sidebar"] { display: none !important; }
+  [data-ms="docs-content"] {
+    padding: 24px 20px 80px !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+  [data-ms="docs-header"] {
+    padding: 0 16px !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    background: var(--bg) !important;
+  }
+  [data-ms="docs-search"] { display: none !important; }
+  [data-ms="docs-mobile-btn"] { display: flex !important; }
+
+  /* Docs page headings scale */
+  [data-ms="docs-content"] h1 { font-size: 28px !important; }
+  [data-ms="docs-content"] h2 { font-size: 18px !important; }
+  [data-ms="docs-content"] p { font-size: 14px !important; }
+
+  /* Feature-card grids: stack or 2-col */
+  [data-ms="intro-pillars"] { grid-template-columns: 1fr !important; }
+  [data-ms="radii-grid"] { grid-template-columns: repeat(3, 1fr) !important; }
+
+  /* Preview demos on mobile: keep items centered so small demos look nice,
+     let them wrap when there are many. Text fields stretch to full width below. */
+  [data-ms="preview-stage"] {
+    padding: 20px 16px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  /* Wide building-block components (forms, alerts, cards, sliders, tabs, tables,
+     accordions, code panels) fill the stage width so they don't look orphaned. */
+  [data-ms="preview-stage"] > .ms-field,
+  [data-ms="preview-stage"] > .ms-alert,
+  [data-ms="preview-stage"] > .ms-card,
+  [data-ms="preview-stage"] > .ms-table,
+  [data-ms="preview-stage"] > .ms-tabs,
+  [data-ms="preview-stage"] > .ms-slider,
+  [data-ms="preview-stage"] > .ms-accordion {
+    width: 100% !important;
+  }
+
+  /* Form controls that are themselves tappable go full-width. */
+  [data-ms="preview-stage"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  [data-ms="preview-stage"] select,
+  [data-ms="preview-stage"] textarea {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* If a demo wraps children in an inner <div style="display:flex…"> row,
+     let it wrap too -but don't force column. */
+  [data-ms="preview-stage"] > div[style*="display: flex"] {
+    flex-wrap: wrap !important;
+    max-width: 100% !important;
+  }
+
+  /* Content must not overflow horizontally */
+  [data-ms="docs-content"] { min-width: 0 !important; }
+  [data-ms="docs-content"] > div { max-width: 100% !important; }
+  [data-ms="docs-content"] pre { white-space: pre-wrap !important; word-break: break-word !important; }
+  [data-ms="docs-content"] img { max-width: 100% !important; height: auto !important; }
+
+  /* Bento header rows: allow wrapping */
+  [data-ms="bento"] [data-ms="bento-tile-head"] { flex-wrap: wrap !important; gap: 8px !important; }
+}
+
+/* ============================================================================
+   Extra-small phones -420px and below
+   ============================================================================ */
+@media (max-width: 420px) {
+  [data-ms="hero-title"] { font-size: 34px !important; }
+  [data-ms="bento-analytics"] [data-ms="analytics-value"] { font-size: 28px !important; }
+  [data-ms="bento-typography-aa"] { font-size: 60px !important; }
+}

@@ -1,0 +1,20 @@
+node_modules
+website/dist
+dist-ssr
+.DS_Store
+*.log
+.vscode
+.idea
+*.local
+.env
+.env.local
+.vercel
+
+# Internal planning/working notes — kept locally, not for the public repo
+task_plan.md
+findings.md
+progress.md
+
+# Local IDE/agent configs
+.claude/
+.cursor/

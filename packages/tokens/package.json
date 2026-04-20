@@ -1,0 +1,34 @@
+{
+  "name": "@monoset/tokens",
+  "version": "0.1.0",
+  "description": "Monoset design tokens , colors, type, spacing, radii, shadows, motion.",
+  "keywords": [
+    "design-system",
+    "tokens",
+    "monoset",
+    "monotone"
+  ],
+  "license": "MIT",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./src/tokens.js",
+      "require": "./src/tokens.js",
+      "types": "./src/tokens.d.ts"
+    },
+    "./css": "./src/colors_and_type.css",
+    "./json": "./src/tokens.json"
+  },
+  "main": "./src/tokens.js",
+  "types": "./src/tokens.d.ts",
+  "scripts": {
+    "build": "echo 'No build step , CSS + JSON shipped as source'",
+    "test": "echo 'No tests yet'"
+  },
+  "sideEffects": [
+    "*.css"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@monoset/mcp-server",
+  "version": "0.1.0",
+  "description": "MCP server exposing the Monoset design system (component list, props, tokens, doc search) to agents.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "monoset-mcp": "./bin/index.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "data",
+    "README.md"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.4.1",
+    "zod": "^3.23.8"
+  },
+  "keywords": ["monoset", "mcp", "model-context-protocol", "design-system"],
+  "scripts": {
+    "build-data": "node scripts/build-data.mjs",
+    "prepublishOnly": "node scripts/build-data.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "name": "@monoset/motion",
+  "version": "0.1.0",
+  "description": "Monoset motion presets for framer-motion. Easings, durations, reusable variants.",
+  "keywords": [
+    "design-system",
+    "motion",
+    "framer-motion",
+    "monoset"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "framer-motion": ">=11"
+  },
+  "peerDependenciesMeta": {
+    "framer-motion": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "framer-motion": "^12.0.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3"
+  }
+}

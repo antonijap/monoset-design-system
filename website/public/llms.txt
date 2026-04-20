@@ -1,0 +1,45 @@
+# Monoset
+
+> A minimal, monotone, unopinionated design system. CSS tokens and React components for teams that want their product to look like their product, not like the design system.
+
+Monoset ships three packages (tokens, motion presets, React components) and a showcase docs site. Components wrap Radix primitives for accessibility. Styles ship as one monotone CSS file. No color accents, no gradients, no brand hue; the whole system is one 12-step neutral ramp plus typography and spacing tokens.
+
+## Docs
+
+- [Introduction](https://monoset.design/introduction): What Monoset is, what's included, and when to reach for it.
+- [Installation](https://monoset.design/installation): Two install paths. CSS tokens only, or the full React kit.
+- [Basic usage](https://monoset.design/usage): End-to-end example (a sign-in card).
+
+## Foundations
+
+- [Colors](https://monoset.design/colors): 12-step neutral ramp and semantic tokens.
+- [Typography](https://monoset.design/typography): Inter for UI, JetBrains Mono for code, 11px to 64px scale.
+- [Spacing and radii](https://monoset.design/spacing): 4px base grid, named space and radius tokens.
+- [Motion](https://monoset.design/motion): Three durations, one easing curve.
+- [Framer Motion presets](https://monoset.design/framer): JS-driven animation variants that match the CSS tokens.
+
+## Components
+
+- [Button](https://monoset.design/buttons): Four variants, three sizes.
+- [Input](https://monoset.design/inputs): Text fields, textareas, selects, with a Field wrapper.
+- [Badge](https://monoset.design/badges): Status, counts, tags. Three variants.
+- [Card](https://monoset.design/cards): Outline, elevated, inset.
+- [Checkbox and Switch](https://monoset.design/toggles): When to use which.
+- [Table](https://monoset.design/table): Dense data rows with hover.
+- [Tabs](https://monoset.design/tabs): Underline and segmented variants.
+- [Alert and Toast](https://monoset.design/alerts): Inline and transient feedback.
+- [Avatar](https://monoset.design/avatars): Initials, sizes, stacking.
+- [Accordion](https://monoset.design/accordion): Disclosure panels.
+- [Slider](https://monoset.design/slider): Range input.
+- [Toggle group](https://monoset.design/toggle): Segmented control.
+- [Kbd](https://monoset.design/kbd): Keyboard shortcut chip.
+- [Spinner](https://monoset.design/spinner): Loading indicator.
+
+## Guides
+
+- [LLM naming prompt](https://monoset.design/llm): Copy-paste prompt for adding stable data-ms attributes across a React codebase.
+
+## Source
+
+- [GitHub repository](https://github.com/antonijap/monoset-design-system)
+- License: MIT

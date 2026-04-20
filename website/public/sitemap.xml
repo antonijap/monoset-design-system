@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://monoset.design/</loc><priority>1.0</priority></url>
+  <url><loc>https://monoset.design/introduction</loc><priority>0.9</priority></url>
+  <url><loc>https://monoset.design/installation</loc><priority>0.9</priority></url>
+  <url><loc>https://monoset.design/usage</loc><priority>0.8</priority></url>
+  <url><loc>https://monoset.design/colors</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/typography</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/spacing</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/motion</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/framer</loc><priority>0.6</priority></url>
+  <url><loc>https://monoset.design/buttons</loc><priority>0.8</priority></url>
+  <url><loc>https://monoset.design/inputs</loc><priority>0.8</priority></url>
+  <url><loc>https://monoset.design/badges</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/cards</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/toggles</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/table</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/tabs</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/alerts</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/avatars</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/accordion</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/slider</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/toggle</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/kbd</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/spinner</loc><priority>0.7</priority></url>
+  <url><loc>https://monoset.design/llm</loc><priority>0.8</priority></url>
+</urlset>

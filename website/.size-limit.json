@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Landing entry (index + vendors)",
+    "path": "dist/assets/index-*.js",
+    "limit": "60 KB"
+  },
+  {
+    "name": "Motion chunk (framer-motion)",
+    "path": "dist/assets/motion-*.js",
+    "limit": "50 KB"
+  },
+  {
+    "name": "React vendor",
+    "path": "dist/assets/react-vendor-*.js",
+    "limit": "85 KB"
+  },
+  {
+    "name": "Docs page bundle (lazy)",
+    "path": "dist/assets/docs-*.js",
+    "limit": "25 KB"
+  },
+  {
+    "name": "Orama search (lazy)",
+    "path": "dist/assets/browser-*.js",
+    "limit": "30 KB"
+  },
+  {
+    "name": "Total CSS",
+    "path": "dist/assets/index-*.css",
+    "limit": "7 KB"
+  }
+]

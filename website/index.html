@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+
+    <title>Monoset. A minimal, monotone, unopinionated design system</title>
+    <meta name="description" content="Monoset is a minimal, monotone, unopinionated design system. Tokens and React components for teams that want their product to look like their product, not like the design system." />
+    <meta name="author" content="Antonija Pek" />
+    <meta name="keywords" content="design system, monotone design system, react components, css tokens, monoset, radix, minimal ui, ui kit, react design system, open source design system" />
+
+    <link rel="canonical" href="https://monoset.design/" />
+    <link rel="icon" type="image/svg+xml" href="/assets/monoset-mark.svg" />
+    <link rel="apple-touch-icon" href="/assets/monoset-mark.svg" />
+
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="googlebot" content="index, follow" />
+
+    <!-- Theme bootstrap. Applies the `monoset-dark` class to the docs-layout
+         container the instant React mounts it, so the docs area flips
+         without a flash. Landing is never touched. Only reads localStorage;
+         OS preference alone doesn't force dark mode on users who haven't
+         opted in. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('monoset-theme');
+          if (t !== 'dark') return;
+          var apply = function (el) {
+            if (el && !el.classList.contains('monoset-dark')) {
+              el.classList.add('monoset-dark');
+            }
+          };
+          var existing = document.querySelector('[data-ms="docs-layout"]');
+          if (existing) { apply(existing); return; }
+          var mo = new MutationObserver(function () {
+            var el = document.querySelector('[data-ms="docs-layout"]');
+            if (el) { apply(el); mo.disconnect(); }
+          });
+          mo.observe(document.body || document.documentElement, {
+            childList: true, subtree: true
+          });
+          // Safety: stop observing after 5s if docs never loads (user on landing).
+          setTimeout(function () { mo.disconnect(); }, 5000);
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Monoset" />
+    <meta property="og:url" content="https://monoset.design/" />
+    <meta property="og:title" content="Monoset. A minimal, monotone, unopinionated design system" />
+    <meta property="og:description" content="One neutral ramp, one typeface, the usual components. Done well, out of your way." />
+    <meta property="og:image" content="https://monoset.design/assets/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Monoset design system landing page. The words Everything. Nothing extra. above a grid of monotone UI tiles." />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@daxfox000" />
+    <meta name="twitter:creator" content="@daxfox000" />
+    <meta name="twitter:title" content="Monoset. A minimal, monotone, unopinionated design system" />
+    <meta name="twitter:description" content="One neutral ramp, one typeface, the usual components. Done well, out of your way." />
+    <meta name="twitter:image" content="https://monoset.design/assets/og.png" />
+    <meta name="twitter:image:alt" content="Monoset design system landing page preview" />
+
+    <!-- Structured data: SoftwareSourceCode + WebSite -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://monoset.design/#website",
+          "url": "https://monoset.design/",
+          "name": "Monoset",
+          "description": "A minimal, monotone, unopinionated design system.",
+          "publisher": { "@id": "https://monoset.design/#person" },
+          "inLanguage": "en-US"
+        },
+        {
+          "@type": "Person",
+          "@id": "https://monoset.design/#person",
+          "name": "Antonija Pek",
+          "url": "https://github.com/antonijap"
+        },
+        {
+          "@type": "SoftwareSourceCode",
+          "name": "Monoset",
+          "description": "A minimal, monotone, unopinionated design system with tokens and React components. One neutral ramp, one typeface, components wrapping Radix primitives for accessibility.",
+          "codeRepository": "https://github.com/antonijap/monoset-design-system",
+          "programmingLanguage": ["TypeScript", "CSS", "JavaScript"],
+          "runtimePlatform": "React 18+",
+          "license": "https://opensource.org/licenses/MIT",
+          "author": { "@id": "https://monoset.design/#person" },
+          "keywords": "design system, react, monotone, tokens, accessibility, radix"
+        }
+      ]
+    }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

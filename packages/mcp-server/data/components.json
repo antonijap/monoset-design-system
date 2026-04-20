@@ -1,0 +1,142 @@
+[
+  {
+    "name": "Accordion",
+    "description": "",
+    "docUrl": "https://monoset.design/accordion"
+  },
+  {
+    "name": "Alert",
+    "description": "If true, applies `role=\"alert\"` instead of `role=\"status\"`.",
+    "docUrl": "https://monoset.design/alerts"
+  },
+  {
+    "name": "Avatar",
+    "description": "Initials shown when no image, or if image fails.",
+    "docUrl": "https://monoset.design/avatars"
+  },
+  {
+    "name": "Badge",
+    "description": "",
+    "docUrl": "https://monoset.design/badges"
+  },
+  {
+    "name": "Breadcrumb",
+    "description": "The final crumb — marked aria-current",
+    "docUrl": "https://monoset.design/tabs"
+  },
+  {
+    "name": "Button",
+    "description": "Left-slot icon (rendered before children).",
+    "docUrl": "https://monoset.design/buttons"
+  },
+  {
+    "name": "Card",
+    "description": "Render as a different element (useful for article, section).",
+    "docUrl": "https://monoset.design/cards"
+  },
+  {
+    "name": "Checkbox",
+    "description": "",
+    "docUrl": "https://monoset.design/toggles"
+  },
+  {
+    "name": "Dialog",
+    "description": "",
+    "docUrl": "https://monoset.design/alerts"
+  },
+  {
+    "name": "DropdownMenu",
+    "description": "",
+    "docUrl": "https://monoset.design/alerts"
+  },
+  {
+    "name": "EmptyState",
+    "description": "",
+    "docUrl": "https://monoset.design/cards"
+  },
+  {
+    "name": "Input",
+    "description": "The control — Input, Textarea, or any element that accepts `id`.",
+    "docUrl": "https://monoset.design/inputs"
+  },
+  {
+    "name": "Kbd",
+    "description": "",
+    "docUrl": "https://monoset.design/kbd"
+  },
+  {
+    "name": "Pagination",
+    "description": "Max numbered buttons shown — defaults to 7. Ellipsis fills gaps.",
+    "docUrl": "https://monoset.design/tabs"
+  },
+  {
+    "name": "Popover",
+    "description": "",
+    "docUrl": "https://monoset.design/alerts"
+  },
+  {
+    "name": "Progress",
+    "description": "If no value is given, renders indeterminate animation.",
+    "docUrl": "https://monoset.design/cards"
+  },
+  {
+    "name": "RadioGroup",
+    "description": "",
+    "docUrl": "https://monoset.design/toggles"
+  },
+  {
+    "name": "Select",
+    "description": "",
+    "docUrl": "https://monoset.design/inputs"
+  },
+  {
+    "name": "Separator",
+    "description": "",
+    "docUrl": "https://monoset.design/cards"
+  },
+  {
+    "name": "Skeleton",
+    "description": "Pixel or percent width (default 100%).",
+    "docUrl": "https://monoset.design/cards"
+  },
+  {
+    "name": "Slider",
+    "description": "",
+    "docUrl": "https://monoset.design/slider"
+  },
+  {
+    "name": "Spinner",
+    "description": "",
+    "docUrl": "https://monoset.design/spinner"
+  },
+  {
+    "name": "Switch",
+    "description": "",
+    "docUrl": "https://monoset.design/toggles"
+  },
+  {
+    "name": "Table",
+    "description": "",
+    "docUrl": "https://monoset.design/table"
+  },
+  {
+    "name": "Tabs",
+    "description": "Shared layoutId for the sliding underline.",
+    "docUrl": "https://monoset.design/tabs"
+  },
+  {
+    "name": "Toast",
+    "description": "Wrap your app in <ToastProvider>…</ToastProvider> to enable toasts.",
+    "docUrl": "https://monoset.design/alerts"
+  },
+  {
+    "name": "ToggleGroup",
+    "description": "",
+    "docUrl": "https://monoset.design/toggle"
+  },
+  {
+    "name": "Tooltip",
+    "description": "",
+    "docUrl": "https://monoset.design/alerts"
+  }
+]

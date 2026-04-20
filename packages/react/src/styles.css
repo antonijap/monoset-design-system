@@ -1,0 +1,559 @@
+/* ==========================================================================
+   @monoset/react -component styles
+   All classes are prefixed `.ms-` to avoid collision with consumer styles.
+   Tokens come from @monoset/tokens/css -ensure that is imported first.
+   ========================================================================== */
+
+/* ---- Utilities --------------------------------------------------------- */
+.ms-sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* ---- Focus ring (shared) ---------------------------------------------- */
+.ms-focus-visible:focus-visible {
+  outline: 2px solid var(--mono-900);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Button
+   ========================================================================== */
+.ms-btn {
+  --_ring: var(--mono-900);
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    filter var(--duration-fast) var(--ease-standard);
+  -webkit-tap-highlight-color: transparent;
+}
+.ms-btn:focus-visible { outline: 2px solid var(--_ring); outline-offset: 2px; }
+.ms-btn:active:not([disabled]) { filter: brightness(0.88); }
+.ms-btn[disabled] { cursor: not-allowed; }
+.ms-btn[aria-busy="true"] { cursor: progress; }
+
+/* sizes */
+.ms-btn--sm { font-size: 12px; padding: 5px 10px; height: 28px; }
+.ms-btn--md { font-size: 13px; padding: 8px 14px; height: 34px; }
+.ms-btn--lg { font-size: 14px; padding: 0 20px; height: 44px; }
+
+/* variants */
+.ms-btn--primary   { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.ms-btn--primary:hover:not([disabled])   { background: var(--accent-hover); border-color: var(--accent-hover); }
+.ms-btn--secondary { background: var(--bg); color: var(--fg1); border-color: var(--border); }
+.ms-btn--secondary:hover:not([disabled]) { background: var(--bg-subtle); }
+.ms-btn--ghost     { background: transparent; color: var(--fg1); }
+.ms-btn--ghost:hover:not([disabled])     { background: var(--bg-muted); }
+.ms-btn--danger    { background: var(--status-danger); color: #fff; border-color: var(--status-danger); }
+
+.ms-btn[disabled] { background: var(--bg-muted); color: var(--fg4); border-color: transparent; }
+
+/* ==========================================================================
+   Badge
+   ========================================================================== */
+.ms-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 500; line-height: 1;
+  padding: 3px 9px; border-radius: var(--radius-full);
+}
+.ms-badge--neutral { background: var(--bg-muted); color: var(--fg2); }
+.ms-badge--solid   { background: var(--mono-1000); color: #fff; }
+.ms-badge--outline { background: var(--bg); color: var(--fg2); border: 1px solid var(--border); }
+
+/* ==========================================================================
+   Avatar
+   ========================================================================== */
+.ms-avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--mono-800); color: #fff;
+  font-weight: 600; font-size: 12px;
+  border-radius: 50%; overflow: hidden;
+  position: relative; flex-shrink: 0;
+}
+.ms-avatar--sm { width: 24px; height: 24px; font-size: 10px; }
+.ms-avatar--md { width: 34px; height: 34px; font-size: 12px; }
+.ms-avatar--lg { width: 44px; height: 44px; font-size: 14px; }
+.ms-avatar__img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ==========================================================================
+   Card
+   ========================================================================== */
+.ms-card {
+  background: var(--bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+}
+.ms-card--elevated { box-shadow: var(--shadow-sm); }
+.ms-card--inset    { background: var(--bg-subtle); border: 0; }
+
+/* ==========================================================================
+   Alert
+   ========================================================================== */
+.ms-alert {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 14px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+.ms-alert__icon {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 1px solid var(--fg1); color: var(--fg1);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; flex-shrink: 0; margin-top: 1px;
+}
+.ms-alert__title { font-size: 12px; font-weight: 600; color: var(--fg1); }
+.ms-alert__msg   { font-size: 12px; color: var(--fg2); margin-top: 2px; line-height: 1.5; }
+
+/* ==========================================================================
+   Input + Field
+   ========================================================================== */
+.ms-field { display: flex; flex-direction: column; gap: 6px; }
+.ms-field__label { font-size: 12px; font-weight: 500; color: var(--fg2); }
+.ms-field__help  { font-size: 11px; color: var(--fg3); }
+.ms-field__error { font-size: 11px; color: var(--status-danger); }
+
+.ms-input {
+  font-family: inherit; font-size: 13px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg); color: var(--fg1);
+  outline: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+  width: 100%;
+  box-sizing: border-box;
+}
+.ms-input:focus-visible {
+  border-color: var(--fg1);
+  box-shadow: 0 0 0 3px var(--mono-100);
+}
+.ms-input::placeholder { color: var(--fg4); }
+.ms-input[disabled] { background: var(--bg-muted); color: var(--fg4); cursor: not-allowed; }
+.ms-input[aria-invalid="true"] { border-color: var(--status-danger); }
+
+/* ==========================================================================
+   Checkbox + Switch
+   ========================================================================== */
+.ms-check {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; cursor: pointer;
+  user-select: none;
+}
+.ms-check__box {
+  width: 16px; height: 16px; border-radius: 3px;
+  border: 1px solid var(--mono-400);
+  background: var(--bg);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #fff;
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+.ms-check[data-state="checked"] .ms-check__box {
+  background: var(--mono-1000); border-color: var(--mono-1000);
+}
+.ms-check:focus-within .ms-check__box { outline: 2px solid var(--mono-900); outline-offset: 2px; }
+
+.ms-switch {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 13px; cursor: pointer; user-select: none;
+}
+.ms-switch__track {
+  width: 32px; height: 18px; border-radius: 999px; position: relative;
+  background: var(--mono-300); display: inline-block;
+  transition: background var(--duration-base) var(--ease-standard);
+}
+.ms-switch[data-state="checked"] .ms-switch__track { background: var(--mono-1000); }
+.ms-switch__thumb {
+  position: absolute; top: 2px; left: 2px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+  transition: transform var(--duration-base) var(--ease-emphasis);
+}
+.ms-switch[data-state="checked"] .ms-switch__thumb { transform: translateX(14px); }
+.ms-switch:focus-within .ms-switch__track { outline: 2px solid var(--mono-900); outline-offset: 2px; }
+
+/* ==========================================================================
+   Radio
+   ========================================================================== */
+.ms-radio-group { display: flex; flex-direction: column; gap: 8px; }
+.ms-radio { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; font-size: 13px; }
+.ms-radio__dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 1px solid var(--mono-400); background: var(--bg);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+.ms-radio[data-state="checked"] .ms-radio__dot { border-color: var(--mono-1000); }
+.ms-radio[data-state="checked"] .ms-radio__dot::after {
+  content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--mono-1000);
+}
+
+/* ==========================================================================
+   Tabs
+   ========================================================================== */
+.ms-tabs__list {
+  display: flex; gap: 24px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.ms-tabs__trigger {
+  position: relative;
+  padding: 10px 0;
+  font-size: 13px; font-weight: 400;
+  color: var(--fg3); background: none; border: none;
+  cursor: pointer; font-family: inherit;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+.ms-tabs__trigger[data-state="active"] { color: var(--fg1); font-weight: 500; }
+.ms-tabs__trigger:focus-visible { outline: 2px solid var(--mono-900); outline-offset: 2px; border-radius: var(--radius-xs); }
+.ms-tabs__indicator {
+  position: absolute; left: 0; right: 0; bottom: -1px;
+  height: 1.5px; background: var(--fg1);
+}
+
+/* ==========================================================================
+   Table
+   ========================================================================== */
+.ms-table-wrapper {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.ms-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ms-table thead th {
+  background: var(--bg-subtle);
+  padding: 9px 14px; text-align: left;
+  font-weight: 500; font-size: 11px; color: var(--fg3);
+  letter-spacing: 0.04em; text-transform: uppercase;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.ms-table tbody td { padding: 11px 14px; color: var(--fg2); }
+.ms-table tbody tr + tr td { border-top: 1px solid var(--border-subtle); }
+.ms-table tbody tr:hover td { background: var(--bg-subtle); }
+
+/* ==========================================================================
+   Dialog / Modal
+   ========================================================================== */
+.ms-dialog-scrim {
+  position: fixed; inset: 0; background: rgb(0 0 0 / 0.4);
+  z-index: var(--z-overlay);
+}
+.ms-dialog {
+  position: fixed; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  padding: 24px;
+  width: min(480px, calc(100vw - 32px));
+  max-height: calc(100vh - 64px); overflow: auto;
+  z-index: var(--z-modal);
+}
+.ms-dialog__title { font-size: 16px; font-weight: 600; margin: 0 0 4px; color: var(--fg1); }
+.ms-dialog__desc  { font-size: 13px; color: var(--fg3); margin: 0 0 16px; line-height: 1.55; }
+
+/* ==========================================================================
+   Popover / Tooltip / DropdownMenu shared
+   ========================================================================== */
+.ms-popover, .ms-menu {
+  background: var(--bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  min-width: 180px;
+  z-index: var(--z-popover);
+}
+.ms-tooltip {
+  background: var(--mono-1000); color: #fff;
+  font-size: 11px; padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  z-index: var(--z-popover);
+  max-width: 240px; line-height: 1.4;
+}
+
+.ms-menu__item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: var(--radius-sm);
+  font-size: 13px; color: var(--fg1);
+  cursor: pointer; user-select: none;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.ms-menu__item[data-highlighted] { background: var(--bg-subtle); outline: none; }
+.ms-menu__item[data-disabled]    { color: var(--fg4); cursor: not-allowed; }
+.ms-menu__label    { padding: 6px 10px; font-size: 11px; color: var(--fg3); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+.ms-menu__separator { height: 1px; background: var(--border-subtle); margin: 4px -6px; }
+
+/* ==========================================================================
+   Select trigger
+   ========================================================================== */
+.ms-select {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg); color: var(--fg1);
+  border: 1px solid var(--border); border-radius: var(--radius-md);
+  font-size: 13px; font-family: inherit;
+  cursor: pointer;
+  min-width: 160px; justify-content: space-between;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+.ms-select:focus-visible { border-color: var(--fg1); box-shadow: 0 0 0 3px var(--mono-100); outline: none; }
+
+/* ==========================================================================
+   Skeleton
+   ========================================================================== */
+.ms-skeleton {
+  background: var(--bg-muted);
+  border-radius: var(--radius-sm);
+  animation: ms-pulse 1.6s var(--ease-standard) infinite;
+}
+@keyframes ms-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+
+/* ==========================================================================
+   Empty state
+   ========================================================================== */
+.ms-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 48px 24px; gap: 8px;
+  color: var(--fg2);
+}
+.ms-empty__icon {
+  width: 40px; height: 40px; border-radius: var(--radius-md);
+  background: var(--bg-muted); color: var(--fg2);
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 8px;
+}
+.ms-empty__title { font-size: 14px; font-weight: 600; color: var(--fg1); }
+.ms-empty__body  { font-size: 13px; color: var(--fg3); max-width: 36ch; }
+
+/* ==========================================================================
+   Pagination
+   ========================================================================== */
+.ms-pagination { display: inline-flex; align-items: center; gap: 2px; }
+.ms-pagination__btn {
+  min-width: 32px; height: 32px; padding: 0 10px;
+  background: transparent; color: var(--fg2);
+  border: 1px solid transparent; border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 500; font-family: inherit;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.ms-pagination__btn:hover:not([disabled]) { background: var(--bg-muted); }
+.ms-pagination__btn[aria-current="page"] { background: var(--mono-1000); color: #fff; }
+.ms-pagination__btn[disabled] { color: var(--fg4); cursor: not-allowed; }
+
+/* ==========================================================================
+   Breadcrumb
+   ========================================================================== */
+.ms-breadcrumb { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--fg3); }
+.ms-breadcrumb__item { color: inherit; }
+.ms-breadcrumb__item[aria-current="page"] { color: var(--fg1); font-weight: 500; }
+.ms-breadcrumb__sep { color: var(--fg4); }
+
+/* ==========================================================================
+   Progress
+   ========================================================================== */
+.ms-progress { height: 6px; background: var(--bg-muted); border-radius: var(--radius-full); overflow: hidden; }
+.ms-progress__indicator {
+  height: 100%; background: var(--mono-1000); border-radius: inherit;
+  transition: width var(--duration-slow) var(--ease-emphasis);
+}
+
+/* ==========================================================================
+   Toast
+   ========================================================================== */
+.ms-toast-viewport {
+  position: fixed; bottom: 20px; right: 20px;
+  display: flex; flex-direction: column; gap: 8px;
+  width: min(320px, calc(100vw - 40px));
+  z-index: var(--z-toast);
+}
+.ms-toast {
+  display: flex; gap: 10px; align-items: center;
+  padding: 10px 14px;
+  background: var(--mono-1000); color: #fff;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  box-shadow: var(--shadow-lg);
+}
+.ms-toast[data-kind="error"] { background: var(--status-danger); }
+.ms-toast__action { margin-left: auto; color: var(--mono-400); font-weight: 500; cursor: pointer; font-size: 11px; }
+.ms-toast__action:hover { color: #fff; }
+
+/* ==========================================================================
+   Separator
+   ========================================================================== */
+.ms-separator { border: 0; background: var(--border-subtle); }
+.ms-separator[data-orientation="horizontal"] { height: 1px; width: 100%; margin: 16px 0; }
+.ms-separator[data-orientation="vertical"]   { width: 1px; height: 100%; margin: 0 8px; }
+
+/* ==========================================================================
+   Kbd
+   ========================================================================== */
+.ms-kbd {
+  font-family: var(--font-mono);
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px;
+  background: var(--bg);
+  color: var(--fg1);
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  line-height: 1;
+  padding: 0 5px;
+}
+.ms-kbd--sm { font-size: 10px; height: 18px; }
+.ms-kbd--md { font-size: 11px; height: 22px; }
+
+/* ==========================================================================
+   Spinner
+   ========================================================================== */
+.ms-spinner {
+  display: inline-block;
+  border: 2px solid var(--border);
+  border-top-color: var(--fg1);
+  border-radius: 50%;
+  animation: ms-spin 600ms linear infinite;
+}
+@keyframes ms-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Accordion
+   ========================================================================== */
+.ms-accordion__item { border-bottom: 1px solid var(--border-subtle); }
+.ms-accordion__header { margin: 0; }
+.ms-accordion__trigger {
+  all: unset;
+  width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  padding: 14px 2px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fg1);
+  cursor: pointer;
+  text-align: left;
+}
+.ms-accordion__trigger:focus-visible { outline: 2px solid var(--mono-900); outline-offset: 2px; border-radius: 4px; }
+.ms-accordion__trigger:hover { color: var(--mono-1000); }
+.ms-accordion__chevron {
+  color: var(--fg3);
+  transition: transform var(--duration-base) var(--ease-standard);
+  flex-shrink: 0;
+}
+.ms-accordion__trigger[data-state="open"] .ms-accordion__chevron { transform: rotate(180deg); }
+.ms-accordion__content {
+  overflow: hidden;
+  font-size: 13px;
+  color: var(--fg2);
+  line-height: 1.7;
+}
+.ms-accordion__content[data-state="open"] {
+  animation: ms-acc-open var(--duration-base) var(--ease-standard);
+}
+.ms-accordion__content[data-state="closed"] {
+  animation: ms-acc-close var(--duration-base) var(--ease-standard);
+}
+.ms-accordion__content-inner { padding: 0 2px 14px; }
+@keyframes ms-acc-open {
+  from { height: 0; opacity: 0; }
+  to   { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+@keyframes ms-acc-close {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to   { height: 0; opacity: 0; }
+}
+
+/* ==========================================================================
+   Slider
+   ========================================================================== */
+.ms-slider {
+  position: relative;
+  display: flex; align-items: center;
+  user-select: none; touch-action: none;
+  width: 100%;
+  height: 20px;
+}
+.ms-slider__track {
+  background: var(--bg-muted);
+  position: relative;
+  flex: 1;
+  border-radius: 999px;
+  height: 4px;
+}
+.ms-slider__range {
+  position: absolute;
+  background: var(--mono-1000);
+  border-radius: 999px;
+  height: 100%;
+}
+.ms-slider__thumb {
+  display: block;
+  width: 16px; height: 16px;
+  background: var(--bg);
+  border: 1px solid var(--mono-1000);
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
+  cursor: grab;
+}
+.ms-slider__thumb:focus-visible { outline: 2px solid var(--mono-900); outline-offset: 2px; }
+.ms-slider__thumb:active { cursor: grabbing; }
+
+/* ==========================================================================
+   Toggle / ToggleGroup
+   ========================================================================== */
+.ms-toggle-group {
+  display: inline-flex;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 2px;
+}
+.ms-toggle {
+  all: unset;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fg2);
+  padding: 5px 10px;
+  border-radius: calc(var(--radius-md) - 3px);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px;
+  transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
+}
+.ms-toggle:hover { color: var(--fg1); }
+.ms-toggle[data-state="on"] {
+  background: var(--bg);
+  color: var(--fg1);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+.ms-toggle:focus-visible { outline: 2px solid var(--mono-900); outline-offset: 2px; }
+.ms-toggle[disabled] { cursor: not-allowed; opacity: 0.5; }
