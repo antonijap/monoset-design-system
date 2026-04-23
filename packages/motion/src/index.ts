@@ -68,3 +68,38 @@ export const listStagger = {
     transition: { staggerChildren: 0.04 },
   },
 } as const;
+
+/** Slide in from the left. Use for drawer/panel enters. */
+export const slideInLeft = {
+  initial:  { opacity: 0, x: -16 },
+  animate:  { opacity: 1, x: 0, transition: { duration: DUR.slow, ease: EASE_EMPHASIS } },
+  exit:     { opacity: 0, x: -16, transition: { duration: DUR.base, ease: EASE_EXIT } },
+} as const;
+
+/** Slide in from the right. */
+export const slideInRight = {
+  initial:  { opacity: 0, x: 16 },
+  animate:  { opacity: 1, x: 0, transition: { duration: DUR.slow, ease: EASE_EMPHASIS } },
+  exit:     { opacity: 0, x: 16, transition: { duration: DUR.base, ease: EASE_EXIT } },
+} as const;
+
+/** Slide in from the top. */
+export const slideInTop = {
+  initial:  { opacity: 0, y: -16 },
+  animate:  { opacity: 1, y: 0, transition: { duration: DUR.slow, ease: EASE_EMPHASIS } },
+  exit:     { opacity: 0, y: -16, transition: { duration: DUR.base, ease: EASE_EXIT } },
+} as const;
+
+/** Slide in from the bottom. */
+export const slideInBottom = {
+  initial:  { opacity: 0, y: 16 },
+  animate:  { opacity: 1, y: 0, transition: { duration: DUR.slow, ease: EASE_EMPHASIS } },
+  exit:     { opacity: 0, y: 16, transition: { duration: DUR.base, ease: EASE_EXIT } },
+} as const;
+
+/** Scale up from 95% -- use for cards, images, hero reveals. */
+export const scaleIn = {
+  initial:  { opacity: 0, scale: 0.95 },
+  animate:  { opacity: 1, scale: 1, transition: { duration: DUR.slow, ease: EASE_EMPHASIS } },
+  exit:     { opacity: 0, scale: 0.95, transition: { duration: DUR.base, ease: EASE_EXIT } },
+} as const;

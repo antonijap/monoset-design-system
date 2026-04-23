@@ -1,3 +1,6 @@
+// Template pages available in src/pages/: Auth, Dashboard, Settings, Marketing
+// Import and render any of them, or use them as starting points for your own pages.
+
 import { useState } from "react";
 import {
   Button,

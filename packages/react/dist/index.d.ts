@@ -1,5 +1,5 @@
 import * as react from 'react';
-import { ButtonHTMLAttributes, ReactNode, HTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes, TableHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes, ReactNode, HTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes, FormHTMLAttributes, FormEvent, ChangeEvent, TableHTMLAttributes, ThHTMLAttributes, CSSProperties } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import * as RCheckbox from '@radix-ui/react-checkbox';
 import * as RSwitch from '@radix-ui/react-switch';
@@ -15,7 +15,7 @@ import * as RAccordion from '@radix-ui/react-accordion';
 import * as RSlider from '@radix-ui/react-slider';
 import * as RToggleGroup from '@radix-ui/react-toggle-group';
 import * as RToggle from '@radix-ui/react-toggle';
-export { DUR, EASE_EMPHASIS, EASE_EXIT, EASE_STANDARD, fadeUp, hoverLift, listStagger, modalPanel, modalScrim, popoverIn, pressDown } from '@monoset/motion';
+export { DUR, EASE_EMPHASIS, EASE_EXIT, EASE_STANDARD, fadeUp, hoverLift, listStagger, modalPanel, modalScrim, popoverIn, pressDown, scaleIn, slideInBottom, slideInLeft, slideInRight, slideInTop } from '@monoset/motion';
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 type ButtonSize = "sm" | "md" | "lg";
@@ -94,6 +94,41 @@ interface FieldProps {
  */
 declare function Field({ label, help, error, children, id: idProp, className }: FieldProps): react_jsx_runtime.JSX.Element;
 
+type ValidationRule<T = string> = (value: T) => string | undefined;
+interface FieldState {
+    value: string;
+    error?: string;
+    touched: boolean;
+    dirty: boolean;
+}
+interface UseFormOptions {
+    initialValues: Record<string, string>;
+    validate?: Record<string, ValidationRule>;
+    onSubmit: (values: Record<string, string>) => void | Promise<void>;
+}
+interface UseFormReturn {
+    field: (name: string) => {
+        name: string;
+        value: string;
+        onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+        onBlur: () => void;
+    };
+    fieldState: (name: string) => FieldState;
+    error: (name: string) => string | undefined;
+    handleSubmit: (e?: FormEvent) => void;
+    reset: () => void;
+    isDirty: boolean;
+    isSubmitting: boolean;
+    setValue: (name: string, value: string) => void;
+    setError: (name: string, error: string) => void;
+}
+declare function useMonosetForm(options: UseFormOptions): UseFormReturn;
+interface FormProps extends FormHTMLAttributes<HTMLFormElement> {
+    children: ReactNode;
+    onSubmit: (e: FormEvent) => void;
+}
+declare function Form({ children, onSubmit, className, ...rest }: FormProps): react_jsx_runtime.JSX.Element;
+
 interface CheckboxProps extends React.ComponentPropsWithoutRef<typeof RCheckbox.Root> {
     label?: ReactNode;
 }
@@ -131,6 +166,31 @@ interface TableProps extends TableHTMLAttributes<HTMLTableElement> {
     wrapperClassName?: string;
 }
 declare const Table: react.ForwardRefExoticComponent<TableProps & react.RefAttributes<HTMLTableElement>>;
+type SortDirection = "asc" | "desc" | null;
+interface TableHeaderProps extends ThHTMLAttributes<HTMLTableCellElement> {
+    /** Enable sort on this column. */
+    sortable?: boolean;
+    /** Current sort direction for this column. */
+    sortDirection?: SortDirection;
+    /** Callback when the user clicks to toggle sort. */
+    onSort?: () => void;
+}
+declare const TableHeader: react.ForwardRefExoticComponent<TableHeaderProps & react.RefAttributes<HTMLTableCellElement>>;
+interface TableSelectAllProps {
+    checked: boolean;
+    indeterminate?: boolean;
+    onChange: (checked: boolean) => void;
+    /** Screen-reader label. Defaults to "Select all rows". */
+    label?: string;
+}
+declare function TableSelectAll({ checked, indeterminate, onChange, label, }: TableSelectAllProps): react_jsx_runtime.JSX.Element;
+interface TableSelectRowProps {
+    checked: boolean;
+    onChange: (checked: boolean) => void;
+    /** Screen-reader label. Defaults to "Select row". */
+    label?: string;
+}
+declare function TableSelectRow({ checked, onChange, label, }: TableSelectRowProps): react_jsx_runtime.JSX.Element;
 
 /** Wrap your app in <ToastProvider>…</ToastProvider> to enable toasts. */
 declare function ToastProvider({ children }: {
@@ -251,6 +311,30 @@ interface SeparatorProps extends React.ComponentPropsWithoutRef<typeof RSeparato
 }
 declare function Separator({ className, ...rest }: SeparatorProps): react_jsx_runtime.JSX.Element;
 
+type SpaceScale = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14;
+interface StackProps extends HTMLAttributes<HTMLDivElement> {
+    gap?: SpaceScale;
+    align?: "start" | "center" | "end" | "stretch";
+}
+declare const Stack: react.ForwardRefExoticComponent<StackProps & react.RefAttributes<HTMLDivElement>>;
+interface InlineProps extends HTMLAttributes<HTMLDivElement> {
+    gap?: SpaceScale;
+    align?: "start" | "center" | "end" | "baseline";
+    wrap?: boolean;
+}
+declare const Inline: react.ForwardRefExoticComponent<InlineProps & react.RefAttributes<HTMLDivElement>>;
+interface GridProps extends HTMLAttributes<HTMLDivElement> {
+    columns?: number;
+    minWidth?: number | string;
+    gap?: SpaceScale;
+}
+declare const Grid: react.ForwardRefExoticComponent<GridProps & react.RefAttributes<HTMLDivElement>>;
+interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
+    size?: "sm" | "md" | "lg" | "xl" | "2xl";
+    padding?: boolean;
+}
+declare const Container: react.ForwardRefExoticComponent<ContainerProps & react.RefAttributes<HTMLDivElement>>;
+
 interface KbdProps extends HTMLAttributes<HTMLElement> {
     size?: "sm" | "md";
 }
@@ -280,11 +364,31 @@ declare const Toggle: react.ForwardRefExoticComponent<Omit<RToggle.ToggleProps &
 declare const ToggleGroup: react.ForwardRefExoticComponent<(Omit<RToggleGroup.ToggleGroupSingleProps & react.RefAttributes<HTMLDivElement>, "ref"> | Omit<RToggleGroup.ToggleGroupMultipleProps & react.RefAttributes<HTMLDivElement>, "ref">) & react.RefAttributes<HTMLDivElement>>;
 declare const ToggleGroupItem: react.ForwardRefExoticComponent<Omit<RToggleGroup.ToggleGroupItemProps & react.RefAttributes<HTMLButtonElement>, "ref"> & react.RefAttributes<HTMLButtonElement>>;
 
+type Theme = "light" | "dark" | "system";
+interface ThemeProviderProps {
+    children: ReactNode;
+    /** Initial theme. Defaults to "system". */
+    defaultTheme?: Theme;
+    /** localStorage key. Defaults to "monoset-theme". */
+    storageKey?: string;
+}
+interface ThemeContext {
+    theme: Theme;
+    resolvedTheme: "light" | "dark";
+    setTheme: (theme: Theme) => void;
+}
+declare function ThemeProvider({ children, defaultTheme, storageKey, }: ThemeProviderProps): react_jsx_runtime.JSX.Element;
+declare function useTheme(): ThemeContext;
+interface ThemeToggleProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+}
+declare const ThemeToggle: react.ForwardRefExoticComponent<ThemeToggleProps & react.RefAttributes<HTMLButtonElement>>;
+
 /**
  * Wrap your app in <MonosetProvider> to enable:
  *   - prefers-reduced-motion handling (via framer-motion MotionConfig)
  *   - Radix TooltipProvider for delay sharing
  *   - Toast viewport for <Toast> components
+ *   - Optional theme management (light / dark / system)
  */
 interface MonosetProviderProps {
     children: ReactNode;
@@ -292,10 +396,39 @@ interface MonosetProviderProps {
     reducedMotion?: "user" | "always" | "never";
     /** Default tooltip delay. */
     tooltipDelay?: number;
+    /** Set to enable theme management. Omit to skip ThemeProvider entirely. */
+    defaultTheme?: Theme;
 }
-declare function MonosetProvider({ children, reducedMotion, tooltipDelay, }: MonosetProviderProps): react_jsx_runtime.JSX.Element;
+declare function MonosetProvider({ children, reducedMotion, tooltipDelay, defaultTheme, }: MonosetProviderProps): react_jsx_runtime.JSX.Element;
 
 /** Tiny className helper — no external deps. */
 declare function cx(...parts: Array<string | false | null | undefined>): string;
 
-export { Accordion, AccordionContent, AccordionItem, type AccordionItemProps, AccordionTrigger, type AccordionTriggerProps, Alert, type AlertProps, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Card, type CardProps, type CardVariant, Checkbox, type CheckboxProps, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, EmptyState, type EmptyStateProps, Field, type FieldProps, Input, type InputProps, Kbd, type KbdProps, MonosetProvider, type MonosetProviderProps, Pagination, type PaginationProps, Popover, PopoverClose, PopoverContent, type PopoverContentProps, PopoverTrigger, Progress, type ProgressProps, Radio, RadioGroup, type RadioProps, Select, SelectContent, SelectItem, type SelectItemProps, SelectTrigger, type SelectTriggerProps, Separator, type SeparatorProps, Skeleton, type SkeletonProps, Slider, type SliderProps, Spinner, type SpinnerProps, Switch, type SwitchProps, Table, Tabs, TabsContent, TabsList, TabsTrigger, type TabsTriggerProps, Textarea, type TextareaProps, Toast, type ToastProps, ToastProvider, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, type TooltipProps, TooltipProvider, cx };
+interface RevealProps {
+    children: ReactNode;
+    /** Animation variant object with `hidden` and `visible` keys. Default: fadeUp */
+    variant?: Record<string, any>;
+    /** Trigger once or every time the element enters the viewport. Default: true */
+    once?: boolean;
+    /** IntersectionObserver margin. Default: "-80px" */
+    margin?: string;
+    /** Delay in seconds before animation starts. Default: 0 */
+    delay?: number;
+    className?: string;
+    style?: CSSProperties;
+}
+declare const Reveal: react.ForwardRefExoticComponent<RevealProps & react.RefAttributes<HTMLDivElement>>;
+interface StaggerListProps {
+    children: ReactNode;
+    /** Stagger delay between children in seconds. Default: 0.04 */
+    stagger?: number;
+    /** Trigger once when in viewport. Default: true */
+    once?: boolean;
+    /** IntersectionObserver margin. Default: "-80px" */
+    margin?: string;
+    className?: string;
+    style?: CSSProperties;
+}
+declare const StaggerList: react.ForwardRefExoticComponent<StaggerListProps & react.RefAttributes<HTMLDivElement>>;
+
+export { Accordion, AccordionContent, AccordionItem, type AccordionItemProps, AccordionTrigger, type AccordionTriggerProps, Alert, type AlertProps, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Card, type CardProps, type CardVariant, Checkbox, type CheckboxProps, Container, type ContainerProps, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, EmptyState, type EmptyStateProps, Field, type FieldProps, type FieldState, Form, type FormProps, Grid, type GridProps, Inline, type InlineProps, Input, type InputProps, Kbd, type KbdProps, MonosetProvider, type MonosetProviderProps, Pagination, type PaginationProps, Popover, PopoverClose, PopoverContent, type PopoverContentProps, PopoverTrigger, Progress, type ProgressProps, Radio, RadioGroup, type RadioProps, Reveal, type RevealProps, Select, SelectContent, SelectItem, type SelectItemProps, SelectTrigger, type SelectTriggerProps, Separator, type SeparatorProps, Skeleton, type SkeletonProps, Slider, type SliderProps, type SortDirection, Spinner, type SpinnerProps, Stack, type StackProps, StaggerList, type StaggerListProps, Switch, type SwitchProps, Table, TableHeader, type TableHeaderProps, type TableProps, TableSelectAll, type TableSelectAllProps, TableSelectRow, type TableSelectRowProps, Tabs, TabsContent, TabsList, TabsTrigger, type TabsTriggerProps, Textarea, type TextareaProps, type Theme, ThemeProvider, type ThemeProviderProps, ThemeToggle, Toast, type ToastProps, ToastProvider, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, type TooltipProps, TooltipProvider, type UseFormOptions, type UseFormReturn, type ValidationRule, cx, useMonosetForm, useTheme };

@@ -127,6 +127,8 @@
 .ms-field__help  { font-size: 11px; color: var(--fg3); }
 .ms-field__error { font-size: 11px; color: var(--status-danger); }
 
+.ms-form { display: flex; flex-direction: column; gap: var(--space-5); }
+
 .ms-input {
   font-family: inherit; font-size: 13px;
   padding: 9px 12px;
@@ -176,8 +178,9 @@
   font-size: 13px; cursor: pointer; user-select: none;
 }
 .ms-switch__track {
+  all: unset; box-sizing: border-box;
   width: 32px; height: 18px; border-radius: 999px; position: relative;
-  background: var(--mono-300); display: inline-block;
+  background: var(--mono-300); display: inline-block; cursor: pointer;
   transition: background var(--duration-base) var(--ease-standard);
 }
 .ms-switch[data-state="checked"] .ms-switch__track { background: var(--mono-1000); }
@@ -257,6 +260,18 @@
 .ms-table tbody td { padding: 11px 14px; color: var(--fg2); }
 .ms-table tbody tr + tr td { border-top: 1px solid var(--border-subtle); }
 .ms-table tbody tr:hover td { background: var(--bg-subtle); }
+/* Table: sortable header */
+.ms-table-header--sortable { cursor: pointer; user-select: none; }
+.ms-table-header--sortable:hover { color: var(--fg1); }
+.ms-table-header__sort {
+  display: inline-flex; margin-left: 4px; vertical-align: middle;
+  color: var(--fg4); transition: color var(--duration-fast) var(--ease-standard);
+}
+.ms-table-header--sortable:hover .ms-table-header__sort,
+.ms-table-header__sort--active { color: var(--fg1); }
+/* Table: selection checkbox */
+.ms-table-select { width: 40px; text-align: center; padding: 0 !important; }
+.ms-table-select input[type="checkbox"] { accent-color: var(--mono-1000); cursor: pointer; }
 
 /* ==========================================================================
    Dialog / Modal
@@ -307,7 +322,7 @@
   cursor: pointer; user-select: none;
   transition: background var(--duration-fast) var(--ease-standard);
 }
-.ms-menu__item[data-highlighted] { background: var(--bg-subtle); outline: none; }
+.ms-menu__item[data-highlighted] { background: var(--bg-muted); outline: none; }
 .ms-menu__item[data-disabled]    { color: var(--fg4); cursor: not-allowed; }
 .ms-menu__label    { padding: 6px 10px; font-size: 11px; color: var(--fg3); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
 .ms-menu__separator { height: 1px; background: var(--border-subtle); margin: 4px -6px; }
@@ -567,3 +582,13 @@
 }
 .ms-toggle:focus-visible { outline: 2px solid var(--mono-900); outline-offset: 2px; }
 .ms-toggle[disabled] { cursor: not-allowed; opacity: 0.5; }
+
+/* ==========================================================================
+   Layout: Stack / Inline / Grid / Container
+   ========================================================================== */
+.ms-stack { display: flex; flex-direction: column; }
+.ms-inline { display: flex; }
+.ms-inline--wrap { flex-wrap: wrap; }
+.ms-grid { display: grid; }
+.ms-container { width: 100%; margin-left: auto; margin-right: auto; }
+.ms-container--padded { padding-left: var(--space-6); padding-right: var(--space-6); }

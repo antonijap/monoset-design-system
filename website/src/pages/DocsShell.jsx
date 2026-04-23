@@ -37,9 +37,22 @@ const NAV = [
     { id:"toggle",    label:"Toggle group" },
     { id:"kbd",       label:"Kbd" },
     { id:"spinner",   label:"Spinner" },
+    { id:"textarea",  label:"Textarea" },
+    { id:"select",    label:"Select" },
+    { id:"layout",    label:"Layout" },
+  ]},
+  { section: "Tools", items: [
+    { id:"playground", label:"Playground" },
   ]},
   { section: "Guides", items: [
     { id:"llm",       label:"LLM naming prompt" },
+    { id:"theming",   label:"Theming" },
+    { id:"settings",  label:"Settings page" },
+    { id:"a11y",      label:"Accessibility" },
+    { id:"mcp",       label:"MCP server" },
+    { id:"nextjs",    label:"Next.js & Remix" },
+    { id:"dashboard", label:"Dashboard" },
+    { id:"datatable", label:"Data table" },
   ]},
 ];
 

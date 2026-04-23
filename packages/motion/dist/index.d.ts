@@ -122,5 +122,120 @@ declare const listStagger: {
         };
     };
 };
+/** Slide in from the left. Use for drawer/panel enters. */
+declare const slideInLeft: {
+    readonly initial: {
+        readonly opacity: 0;
+        readonly x: -16;
+    };
+    readonly animate: {
+        readonly opacity: 1;
+        readonly x: 0;
+        readonly transition: {
+            readonly duration: 0.28;
+            readonly ease: readonly [0.3, 0, 0, 1];
+        };
+    };
+    readonly exit: {
+        readonly opacity: 0;
+        readonly x: -16;
+        readonly transition: {
+            readonly duration: 0.18;
+            readonly ease: readonly [0.4, 0, 1, 1];
+        };
+    };
+};
+/** Slide in from the right. */
+declare const slideInRight: {
+    readonly initial: {
+        readonly opacity: 0;
+        readonly x: 16;
+    };
+    readonly animate: {
+        readonly opacity: 1;
+        readonly x: 0;
+        readonly transition: {
+            readonly duration: 0.28;
+            readonly ease: readonly [0.3, 0, 0, 1];
+        };
+    };
+    readonly exit: {
+        readonly opacity: 0;
+        readonly x: 16;
+        readonly transition: {
+            readonly duration: 0.18;
+            readonly ease: readonly [0.4, 0, 1, 1];
+        };
+    };
+};
+/** Slide in from the top. */
+declare const slideInTop: {
+    readonly initial: {
+        readonly opacity: 0;
+        readonly y: -16;
+    };
+    readonly animate: {
+        readonly opacity: 1;
+        readonly y: 0;
+        readonly transition: {
+            readonly duration: 0.28;
+            readonly ease: readonly [0.3, 0, 0, 1];
+        };
+    };
+    readonly exit: {
+        readonly opacity: 0;
+        readonly y: -16;
+        readonly transition: {
+            readonly duration: 0.18;
+            readonly ease: readonly [0.4, 0, 1, 1];
+        };
+    };
+};
+/** Slide in from the bottom. */
+declare const slideInBottom: {
+    readonly initial: {
+        readonly opacity: 0;
+        readonly y: 16;
+    };
+    readonly animate: {
+        readonly opacity: 1;
+        readonly y: 0;
+        readonly transition: {
+            readonly duration: 0.28;
+            readonly ease: readonly [0.3, 0, 0, 1];
+        };
+    };
+    readonly exit: {
+        readonly opacity: 0;
+        readonly y: 16;
+        readonly transition: {
+            readonly duration: 0.18;
+            readonly ease: readonly [0.4, 0, 1, 1];
+        };
+    };
+};
+/** Scale up from 95% -- use for cards, images, hero reveals. */
+declare const scaleIn: {
+    readonly initial: {
+        readonly opacity: 0;
+        readonly scale: 0.95;
+    };
+    readonly animate: {
+        readonly opacity: 1;
+        readonly scale: 1;
+        readonly transition: {
+            readonly duration: 0.28;
+            readonly ease: readonly [0.3, 0, 0, 1];
+        };
+    };
+    readonly exit: {
+        readonly opacity: 0;
+        readonly scale: 0.95;
+        readonly transition: {
+            readonly duration: 0.18;
+            readonly ease: readonly [0.4, 0, 1, 1];
+        };
+    };
+};
 
-export { DUR, EASE_EMPHASIS, EASE_EXIT, EASE_STANDARD, fadeUp, hoverLift, listStagger, modalPanel, modalScrim, popoverIn, pressDown };
+export { DUR, EASE_EMPHASIS, EASE_EXIT, EASE_STANDARD, fadeUp, hoverLift, listStagger, modalPanel, modalScrim, popoverIn, pressDown, scaleIn, slideInBottom, slideInLeft, slideInRight, slideInTop };

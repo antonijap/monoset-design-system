@@ -56,6 +56,31 @@ var listStagger = {
     transition: { staggerChildren: 0.04 }
   }
 };
+var slideInLeft = {
+  initial: { opacity: 0, x: -16 },
+  animate: { opacity: 1, x: 0, transition: { duration: DUR.slow, ease: EASE_EMPHASIS } },
+  exit: { opacity: 0, x: -16, transition: { duration: DUR.base, ease: EASE_EXIT } }
+};
+var slideInRight = {
+  initial: { opacity: 0, x: 16 },
+  animate: { opacity: 1, x: 0, transition: { duration: DUR.slow, ease: EASE_EMPHASIS } },
+  exit: { opacity: 0, x: 16, transition: { duration: DUR.base, ease: EASE_EXIT } }
+};
+var slideInTop = {
+  initial: { opacity: 0, y: -16 },
+  animate: { opacity: 1, y: 0, transition: { duration: DUR.slow, ease: EASE_EMPHASIS } },
+  exit: { opacity: 0, y: -16, transition: { duration: DUR.base, ease: EASE_EXIT } }
+};
+var slideInBottom = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0, transition: { duration: DUR.slow, ease: EASE_EMPHASIS } },
+  exit: { opacity: 0, y: 16, transition: { duration: DUR.base, ease: EASE_EXIT } }
+};
+var scaleIn = {
+  initial: { opacity: 0, scale: 0.95 },
+  animate: { opacity: 1, scale: 1, transition: { duration: DUR.slow, ease: EASE_EMPHASIS } },
+  exit: { opacity: 0, scale: 0.95, transition: { duration: DUR.base, ease: EASE_EXIT } }
+};
 export {
   DUR,
   EASE_EMPHASIS,
@@ -67,6 +92,11 @@ export {
   modalPanel,
   modalScrim,
   popoverIn,
-  pressDown
+  pressDown,
+  scaleIn,
+  slideInBottom,
+  slideInLeft,
+  slideInRight,
+  slideInTop
 };
 //# sourceMappingURL=index.js.map

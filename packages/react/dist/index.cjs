@@ -41,7 +41,8 @@ __export(index_exports, {
   Button: () => Button,
   Card: () => Card,
   Checkbox: () => Checkbox,
-  DUR: () => import_motion3.DUR,
+  Container: () => Container,
+  DUR: () => import_motion4.DUR,
   Dialog: () => Dialog,
   DialogClose: () => DialogClose,
   DialogContent: () => DialogContent,
@@ -52,11 +53,14 @@ __export(index_exports, {
   DropdownMenuLabel: () => DropdownMenuLabel,
   DropdownMenuSeparator: () => DropdownMenuSeparator,
   DropdownMenuTrigger: () => DropdownMenuTrigger,
-  EASE_EMPHASIS: () => import_motion3.EASE_EMPHASIS,
-  EASE_EXIT: () => import_motion3.EASE_EXIT,
-  EASE_STANDARD: () => import_motion3.EASE_STANDARD,
+  EASE_EMPHASIS: () => import_motion4.EASE_EMPHASIS,
+  EASE_EXIT: () => import_motion4.EASE_EXIT,
+  EASE_STANDARD: () => import_motion4.EASE_STANDARD,
   EmptyState: () => EmptyState,
   Field: () => Field,
+  Form: () => Form,
+  Grid: () => Grid,
+  Inline: () => Inline,
   Input: () => Input,
   Kbd: () => Kbd,
   MonosetProvider: () => MonosetProvider,
@@ -68,6 +72,7 @@ __export(index_exports, {
   Progress: () => Progress,
   Radio: () => Radio,
   RadioGroup: () => RadioGroup,
+  Reveal: () => Reveal,
   Select: () => Select,
   SelectContent: () => SelectContent,
   SelectItem: () => SelectItem,
@@ -76,13 +81,20 @@ __export(index_exports, {
   Skeleton: () => Skeleton,
   Slider: () => Slider,
   Spinner: () => Spinner,
+  Stack: () => Stack,
+  StaggerList: () => StaggerList,
   Switch: () => Switch,
   Table: () => Table,
+  TableHeader: () => TableHeader,
+  TableSelectAll: () => TableSelectAll,
+  TableSelectRow: () => TableSelectRow,
   Tabs: () => Tabs,
   TabsContent: () => TabsContent,
   TabsList: () => TabsList,
   TabsTrigger: () => TabsTrigger,
   Textarea: () => Textarea,
+  ThemeProvider: () => ThemeProvider,
+  ThemeToggle: () => ThemeToggle,
   Toast: () => Toast,
   ToastProvider: () => ToastProvider,
   Toggle: () => Toggle,
@@ -91,13 +103,20 @@ __export(index_exports, {
   Tooltip: () => Tooltip,
   TooltipProvider: () => TooltipProvider,
   cx: () => cx,
-  fadeUp: () => import_motion3.fadeUp,
-  hoverLift: () => import_motion3.hoverLift,
-  listStagger: () => import_motion3.listStagger,
-  modalPanel: () => import_motion3.modalPanel,
-  modalScrim: () => import_motion3.modalScrim,
-  popoverIn: () => import_motion3.popoverIn,
-  pressDown: () => import_motion3.pressDown
+  fadeUp: () => import_motion4.fadeUp,
+  hoverLift: () => import_motion4.hoverLift,
+  listStagger: () => import_motion4.listStagger,
+  modalPanel: () => import_motion4.modalPanel,
+  modalScrim: () => import_motion4.modalScrim,
+  popoverIn: () => import_motion4.popoverIn,
+  pressDown: () => import_motion4.pressDown,
+  scaleIn: () => import_motion4.scaleIn,
+  slideInBottom: () => import_motion4.slideInBottom,
+  slideInLeft: () => import_motion4.slideInLeft,
+  slideInRight: () => import_motion4.slideInRight,
+  slideInTop: () => import_motion4.slideInTop,
+  useMonosetForm: () => useMonosetForm,
+  useTheme: () => useTheme
 });
 module.exports = __toCommonJS(index_exports);
 
@@ -239,16 +258,129 @@ function Field({ label, help, error, children, id: idProp, className }) {
   ] });
 }
 
+// src/Form.tsx
+var import_react7 = require("react");
+var import_jsx_runtime7 = require("react/jsx-runtime");
+function useMonosetForm(options) {
+  const { initialValues, validate, onSubmit } = options;
+  const [values, setValues] = (0, import_react7.useState)({ ...initialValues });
+  const [errors, setErrors] = (0, import_react7.useState)({});
+  const [isSubmitting, setIsSubmitting] = (0, import_react7.useState)(false);
+  const touched = (0, import_react7.useRef)(/* @__PURE__ */ new Set());
+  const dirty = (0, import_react7.useRef)(/* @__PURE__ */ new Set());
+  const validateField = (0, import_react7.useCallback)(
+    (name, value) => {
+      const rule = validate?.[name];
+      return rule ? rule(value) : void 0;
+    },
+    [validate]
+  );
+  const field = (0, import_react7.useCallback)(
+    (name) => ({
+      name,
+      value: values[name] ?? "",
+      onChange(e) {
+        const next = e.target.value;
+        dirty.current.add(name);
+        setValues((prev) => ({ ...prev, [name]: next }));
+        if (touched.current.has(name)) {
+          setErrors((prev) => ({ ...prev, [name]: validateField(name, next) }));
+        }
+      },
+      onBlur() {
+        touched.current.add(name);
+        setErrors((prev) => ({ ...prev, [name]: validateField(name, values[name] ?? "") }));
+      }
+    }),
+    [values, validateField]
+  );
+  const fieldState = (0, import_react7.useCallback)(
+    (name) => ({
+      value: values[name] ?? "",
+      error: errors[name],
+      touched: touched.current.has(name),
+      dirty: dirty.current.has(name)
+    }),
+    [values, errors]
+  );
+  const error = (0, import_react7.useCallback)(
+    (name) => touched.current.has(name) ? errors[name] : void 0,
+    [errors]
+  );
+  const handleSubmit = (0, import_react7.useCallback)(
+    (e) => {
+      e?.preventDefault();
+      const nextErrors = {};
+      let hasError = false;
+      for (const name of Object.keys(values)) {
+        touched.current.add(name);
+        const msg = validateField(name, values[name] ?? "");
+        nextErrors[name] = msg;
+        if (msg) hasError = true;
+      }
+      setErrors(nextErrors);
+      if (hasError) return;
+      setIsSubmitting(true);
+      const result = onSubmit(values);
+      if (result && typeof result.then === "function") {
+        result.finally(() => setIsSubmitting(false));
+      } else {
+        setIsSubmitting(false);
+      }
+    },
+    [values, validateField, onSubmit]
+  );
+  const reset = (0, import_react7.useCallback)(() => {
+    setValues({ ...initialValues });
+    setErrors({});
+    touched.current.clear();
+    dirty.current.clear();
+  }, [initialValues]);
+  const setValue = (0, import_react7.useCallback)((name, value) => {
+    dirty.current.add(name);
+    setValues((prev) => ({ ...prev, [name]: value }));
+  }, []);
+  const setErrorManual = (0, import_react7.useCallback)((name, msg) => {
+    setErrors((prev) => ({ ...prev, [name]: msg }));
+  }, []);
+  return {
+    field,
+    fieldState,
+    error,
+    handleSubmit,
+    reset,
+    isDirty: dirty.current.size > 0,
+    isSubmitting,
+    setValue,
+    setError: setErrorManual
+  };
+}
+function Form({ children, onSubmit, className, ...rest }) {
+  return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+    "form",
+    {
+      onSubmit: (e) => {
+        e.preventDefault();
+        onSubmit(e);
+      },
+      className: cx("ms-form", className),
+      noValidate: true,
+      ...rest,
+      children
+    }
+  );
+}
+
 // src/Checkbox.tsx
 var RCheckbox = __toESM(require("@radix-ui/react-checkbox"), 1);
-var import_react7 = require("react");
+var import_react8 = require("react");
 var import_framer_motion = require("framer-motion");
 var import_motion = require("@monoset/motion");
-var import_jsx_runtime7 = require("react/jsx-runtime");
-var Checkbox = (0, import_react7.forwardRef)(function Checkbox2({ label, className, checked, defaultChecked, ...rest }, ref) {
+var import_jsx_runtime8 = require("react/jsx-runtime");
+var Checkbox = (0, import_react8.forwardRef)(function Checkbox2({ label, className, checked, defaultChecked, ...rest }, ref) {
   const isChecked = checked ?? defaultChecked ?? false;
-  return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("label", { className: cx("ms-check", className), "data-state": isChecked ? "checked" : "unchecked", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("label", { className: cx("ms-check", className), "data-state": isChecked ? "checked" : "unchecked", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
       RCheckbox.Root,
       {
         ref,
@@ -256,31 +388,31 @@ var Checkbox = (0, import_react7.forwardRef)(function Checkbox2({ label, classNa
         defaultChecked,
         className: "ms-check__box",
         ...rest,
-        children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(RCheckbox.Indicator, { asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_framer_motion.AnimatePresence, { initial: false, children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+        children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(RCheckbox.Indicator, { asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_framer_motion.AnimatePresence, { initial: false, children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
           import_framer_motion.motion.span,
           {
             initial: { opacity: 0, scale: 0.6 },
             animate: { opacity: 1, scale: 1, transition: { duration: import_motion.DUR.fast, ease: import_motion.EASE_EMPHASIS } },
             exit: { opacity: 0, scale: 0.6, transition: { duration: import_motion.DUR.fast, ease: import_motion.EASE_EXIT } },
             style: { display: "inline-flex" },
-            children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("svg", { width: "11", height: "11", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("path", { d: "M5 12l5 5L20 7" }) })
+            children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("svg", { width: "11", height: "11", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("path", { d: "M5 12l5 5L20 7" }) })
           },
           "check"
         ) }) })
       }
     ),
-    label && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { children: label })
+    label && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { children: label })
   ] });
 });
 
 // src/Switch.tsx
 var RSwitch = __toESM(require("@radix-ui/react-switch"), 1);
-var import_react8 = require("react");
-var import_jsx_runtime8 = require("react/jsx-runtime");
-var Switch = (0, import_react8.forwardRef)(function Switch2({ label, className, checked, defaultChecked, ...rest }, ref) {
+var import_react9 = require("react");
+var import_jsx_runtime9 = require("react/jsx-runtime");
+var Switch = (0, import_react9.forwardRef)(function Switch2({ label, className, checked, defaultChecked, ...rest }, ref) {
   const isChecked = checked ?? defaultChecked ?? false;
-  return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("label", { className: cx("ms-switch", className), "data-state": isChecked ? "checked" : "unchecked", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("label", { className: cx("ms-switch", className), "data-state": isChecked ? "checked" : "unchecked", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
       RSwitch.Root,
       {
         ref,
@@ -288,39 +420,39 @@ var Switch = (0, import_react8.forwardRef)(function Switch2({ label, className, 
         defaultChecked,
         className: "ms-switch__track",
         ...rest,
-        children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(RSwitch.Thumb, { className: "ms-switch__thumb" })
+        children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(RSwitch.Thumb, { className: "ms-switch__thumb" })
       }
     ),
-    label && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { children: label })
+    label && /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("span", { children: label })
   ] });
 });
 
 // src/RadioGroup.tsx
 var RRadio = __toESM(require("@radix-ui/react-radio-group"), 1);
-var import_react9 = require("react");
-var import_jsx_runtime9 = require("react/jsx-runtime");
-var RadioGroup = (0, import_react9.forwardRef)(function RadioGroup2({ className, ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(RRadio.Root, { ref, className: cx("ms-radio-group", className), ...rest });
+var import_react10 = require("react");
+var import_jsx_runtime10 = require("react/jsx-runtime");
+var RadioGroup = (0, import_react10.forwardRef)(function RadioGroup2({ className, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(RRadio.Root, { ref, className: cx("ms-radio-group", className), ...rest });
 });
-var Radio = (0, import_react9.forwardRef)(function Radio2({ label, className, value, ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("label", { className: cx("ms-radio", className), children: [
-    /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(RRadio.Item, { ref, value, className: "ms-radio__dot", ...rest, children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(RRadio.Indicator, {}) }),
-    label && /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("span", { children: label })
+var Radio = (0, import_react10.forwardRef)(function Radio2({ label, className, value, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("label", { className: cx("ms-radio", className), children: [
+    /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(RRadio.Item, { ref, value, className: "ms-radio__dot", ...rest, children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(RRadio.Indicator, {}) }),
+    label && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { children: label })
   ] });
 });
 
 // src/Tabs.tsx
 var RTabs = __toESM(require("@radix-ui/react-tabs"), 1);
-var import_react10 = require("react");
+var import_react11 = require("react");
 var import_framer_motion2 = require("framer-motion");
 var import_motion2 = require("@monoset/motion");
-var import_jsx_runtime10 = require("react/jsx-runtime");
+var import_jsx_runtime11 = require("react/jsx-runtime");
 var Tabs = RTabs.Root;
-var TabsList = (0, import_react10.forwardRef)(function TabsList2({ className, ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(RTabs.List, { ref, className: cx("ms-tabs__list", className), ...rest });
+var TabsList = (0, import_react11.forwardRef)(function TabsList2({ className, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(RTabs.List, { ref, className: cx("ms-tabs__list", className), ...rest });
 });
-var TabsTrigger = (0, import_react10.forwardRef)(function TabsTrigger2({ className, children, isActive, layoutId = "ms-tabs-indicator", ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(
+var TabsTrigger = (0, import_react11.forwardRef)(function TabsTrigger2({ className, children, isActive, layoutId = "ms-tabs-indicator", ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
     RTabs.Trigger,
     {
       ref,
@@ -329,7 +461,7 @@ var TabsTrigger = (0, import_react10.forwardRef)(function TabsTrigger2({ classNa
       ...rest,
       children: [
         children,
-        isActive && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+        isActive && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
           import_framer_motion2.motion.span,
           {
             layoutId,
@@ -344,12 +476,12 @@ var TabsTrigger = (0, import_react10.forwardRef)(function TabsTrigger2({ classNa
 var TabsContent = RTabs.Content;
 
 // src/Table.tsx
-var import_react11 = require("react");
-var import_jsx_runtime11 = require("react/jsx-runtime");
-var Table = (0, import_react11.forwardRef)(
+var import_react12 = require("react");
+var import_jsx_runtime12 = require("react/jsx-runtime");
+var Table = (0, import_react12.forwardRef)(
   function Table2({ className, children, maxHeight, wrapperClassName, ...rest }, ref) {
     const style = maxHeight !== void 0 ? { maxHeight: typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight } : void 0;
-    return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
       "div",
       {
         className: cx(
@@ -358,24 +490,107 @@ var Table = (0, import_react11.forwardRef)(
           wrapperClassName
         ),
         style,
-        children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("table", { ref, className: cx("ms-table", className), ...rest, children })
+        children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("table", { ref, className: cx("ms-table", className), ...rest, children })
       }
     );
   }
 );
+function SortIcon({ direction }) {
+  if (direction === "asc") {
+    return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("svg", { width: "10", height: "10", viewBox: "0 0 10 10", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("path", { d: "M5 2L8.5 7H1.5L5 2Z", fill: "currentColor" }) });
+  }
+  if (direction === "desc") {
+    return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("svg", { width: "10", height: "10", viewBox: "0 0 10 10", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("path", { d: "M5 8L1.5 3H8.5L5 8Z", fill: "currentColor" }) });
+  }
+  return /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)("svg", { width: "10", height: "10", viewBox: "0 0 10 10", fill: "none", "aria-hidden": "true", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("path", { d: "M5 1L7.5 4.5H2.5L5 1Z", fill: "currentColor", opacity: "0.4" }),
+    /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("path", { d: "M5 9L2.5 5.5H7.5L5 9Z", fill: "currentColor", opacity: "0.4" })
+  ] });
+}
+var TableHeader = (0, import_react12.forwardRef)(
+  function TableHeader2({ sortable, sortDirection, onSort, className, children, ...rest }, ref) {
+    const handleClick = sortable && onSort ? onSort : void 0;
+    const ariaSort = sortDirection === "asc" ? "ascending" : sortDirection === "desc" ? "descending" : void 0;
+    return /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(
+      "th",
+      {
+        ref,
+        className: cx(
+          "ms-table-header",
+          sortable && "ms-table-header--sortable",
+          className
+        ),
+        onClick: handleClick,
+        "aria-sort": ariaSort,
+        ...rest,
+        children: [
+          children,
+          sortable && /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+            "span",
+            {
+              className: cx(
+                "ms-table-header__sort",
+                sortDirection != null && "ms-table-header__sort--active"
+              ),
+              children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(SortIcon, { direction: sortDirection })
+            }
+          )
+        ]
+      }
+    );
+  }
+);
+function TableSelectAll({
+  checked,
+  indeterminate,
+  onChange,
+  label = "Select all rows"
+}) {
+  const inputRef = (0, import_react12.useRef)(null);
+  (0, import_react12.useEffect)(() => {
+    if (inputRef.current) {
+      inputRef.current.indeterminate = !!indeterminate;
+    }
+  }, [indeterminate]);
+  return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("th", { className: "ms-table-select", children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+    "input",
+    {
+      ref: inputRef,
+      type: "checkbox",
+      checked,
+      onChange: (e) => onChange(e.target.checked),
+      "aria-label": label
+    }
+  ) });
+}
+function TableSelectRow({
+  checked,
+  onChange,
+  label = "Select row"
+}) {
+  return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("td", { className: "ms-table-select", children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+    "input",
+    {
+      type: "checkbox",
+      checked,
+      onChange: (e) => onChange(e.target.checked),
+      "aria-label": label
+    }
+  ) });
+}
 
 // src/Toast.tsx
 var RToast = __toESM(require("@radix-ui/react-toast"), 1);
-var import_jsx_runtime12 = require("react/jsx-runtime");
+var import_jsx_runtime13 = require("react/jsx-runtime");
 function ToastProvider({ children }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(RToast.Provider, { swipeDirection: "right", duration: 4e3, children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(RToast.Provider, { swipeDirection: "right", duration: 4e3, children: [
     children,
-    /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(RToast.Viewport, { className: "ms-toast-viewport" })
+    /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(RToast.Viewport, { className: "ms-toast-viewport" })
   ] });
 }
 function Toast({ title, kind = "info", action, children, className, ...rest }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(RToast.Root, { className: cx("ms-toast", className), "data-kind": kind, ...rest, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("span", { "aria-hidden": true, style: {
+  return /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(RToast.Root, { className: cx("ms-toast", className), "data-kind": kind, ...rest, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("span", { "aria-hidden": true, style: {
       width: 14,
       height: 14,
       borderRadius: "50%",
@@ -388,26 +603,26 @@ function Toast({ title, kind = "info", action, children, className, ...rest }) {
       fontWeight: 700,
       flexShrink: 0
     }, children: kind === "error" ? "!" : "\u2713" }),
-    /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)("div", { style: { flex: 1, minWidth: 0 }, children: [
-      title && /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(RToast.Title, { style: { fontWeight: 600 }, children: title }),
-      children && /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(RToast.Description, { children })
+    /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { style: { flex: 1, minWidth: 0 }, children: [
+      title && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(RToast.Title, { style: { fontWeight: 600 }, children: title }),
+      children && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(RToast.Description, { children })
     ] }),
-    action && /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(RToast.Action, { altText: "Action", asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("span", { className: "ms-toast__action", children: action }) })
+    action && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(RToast.Action, { altText: "Action", asChild: true, children: /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("span", { className: "ms-toast__action", children: action }) })
   ] });
 }
 
 // src/Dialog.tsx
 var RDialog = __toESM(require("@radix-ui/react-dialog"), 1);
-var import_jsx_runtime13 = require("react/jsx-runtime");
+var import_jsx_runtime14 = require("react/jsx-runtime");
 var Dialog = RDialog.Root;
 var DialogTrigger = RDialog.Trigger;
 var DialogClose = RDialog.Close;
 function DialogContent({ title, description, children, className, ...rest }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(RDialog.Portal, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(RDialog.Overlay, { className: "ms-dialog-scrim" }),
-    /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(RDialog.Content, { className: cx("ms-dialog", className), ...rest, children: [
-      title && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(RDialog.Title, { className: "ms-dialog__title", children: title }),
-      description && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(RDialog.Description, { className: "ms-dialog__desc", children: description }),
+  return /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(RDialog.Portal, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(RDialog.Overlay, { className: "ms-dialog-scrim" }),
+    /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(RDialog.Content, { className: cx("ms-dialog", className), ...rest, children: [
+      title && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(RDialog.Title, { className: "ms-dialog__title", children: title }),
+      description && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(RDialog.Description, { className: "ms-dialog__desc", children: description }),
       children
     ] })
   ] });
@@ -415,70 +630,70 @@ function DialogContent({ title, description, children, className, ...rest }) {
 
 // src/Tooltip.tsx
 var RTooltip = __toESM(require("@radix-ui/react-tooltip"), 1);
-var import_jsx_runtime14 = require("react/jsx-runtime");
+var import_jsx_runtime15 = require("react/jsx-runtime");
 function TooltipProvider({ children, delayDuration = 300 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(RTooltip.Provider, { delayDuration, children });
+  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(RTooltip.Provider, { delayDuration, children });
 }
 function Tooltip({ content, side = "top", children }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(RTooltip.Root, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(RTooltip.Trigger, { asChild: true, children }),
-    /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(RTooltip.Portal, { children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(RTooltip.Content, { side, sideOffset: 6, className: cx("ms-tooltip"), children: content }) })
+  return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(RTooltip.Root, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(RTooltip.Trigger, { asChild: true, children }),
+    /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(RTooltip.Portal, { children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(RTooltip.Content, { side, sideOffset: 6, className: cx("ms-tooltip"), children: content }) })
   ] });
 }
 
 // src/Popover.tsx
 var RPopover = __toESM(require("@radix-ui/react-popover"), 1);
-var import_jsx_runtime15 = require("react/jsx-runtime");
+var import_jsx_runtime16 = require("react/jsx-runtime");
 var Popover = RPopover.Root;
 var PopoverTrigger = RPopover.Trigger;
 var PopoverClose = RPopover.Close;
 function PopoverContent({ className, children, sideOffset = 6, ...rest }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(RPopover.Portal, { children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(RPopover.Content, { sideOffset, className: cx("ms-popover", className), ...rest, children }) });
+  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(RPopover.Portal, { children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(RPopover.Content, { sideOffset, className: cx("ms-popover", className), ...rest, children }) });
 }
 
 // src/DropdownMenu.tsx
 var RDropdown = __toESM(require("@radix-ui/react-dropdown-menu"), 1);
-var import_jsx_runtime16 = require("react/jsx-runtime");
+var import_jsx_runtime17 = require("react/jsx-runtime");
 var DropdownMenu = RDropdown.Root;
 var DropdownMenuTrigger = RDropdown.Trigger;
 function DropdownMenuContent({ children, className, sideOffset = 6, ...rest }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(RDropdown.Portal, { children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(RDropdown.Content, { sideOffset, className: cx("ms-menu", className), ...rest, children }) });
+  return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(RDropdown.Portal, { children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(RDropdown.Content, { sideOffset, className: cx("ms-menu", className), ...rest, children }) });
 }
 function DropdownMenuItem({ className, children, ...rest }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(RDropdown.Item, { className: cx("ms-menu__item", className), ...rest, children });
+  return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(RDropdown.Item, { className: cx("ms-menu__item", className), ...rest, children });
 }
 function DropdownMenuLabel({ className, children }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(RDropdown.Label, { className: cx("ms-menu__label", className), children });
+  return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(RDropdown.Label, { className: cx("ms-menu__label", className), children });
 }
 function DropdownMenuSeparator() {
-  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(RDropdown.Separator, { className: "ms-menu__separator" });
+  return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(RDropdown.Separator, { className: "ms-menu__separator" });
 }
 
 // src/Select.tsx
 var RSelect = __toESM(require("@radix-ui/react-select"), 1);
-var import_react12 = require("react");
-var import_jsx_runtime17 = require("react/jsx-runtime");
+var import_react13 = require("react");
+var import_jsx_runtime18 = require("react/jsx-runtime");
 var Select = RSelect.Root;
-var SelectTrigger = (0, import_react12.forwardRef)(function SelectTrigger2({ className, placeholder, children, ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(RSelect.Trigger, { ref, className: cx("ms-select", className), ...rest, children: [
-    children ?? /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(RSelect.Value, { placeholder }),
-    /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(RSelect.Icon, { "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("svg", { width: "12", height: "12", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("path", { d: "m6 9 6 6 6-6" }) }) })
+var SelectTrigger = (0, import_react13.forwardRef)(function SelectTrigger2({ className, placeholder, children, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(RSelect.Trigger, { ref, className: cx("ms-select", className), ...rest, children: [
+    children ?? /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(RSelect.Value, { placeholder }),
+    /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(RSelect.Icon, { "aria-hidden": true, children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("svg", { width: "12", height: "12", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("path", { d: "m6 9 6 6 6-6" }) }) })
   ] });
 });
 function SelectContent({ children, className, ...rest }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(RSelect.Portal, { children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(RSelect.Content, { className: cx("ms-menu", className), position: "popper", sideOffset: 6, ...rest, children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(RSelect.Viewport, { children }) }) });
+  return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(RSelect.Portal, { children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(RSelect.Content, { className: cx("ms-menu", className), position: "popper", sideOffset: 6, ...rest, children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(RSelect.Viewport, { children }) }) });
 }
-var SelectItem = (0, import_react12.forwardRef)(
+var SelectItem = (0, import_react13.forwardRef)(
   function SelectItem2({ className, children, ...rest }, ref) {
-    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(RSelect.Item, { ref, className: cx("ms-menu__item", className), ...rest, children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(RSelect.ItemText, { children }) });
+    return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(RSelect.Item, { ref, className: cx("ms-menu__item", className), ...rest, children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(RSelect.ItemText, { children }) });
   }
 );
 
 // src/Skeleton.tsx
-var import_react13 = require("react");
-var import_jsx_runtime18 = require("react/jsx-runtime");
-var Skeleton = (0, import_react13.forwardRef)(function Skeleton2({ width = "100%", height = 12, circle, style, className, ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+var import_react14 = require("react");
+var import_jsx_runtime19 = require("react/jsx-runtime");
+var Skeleton = (0, import_react14.forwardRef)(function Skeleton2({ width = "100%", height = 12, circle, style, className, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
     "div",
     {
       ref,
@@ -496,18 +711,18 @@ var Skeleton = (0, import_react13.forwardRef)(function Skeleton2({ width = "100%
 });
 
 // src/EmptyState.tsx
-var import_jsx_runtime19 = require("react/jsx-runtime");
+var import_jsx_runtime20 = require("react/jsx-runtime");
 function EmptyState({ icon, title, body, action, className }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: cx("ms-empty", className), children: [
-    icon && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "ms-empty__icon", "aria-hidden": true, children: icon }),
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "ms-empty__title", children: title }),
-    body && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "ms-empty__body", children: body }),
+  return /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: cx("ms-empty", className), children: [
+    icon && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "ms-empty__icon", "aria-hidden": true, children: icon }),
+    /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "ms-empty__title", children: title }),
+    body && /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "ms-empty__body", children: body }),
     action
   ] });
 }
 
 // src/Pagination.tsx
-var import_jsx_runtime20 = require("react/jsx-runtime");
+var import_jsx_runtime21 = require("react/jsx-runtime");
 function range(start, end) {
   const out = [];
   for (let i = start; i <= end; i++) out.push(i);
@@ -532,8 +747,8 @@ function Pagination({
   pages.push(...range(start, end));
   if (end < last - 1) pages.push("\u2026");
   if (last > first) pages.push(last);
-  return /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("nav", { "aria-label": "Pagination", className: cx("ms-pagination", className), children: [
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("nav", { "aria-label": "Pagination", className: cx("ms-pagination", className), children: [
+    /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
       "button",
       {
         type: "button",
@@ -545,7 +760,7 @@ function Pagination({
       }
     ),
     pages.map(
-      (p, i) => p === "\u2026" ? /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("span", { className: "ms-pagination__btn", "aria-hidden": true, children: "\u2026" }, `e-${i}`) : /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+      (p, i) => p === "\u2026" ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "ms-pagination__btn", "aria-hidden": true, children: "\u2026" }, `e-${i}`) : /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
         "button",
         {
           type: "button",
@@ -558,7 +773,7 @@ function Pagination({
         p
       )
     ),
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+    /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
       "button",
       {
         type: "button",
@@ -573,18 +788,18 @@ function Pagination({
 }
 
 // src/Breadcrumb.tsx
-var import_react14 = require("react");
-var import_jsx_runtime21 = require("react/jsx-runtime");
+var import_react15 = require("react");
+var import_jsx_runtime22 = require("react/jsx-runtime");
 function Breadcrumb({ items, separator = "/", className }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("nav", { "aria-label": "Breadcrumb", className: cx("ms-breadcrumb", className), children: items.map((it, i) => /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(import_react14.Fragment, { children: [
-    i > 0 && /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "ms-breadcrumb__sep", "aria-hidden": true, children: separator }),
-    it.href && !it.current ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("a", { href: it.href, className: "ms-breadcrumb__item", children: it.label }) : /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "ms-breadcrumb__item", "aria-current": it.current ? "page" : void 0, children: it.label })
+  return /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("nav", { "aria-label": "Breadcrumb", className: cx("ms-breadcrumb", className), children: items.map((it, i) => /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(import_react15.Fragment, { children: [
+    i > 0 && /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("span", { className: "ms-breadcrumb__sep", "aria-hidden": true, children: separator }),
+    it.href && !it.current ? /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("a", { href: it.href, className: "ms-breadcrumb__item", children: it.label }) : /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("span", { className: "ms-breadcrumb__item", "aria-current": it.current ? "page" : void 0, children: it.label })
   ] }, i)) });
 }
 
 // src/Progress.tsx
 var RProgress = __toESM(require("@radix-ui/react-progress"), 1);
-var import_jsx_runtime22 = require("react/jsx-runtime");
+var import_jsx_runtime23 = require("react/jsx-runtime");
 function Progress({
   value,
   max = 100,
@@ -593,7 +808,7 @@ function Progress({
   "aria-label": ariaLabel = "Progress"
 }) {
   const pct = indeterminate ? void 0 : Math.min(100, Math.max(0, (value ?? 0) / max * 100));
-  return /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(RProgress.Root, { value: indeterminate ? null : value ?? 0, max, "aria-label": ariaLabel, className: cx("ms-progress", className), children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(RProgress.Root, { value: indeterminate ? null : value ?? 0, max, "aria-label": ariaLabel, className: cx("ms-progress", className), children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(
     RProgress.Indicator,
     {
       className: "ms-progress__indicator",
@@ -604,23 +819,88 @@ function Progress({
 
 // src/Separator.tsx
 var RSeparator = __toESM(require("@radix-ui/react-separator"), 1);
-var import_jsx_runtime23 = require("react/jsx-runtime");
+var import_jsx_runtime24 = require("react/jsx-runtime");
 function Separator2({ className, ...rest }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(RSeparator.Root, { className: cx("ms-separator", className), ...rest });
+  return /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(RSeparator.Root, { className: cx("ms-separator", className), ...rest });
 }
 
+// src/Layout.tsx
+var import_react16 = require("react");
+var import_jsx_runtime25 = require("react/jsx-runtime");
+var Stack = (0, import_react16.forwardRef)(function Stack2({ gap = 4, align, style, className, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+    "div",
+    {
+      ref,
+      className: cx("ms-stack", className),
+      style: {
+        gap: `var(--space-${gap})`,
+        alignItems: align,
+        ...style
+      },
+      ...rest
+    }
+  );
+});
+var Inline = (0, import_react16.forwardRef)(function Inline2({ gap = 4, align, wrap = true, style, className, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+    "div",
+    {
+      ref,
+      className: cx("ms-inline", wrap && "ms-inline--wrap", className),
+      style: {
+        gap: `var(--space-${gap})`,
+        alignItems: align,
+        ...style
+      },
+      ...rest
+    }
+  );
+});
+var Grid = (0, import_react16.forwardRef)(function Grid2({ columns, minWidth = 240, gap = 4, style, className, ...rest }, ref) {
+  const min = typeof minWidth === "number" ? `${minWidth}px` : minWidth;
+  const template = columns ? `repeat(${columns}, 1fr)` : `repeat(auto-fit, minmax(${min}, 1fr))`;
+  return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+    "div",
+    {
+      ref,
+      className: cx("ms-grid", className),
+      style: {
+        gridTemplateColumns: template,
+        gap: `var(--space-${gap})`,
+        ...style
+      },
+      ...rest
+    }
+  );
+});
+var Container = (0, import_react16.forwardRef)(function Container2({ size = "lg", padding = true, style, className, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+    "div",
+    {
+      ref,
+      className: cx("ms-container", padding && "ms-container--padded", className),
+      style: {
+        maxWidth: `var(--container-${size})`,
+        ...style
+      },
+      ...rest
+    }
+  );
+});
+
 // src/Kbd.tsx
-var import_react15 = require("react");
-var import_jsx_runtime24 = require("react/jsx-runtime");
-var Kbd = (0, import_react15.forwardRef)(function Kbd2({ size = "md", className, ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime24.jsx)("kbd", { ref, className: cx("ms-kbd", `ms-kbd--${size}`, className), ...rest });
+var import_react17 = require("react");
+var import_jsx_runtime26 = require("react/jsx-runtime");
+var Kbd = (0, import_react17.forwardRef)(function Kbd2({ size = "md", className, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("kbd", { ref, className: cx("ms-kbd", `ms-kbd--${size}`, className), ...rest });
 });
 
 // src/Spinner.tsx
-var import_react16 = require("react");
-var import_jsx_runtime25 = require("react/jsx-runtime");
-var Spinner = (0, import_react16.forwardRef)(function Spinner2({ size = 16, label = "Loading", className, style, ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+var import_react18 = require("react");
+var import_jsx_runtime27 = require("react/jsx-runtime");
+var Spinner = (0, import_react18.forwardRef)(function Spinner2({ size = 16, label = "Loading", className, style, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(
     "span",
     {
       ref,
@@ -635,16 +915,16 @@ var Spinner = (0, import_react16.forwardRef)(function Spinner2({ size = 16, labe
 
 // src/Accordion.tsx
 var RAccordion = __toESM(require("@radix-ui/react-accordion"), 1);
-var import_react17 = require("react");
-var import_jsx_runtime26 = require("react/jsx-runtime");
+var import_react19 = require("react");
+var import_jsx_runtime28 = require("react/jsx-runtime");
 var Accordion = RAccordion.Root;
-var AccordionItem = (0, import_react17.forwardRef)(function AccordionItem2({ className, ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(RAccordion.Item, { ref, className: cx("ms-accordion__item", className), ...rest });
+var AccordionItem = (0, import_react19.forwardRef)(function AccordionItem2({ className, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(RAccordion.Item, { ref, className: cx("ms-accordion__item", className), ...rest });
 });
-var AccordionTrigger = (0, import_react17.forwardRef)(function AccordionTrigger2({ className, children, ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(RAccordion.Header, { className: "ms-accordion__header", children: /* @__PURE__ */ (0, import_jsx_runtime26.jsxs)(RAccordion.Trigger, { ref, className: cx("ms-accordion__trigger", className), ...rest, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("span", { children }),
-    /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(
+var AccordionTrigger = (0, import_react19.forwardRef)(function AccordionTrigger2({ className, children, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(RAccordion.Header, { className: "ms-accordion__header", children: /* @__PURE__ */ (0, import_jsx_runtime28.jsxs)(RAccordion.Trigger, { ref, className: cx("ms-accordion__trigger", className), ...rest, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime28.jsx)("span", { children }),
+    /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(
       "svg",
       {
         className: "ms-accordion__chevron",
@@ -657,22 +937,22 @@ var AccordionTrigger = (0, import_react17.forwardRef)(function AccordionTrigger2
         strokeLinecap: "round",
         strokeLinejoin: "round",
         "aria-hidden": true,
-        children: /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("polyline", { points: "6 9 12 15 18 9" })
+        children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)("polyline", { points: "6 9 12 15 18 9" })
       }
     )
   ] }) });
 });
-var AccordionContent = (0, import_react17.forwardRef)(function AccordionContent2({ className, children, ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(RAccordion.Content, { ref, className: cx("ms-accordion__content", className), ...rest, children: /* @__PURE__ */ (0, import_jsx_runtime26.jsx)("div", { className: "ms-accordion__content-inner", children }) });
+var AccordionContent = (0, import_react19.forwardRef)(function AccordionContent2({ className, children, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(RAccordion.Content, { ref, className: cx("ms-accordion__content", className), ...rest, children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)("div", { className: "ms-accordion__content-inner", children }) });
 });
 
 // src/Slider.tsx
 var RSlider = __toESM(require("@radix-ui/react-slider"), 1);
-var import_react18 = require("react");
-var import_jsx_runtime27 = require("react/jsx-runtime");
-var Slider = (0, import_react18.forwardRef)(function Slider2({ className, defaultValue = [50], value, ...rest }, ref) {
+var import_react20 = require("react");
+var import_jsx_runtime29 = require("react/jsx-runtime");
+var Slider = (0, import_react20.forwardRef)(function Slider2({ className, defaultValue = [50], value, ...rest }, ref) {
   const thumbs = value ?? defaultValue;
-  return /* @__PURE__ */ (0, import_jsx_runtime27.jsxs)(
+  return /* @__PURE__ */ (0, import_jsx_runtime29.jsxs)(
     RSlider.Root,
     {
       ref,
@@ -681,8 +961,8 @@ var Slider = (0, import_react18.forwardRef)(function Slider2({ className, defaul
       value,
       ...rest,
       children: [
-        /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(RSlider.Track, { className: "ms-slider__track", children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(RSlider.Range, { className: "ms-slider__range" }) }),
-        thumbs.map((_, i) => /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(RSlider.Thumb, { className: "ms-slider__thumb", "aria-label": `Value ${i + 1}` }, i))
+        /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(RSlider.Track, { className: "ms-slider__track", children: /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(RSlider.Range, { className: "ms-slider__range" }) }),
+        thumbs.map((_, i) => /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(RSlider.Thumb, { className: "ms-slider__thumb", "aria-label": `Value ${i + 1}` }, i))
       ]
     }
   );
@@ -691,31 +971,243 @@ var Slider = (0, import_react18.forwardRef)(function Slider2({ className, defaul
 // src/ToggleGroup.tsx
 var RToggleGroup = __toESM(require("@radix-ui/react-toggle-group"), 1);
 var RToggle = __toESM(require("@radix-ui/react-toggle"), 1);
-var import_react19 = require("react");
-var import_jsx_runtime28 = require("react/jsx-runtime");
-var Toggle = (0, import_react19.forwardRef)(function Toggle2({ className, ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(RToggle.Root, { ref, className: cx("ms-toggle", className), ...rest });
+var import_react21 = require("react");
+var import_jsx_runtime30 = require("react/jsx-runtime");
+var Toggle = (0, import_react21.forwardRef)(function Toggle2({ className, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(RToggle.Root, { ref, className: cx("ms-toggle", className), ...rest });
 });
-var ToggleGroup = (0, import_react19.forwardRef)(function ToggleGroup2({ className, ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(RToggleGroup.Root, { ref, className: cx("ms-toggle-group", className), ...rest });
+var ToggleGroup = (0, import_react21.forwardRef)(function ToggleGroup2({ className, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(RToggleGroup.Root, { ref, className: cx("ms-toggle-group", className), ...rest });
 });
-var ToggleGroupItem = (0, import_react19.forwardRef)(function ToggleGroupItem2({ className, ...rest }, ref) {
-  return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(RToggleGroup.Item, { ref, className: cx("ms-toggle", className), ...rest });
+var ToggleGroupItem = (0, import_react21.forwardRef)(function ToggleGroupItem2({ className, ...rest }, ref) {
+  return /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(RToggleGroup.Item, { ref, className: cx("ms-toggle", className), ...rest });
 });
 
 // src/MonosetProvider.tsx
 var import_framer_motion3 = require("framer-motion");
-var import_jsx_runtime29 = require("react/jsx-runtime");
+
+// src/Theme.tsx
+var import_react22 = require("react");
+var import_jsx_runtime31 = require("react/jsx-runtime");
+var ThemeCtx = (0, import_react22.createContext)(null);
+function getSystemTheme() {
+  if (typeof window === "undefined") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function ThemeProvider({
+  children,
+  defaultTheme = "system",
+  storageKey = "monoset-theme"
+}) {
+  const [theme, setThemeState] = (0, import_react22.useState)(() => {
+    if (typeof window === "undefined") return defaultTheme;
+    const stored = localStorage.getItem(storageKey);
+    if (stored === "light" || stored === "dark" || stored === "system") {
+      return stored;
+    }
+    return defaultTheme;
+  });
+  const [systemTheme, setSystemTheme] = (0, import_react22.useState)(getSystemTheme);
+  const resolvedTheme = theme === "system" ? systemTheme : theme;
+  const setTheme = (0, import_react22.useCallback)(
+    (next) => {
+      setThemeState(next);
+      try {
+        localStorage.setItem(storageKey, next);
+      } catch {
+      }
+    },
+    [storageKey]
+  );
+  (0, import_react22.useEffect)(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = (e) => {
+      setSystemTheme(e.matches ? "dark" : "light");
+    };
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  (0, import_react22.useEffect)(() => {
+    const root = document.documentElement;
+    root.setAttribute("data-monoset-theme", resolvedTheme);
+    root.classList.toggle("monoset-dark", resolvedTheme === "dark");
+  }, [resolvedTheme]);
+  const value = (0, import_react22.useMemo)(
+    () => ({ theme, resolvedTheme, setTheme }),
+    [theme, resolvedTheme, setTheme]
+  );
+  return /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(ThemeCtx.Provider, { value, children });
+}
+function useTheme() {
+  const ctx = (0, import_react22.useContext)(ThemeCtx);
+  if (!ctx) {
+    throw new Error("useTheme must be used within a <ThemeProvider>.");
+  }
+  return ctx;
+}
+var NEXT = {
+  light: "dark",
+  dark: "system",
+  system: "light"
+};
+var LABEL = {
+  light: "Switch to dark mode",
+  dark: "Switch to system mode",
+  system: "Switch to light mode"
+};
+function SunIcon() {
+  return /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", "aria-hidden": "true", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("circle", { cx: "8", cy: "8", r: "3", stroke: "currentColor", strokeWidth: "1.5" }),
+    /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(
+      "path",
+      {
+        d: "M8 1.5v1M8 13.5v1M1.5 8h1M13.5 8h1M3.4 3.4l.7.7M11.9 11.9l.7.7M3.4 12.6l.7-.7M11.9 4.1l.7-.7",
+        stroke: "currentColor",
+        strokeWidth: "1.5",
+        strokeLinecap: "round"
+      }
+    )
+  ] });
+}
+function MoonIcon() {
+  return /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(
+    "path",
+    {
+      d: "M13.5 9.2A5.5 5.5 0 0 1 6.8 2.5 5.5 5.5 0 1 0 13.5 9.2Z",
+      stroke: "currentColor",
+      strokeWidth: "1.5",
+      strokeLinejoin: "round"
+    }
+  ) });
+}
+function MonitorIcon() {
+  return /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", "aria-hidden": "true", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("rect", { x: "2", y: "2.5", width: "12", height: "8", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" }),
+    /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("path", { d: "M5.5 13.5h5M8 10.5v3", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round" })
+  ] });
+}
+var ICON = {
+  light: SunIcon,
+  dark: MoonIcon,
+  system: MonitorIcon
+};
+var ThemeToggle = (0, import_react22.forwardRef)(
+  function ThemeToggle2({ className, ...rest }, ref) {
+    const { theme, setTheme } = useTheme();
+    const Icon2 = ICON[theme];
+    return /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(
+      "button",
+      {
+        ref,
+        type: "button",
+        "aria-label": LABEL[theme],
+        className: cx("ms-btn", "ms-btn--ghost", "ms-btn--sm", className),
+        onClick: () => setTheme(NEXT[theme]),
+        ...rest,
+        children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(Icon2, {})
+      }
+    );
+  }
+);
+
+// src/MonosetProvider.tsx
+var import_jsx_runtime32 = require("react/jsx-runtime");
 function MonosetProvider({
   children,
   reducedMotion = "user",
-  tooltipDelay = 300
+  tooltipDelay = 300,
+  defaultTheme
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(import_framer_motion3.MotionConfig, { reducedMotion, children: /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(TooltipProvider, { delayDuration: tooltipDelay, children: /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(ToastProvider, { children }) }) });
+  const inner = /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(import_framer_motion3.MotionConfig, { reducedMotion, children: /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(TooltipProvider, { delayDuration: tooltipDelay, children: /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(ToastProvider, { children }) }) });
+  if (defaultTheme) {
+    return /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(ThemeProvider, { defaultTheme, children: inner });
+  }
+  return inner;
 }
 
 // src/index.ts
+var import_motion4 = require("@monoset/motion");
+
+// src/Motion.tsx
+var import_react23 = require("react");
+var import_framer_motion4 = require("framer-motion");
 var import_motion3 = require("@monoset/motion");
+var import_jsx_runtime33 = require("react/jsx-runtime");
+var Reveal = (0, import_react23.forwardRef)(
+  ({
+    children,
+    variant = import_motion3.fadeUp,
+    once = true,
+    margin = "-80px",
+    delay = 0,
+    className,
+    style
+  }, forwardedRef) => {
+    const localRef = (0, import_react23.useRef)(null);
+    const ref = forwardedRef ?? localRef;
+    const inView = (0, import_framer_motion4.useInView)(ref, { once, margin });
+    const resolvedVariant = delay ? {
+      ...variant,
+      visible: {
+        ...variant.visible,
+        transition: {
+          ...variant.visible?.transition,
+          delay
+        }
+      }
+    } : variant;
+    return /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+      import_framer_motion4.motion.div,
+      {
+        ref,
+        initial: "hidden",
+        animate: inView ? "visible" : "hidden",
+        variants: resolvedVariant,
+        className,
+        style,
+        children
+      }
+    );
+  }
+);
+Reveal.displayName = "Reveal";
+var childVariants = {
+  hidden: import_motion3.fadeUp.hidden,
+  visible: import_motion3.fadeUp.visible
+};
+var StaggerList = (0, import_react23.forwardRef)(
+  ({
+    children,
+    stagger = 0.04,
+    once = true,
+    margin = "-80px",
+    className,
+    style
+  }, forwardedRef) => {
+    const localRef = (0, import_react23.useRef)(null);
+    const ref = forwardedRef ?? localRef;
+    const inView = (0, import_framer_motion4.useInView)(ref, { once, margin });
+    const containerVariants = {
+      hidden: {},
+      visible: {
+        transition: { staggerChildren: stagger }
+      }
+    };
+    return /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+      import_framer_motion4.motion.div,
+      {
+        ref,
+        initial: "hidden",
+        animate: inView ? "visible" : "hidden",
+        variants: containerVariants,
+        className,
+        style,
+        children: import_react23.Children.map(children, (child) => /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(import_framer_motion4.motion.div, { variants: childVariants, children: child }))
+      }
+    );
+  }
+);
+StaggerList.displayName = "StaggerList";
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   Accordion,
@@ -729,6 +1221,7 @@ var import_motion3 = require("@monoset/motion");
   Button,
   Card,
   Checkbox,
+  Container,
   DUR,
   Dialog,
   DialogClose,
@@ -745,6 +1238,9 @@ var import_motion3 = require("@monoset/motion");
   EASE_STANDARD,
   EmptyState,
   Field,
+  Form,
+  Grid,
+  Inline,
   Input,
   Kbd,
   MonosetProvider,
@@ -756,6 +1252,7 @@ var import_motion3 = require("@monoset/motion");
   Progress,
   Radio,
   RadioGroup,
+  Reveal,
   Select,
   SelectContent,
   SelectItem,
@@ -764,13 +1261,20 @@ var import_motion3 = require("@monoset/motion");
   Skeleton,
   Slider,
   Spinner,
+  Stack,
+  StaggerList,
   Switch,
   Table,
+  TableHeader,
+  TableSelectAll,
+  TableSelectRow,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
   Textarea,
+  ThemeProvider,
+  ThemeToggle,
   Toast,
   ToastProvider,
   Toggle,
@@ -785,6 +1289,13 @@ var import_motion3 = require("@monoset/motion");
   modalPanel,
   modalScrim,
   popoverIn,
-  pressDown
+  pressDown,
+  scaleIn,
+  slideInBottom,
+  slideInLeft,
+  slideInRight,
+  slideInTop,
+  useMonosetForm,
+  useTheme
 });
 //# sourceMappingURL=index.cjs.map

@@ -1,6 +1,6 @@
 {
   "name": "@monoset/motion",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Monoset motion presets for framer-motion. Easings, durations, reusable variants.",
   "keywords": [
     "design-system",

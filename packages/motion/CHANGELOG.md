@@ -1,5 +1,11 @@
 # @monoset/motion
 
+## 0.2.0
+
+### Minor Changes
+
+- Add slideIn variants (left, right, top, bottom) and scaleIn preset for viewport-triggered animations.
+
 ## 0.1.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @monoset/react
 
+## 0.3.0
+
+### Minor Changes
+
+- Add ThemeProvider, useTheme hook, and ThemeToggle component for dark mode control. Add Layout primitives (Stack, Inline, Grid, Container). Add Form component and useMonosetForm hook with field validation. Add Reveal and StaggerList motion components. Enhance Table with sortable headers, row selection, and sticky columns. Fix menu item hover contrast. Fix Switch track rendering.
+
+### Patch Changes
+
+- Updated dependencies
+  - @monoset/motion@0.2.0
+
 ## 0.2.0
 
 ### Minor Changes
