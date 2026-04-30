@@ -7,6 +7,12 @@ import {
   Sheet, SheetTrigger, SheetContent, SheetClose,
   CommandPalette,
   HoverCard, HoverCardTrigger, HoverCardContent,
+  Dialog, DialogTrigger, DialogContent, DialogClose,
+  Tooltip, TooltipProvider,
+  Popover, PopoverTrigger, PopoverContent,
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
+  RadioGroup, Radio,
+  Skeleton, EmptyState, Pagination, Breadcrumb, Progress, Separator,
   Stack,
 } from '@monoset/react';
 import {
@@ -4019,6 +4025,435 @@ function PageHoverCard() {
   );
 }
 
+/* ─── Dialog ────────────────────────────────────────────────────── */
+function PageDialog() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Dialog</H1>
+      <Lead>A modal that interrupts the user. Use it for actions that need attention or confirmation. Built on Radix Dialog: focus trap, scroll lock, Escape to close.</Lead>
+
+      <H2 id="basic">Basic dialog</H2>
+      <Preview bg="var(--bg)">
+        <Dialog>
+          <DialogTrigger asChild>
+            <DemoButton>Open dialog</DemoButton>
+          </DialogTrigger>
+          <DialogContent title="Are you sure?" description="This action cannot be undone.">
+            <Stack gap={3}>
+              <p style={{ fontSize:13, color:"var(--fg2)", lineHeight:1.55 }}>
+                The project and all its data will be permanently removed.
+              </p>
+              <Stack gap={2} style={{ flexDirection:"row", justifyContent:"flex-end" }}>
+                <DialogClose asChild><DemoButton>Cancel</DemoButton></DialogClose>
+                <DialogClose asChild><DemoButton variant="primary">Delete</DemoButton></DialogClose>
+              </Stack>
+            </Stack>
+          </DialogContent>
+        </Dialog>
+      </Preview>
+      <Code language="jsx">{`import { Dialog, DialogTrigger, DialogContent, DialogClose, Button } from "@monoset/react";
+
+<Dialog>
+  <DialogTrigger asChild>
+    <Button>Open dialog</Button>
+  </DialogTrigger>
+  <DialogContent title="Are you sure?" description="This action cannot be undone.">
+    <p>The project and all its data will be permanently removed.</p>
+    <DialogClose asChild><Button>Cancel</Button></DialogClose>
+    <DialogClose asChild><Button variant="primary">Delete</Button></DialogClose>
+  </DialogContent>
+</Dialog>`}</Code>
+
+      <H2 id="vs-sheet">Dialog vs Sheet</H2>
+      <P>Use <InlineCode>Dialog</InlineCode> for short, focused actions: confirmations, simple forms, alerts. Use <InlineCode>Sheet</InlineCode> when the panel needs more room or feels like an extension of the page (filters, detail views, mobile menus).</P>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"title",       type:"ReactNode", default:"—", desc:"Header title rendered as a Radix DialogTitle." },
+        { name:"description", type:"ReactNode", default:"—", desc:"Subtitle rendered as a Radix DialogDescription." },
+        { name:"className",   type:"string",    default:"—", desc:"Appended to the panel element." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Tooltip ───────────────────────────────────────────────────── */
+function PageTooltip() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Tooltip</H1>
+      <Lead>A short label shown on hover or focus. Two or three words, max. If you need more, reach for HoverCard.</Lead>
+
+      <H2 id="basic">Basic tooltip</H2>
+      <Preview bg="var(--bg)">
+        <TooltipProvider>
+          <div style={{ display:"flex", gap:14 }}>
+            <Tooltip content="Save changes">
+              <DemoButton aria-label="Save"><Icon name="check" size={14}/></DemoButton>
+            </Tooltip>
+            <Tooltip content="Copy link">
+              <DemoButton aria-label="Copy"><Icon name="copy" size={14}/></DemoButton>
+            </Tooltip>
+            <Tooltip content="Open in new tab">
+              <DemoButton aria-label="Open"><Icon name="arrowRight" size={14}/></DemoButton>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
+      </Preview>
+      <Code language="jsx">{`import { Tooltip, TooltipProvider, Button } from "@monoset/react";
+
+// Wrap your app once
+<TooltipProvider>
+  <Tooltip content="Save changes">
+    <Button aria-label="Save">✓</Button>
+  </Tooltip>
+</TooltipProvider>`}</Code>
+      <P>The <InlineCode>TooltipProvider</InlineCode> belongs at the app root so all tooltips share the same delay timing. Monoset's <InlineCode>MonosetProvider</InlineCode> includes it for you.</P>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"content",    type:"ReactNode",                           default:"—",      desc:"The label text." },
+        { name:"side",       type:'"top" | "right" | "bottom" | "left"', default:'"top"',  desc:"Which side of the trigger." },
+        { name:"sideOffset", type:"number",                              default:"6",      desc:"Distance from the trigger in pixels." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Popover ───────────────────────────────────────────────────── */
+function PagePopover() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Popover</H1>
+      <Lead>A floating panel anchored to a trigger. Use it for inline forms, filter controls, color pickers — anything that's too much for a Tooltip but doesn't deserve a full Dialog.</Lead>
+
+      <H2 id="basic">Basic popover</H2>
+      <Preview bg="var(--bg)">
+        <Popover>
+          <PopoverTrigger asChild>
+            <DemoButton>Filter results</DemoButton>
+          </PopoverTrigger>
+          <PopoverContent>
+            <Stack gap={3} style={{ minWidth:240 }}>
+              <div style={{ fontSize:12, fontWeight:600 }}>Filters</div>
+              <Stack gap={2}>
+                <Checkbox label="Active"/>
+                <Checkbox label="Pending"/>
+                <Checkbox label="Paused"/>
+              </Stack>
+            </Stack>
+          </PopoverContent>
+        </Popover>
+      </Preview>
+      <Code language="jsx">{`import { Popover, PopoverTrigger, PopoverContent } from "@monoset/react";
+
+<Popover>
+  <PopoverTrigger asChild>
+    <Button>Filter results</Button>
+  </PopoverTrigger>
+  <PopoverContent>
+    <Stack gap={3}>
+      <Checkbox label="Active"/>
+      <Checkbox label="Pending"/>
+      <Checkbox label="Paused"/>
+    </Stack>
+  </PopoverContent>
+</Popover>`}</Code>
+
+      <H2 id="api">API on PopoverContent</H2>
+      <PropsTable rows={[
+        { name:"side",       type:'"top" | "right" | "bottom" | "left"', default:'"bottom"', desc:"Which side of the trigger to render." },
+        { name:"sideOffset", type:"number",                              default:"6",        desc:"Distance from the trigger in pixels." },
+        { name:"align",      type:'"start" | "center" | "end"',          default:'"center"', desc:"Alignment relative to the trigger." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── DropdownMenu ──────────────────────────────────────────────── */
+function PageDropdown() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Dropdown menu</H1>
+      <Lead>A vertical list of actions triggered by a button. For navigation use the sidebar, not this — DropdownMenu is for actions on a row, a record, or the current view.</Lead>
+
+      <H2 id="basic">Basic menu</H2>
+      <Preview bg="var(--bg)">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <DemoButton>Actions</DemoButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Account</DropdownMenuLabel>
+            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem>Billing</DropdownMenuItem>
+            <DropdownMenuSeparator/>
+            <DropdownMenuItem>Log out</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </Preview>
+      <Code language="jsx">{`import {
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
+  DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
+} from "@monoset/react";
+
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button>Actions</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuLabel>Account</DropdownMenuLabel>
+    <DropdownMenuItem>Profile</DropdownMenuItem>
+    <DropdownMenuItem>Billing</DropdownMenuItem>
+    <DropdownMenuSeparator/>
+    <DropdownMenuItem>Log out</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>`}</Code>
+
+      <H2 id="vs-popover">DropdownMenu vs Popover</H2>
+      <P>If your panel is a list of clickable actions, use <InlineCode>DropdownMenu</InlineCode> — it has the right keyboard semantics (arrow keys, type-ahead, Enter to activate). For a panel containing inputs, sliders, or anything that isn't a menu of actions, use <InlineCode>Popover</InlineCode>.</P>
+    </div>
+  );
+}
+
+/* ─── RadioGroup ────────────────────────────────────────────────── */
+function PageRadio() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Radio group</H1>
+      <Lead>Pick one from a few. If the list is longer than three or four options, use Select or Combobox instead.</Lead>
+
+      <H2 id="basic">Basic radio group</H2>
+      <Preview bg="var(--bg)">
+        <RadioGroup defaultValue="card" aria-label="Payment method">
+          <Stack gap={2}>
+            <Radio value="card"   label="Credit card"/>
+            <Radio value="bank"   label="Bank transfer"/>
+            <Radio value="invoice" label="Invoice"/>
+          </Stack>
+        </RadioGroup>
+      </Preview>
+      <Code language="jsx">{`import { RadioGroup, Radio } from "@monoset/react";
+
+<RadioGroup defaultValue="card" aria-label="Payment method">
+  <Radio value="card"   label="Credit card"/>
+  <Radio value="bank"   label="Bank transfer"/>
+  <Radio value="invoice" label="Invoice"/>
+</RadioGroup>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"value",         type:"string",                     default:"—",     desc:"Controlled selected value." },
+        { name:"defaultValue",  type:"string",                     default:"—",     desc:"Uncontrolled default." },
+        { name:"onValueChange", type:"(value: string) => void",    default:"—",     desc:"Called when selection changes." },
+        { name:"disabled",      type:"boolean",                    default:"false", desc:"Disables every radio in the group." },
+      ]}/>
+      <P>Each <InlineCode>Radio</InlineCode> takes a <InlineCode>value</InlineCode> and a <InlineCode>label</InlineCode>. It can be disabled individually with <InlineCode>disabled</InlineCode>.</P>
+    </div>
+  );
+}
+
+/* ─── Skeleton ──────────────────────────────────────────────────── */
+function PageSkeleton() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Skeleton</H1>
+      <Lead>A placeholder shape while real content loads. Show one only if the wait is over 400ms; faster than that, just render the result.</Lead>
+
+      <H2 id="basic">Basic skeletons</H2>
+      <Preview bg="var(--bg)">
+        <Stack gap={2} style={{ width:"100%", maxWidth:320 }}>
+          <Skeleton style={{ height:14, width:"60%" }}/>
+          <Skeleton style={{ height:14, width:"100%" }}/>
+          <Skeleton style={{ height:14, width:"85%" }}/>
+        </Stack>
+      </Preview>
+      <Code language="jsx">{`import { Skeleton } from "@monoset/react";
+
+<Skeleton style={{ height: 14, width: "60%" }}/>`}</Code>
+
+      <H2 id="card">Card skeleton</H2>
+      <P>Match the shape of the real content. Three lines, an avatar, a button — whatever the loaded state will show.</P>
+      <Preview bg="var(--bg)">
+        <div style={{ display:"flex", gap:12, alignItems:"flex-start", padding:14, border:"1px solid var(--border-subtle)", borderRadius:8, width:"100%", maxWidth:360 }}>
+          <Skeleton style={{ width:36, height:36, borderRadius:"50%", flexShrink:0 }}/>
+          <Stack gap={2} style={{ flex:1 }}>
+            <Skeleton style={{ height:12, width:"50%" }}/>
+            <Skeleton style={{ height:11, width:"80%" }}/>
+            <Skeleton style={{ height:11, width:"65%" }}/>
+          </Stack>
+        </div>
+      </Preview>
+    </div>
+  );
+}
+
+/* ─── EmptyState ────────────────────────────────────────────────── */
+function PageEmptyState() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Empty state</H1>
+      <Lead>A friendly message when there's nothing to show. Title, one-line description, and an action — that's the recipe. Don't apologize and don't write a paragraph.</Lead>
+
+      <H2 id="basic">Basic empty state</H2>
+      <Preview bg="var(--bg)">
+        <EmptyState
+          title="No projects yet"
+          body="Create your first project to get started."
+          action={<DemoButton variant="primary">New project</DemoButton>}
+        />
+      </Preview>
+      <Code language="jsx">{`import { EmptyState, Button } from "@monoset/react";
+
+<EmptyState
+  title="No projects yet"
+  body="Create your first project to get started."
+  action={<Button variant="primary">New project</Button>}
+/>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"title",  type:"ReactNode", default:"—", desc:"Main heading." },
+        { name:"body",   type:"ReactNode", default:"—", desc:"One-line explanation." },
+        { name:"action", type:"ReactNode", default:"—", desc:"Optional CTA." },
+        { name:"icon",   type:"ReactNode", default:"—", desc:"Optional icon above the title." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Pagination ────────────────────────────────────────────────── */
+function PagePagination() {
+  const [page, setPage] = useState(3);
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Pagination</H1>
+      <Lead>Page-by-page navigation for tables and long lists. If you're not sure how many pages there are, prefer infinite scroll or load-more — pagination needs a known total.</Lead>
+
+      <H2 id="basic">Basic pagination</H2>
+      <Preview bg="var(--bg)">
+        <Pagination page={page} pageCount={10} onPageChange={setPage}/>
+      </Preview>
+      <Code language="jsx">{`import { Pagination } from "@monoset/react";
+
+const [page, setPage] = useState(1);
+<Pagination page={page} pageCount={10} onPageChange={setPage}/>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"page",         type:"number",                  default:"—", desc:"Current page (1-indexed)." },
+        { name:"pageCount",    type:"number",                  default:"—", desc:"Total number of pages." },
+        { name:"onPageChange", type:"(page: number) => void",  default:"—", desc:"Called when the user picks a different page." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Breadcrumb ────────────────────────────────────────────────── */
+function PageBreadcrumb() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Breadcrumb</H1>
+      <Lead>Show where the current page sits in the hierarchy. Two levels deep is fine, four is a smell — if you need that many, the navigation is too nested.</Lead>
+
+      <H2 id="basic">Basic breadcrumb</H2>
+      <Preview bg="var(--bg)">
+        <Breadcrumb
+          items={[
+            { label: "Home",     href: "#" },
+            { label: "Projects", href: "#" },
+            { label: "Monoset" },
+          ]}
+        />
+      </Preview>
+      <Code language="jsx">{`import { Breadcrumb } from "@monoset/react";
+
+<Breadcrumb
+  items={[
+    { label: "Home",     href: "/" },
+    { label: "Projects", href: "/projects" },
+    { label: "Monoset" },
+  ]}
+/>`}</Code>
+      <P>The last item without an <InlineCode>href</InlineCode> is treated as the current page.</P>
+    </div>
+  );
+}
+
+/* ─── Progress ──────────────────────────────────────────────────── */
+function PageProgress() {
+  const [value, setValue] = useState(60);
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Progress</H1>
+      <Lead>A bar that fills as a task makes progress. Use it when you can measure how much work is left. If you can't, use Spinner.</Lead>
+
+      <H2 id="basic">Basic progress</H2>
+      <Preview bg="var(--bg)">
+        <Stack gap={3} style={{ width:"100%", maxWidth:320 }}>
+          <Progress value={value} aria-label="Upload progress"/>
+          <div style={{ display:"flex", gap:8, fontSize:12 }}>
+            <DemoButton size="sm" onClick={() => setValue(v => Math.max(0, v - 20))}>-20</DemoButton>
+            <DemoButton size="sm" onClick={() => setValue(v => Math.min(100, v + 20))}>+20</DemoButton>
+            <span style={{ marginLeft:"auto", color:"var(--fg3)", fontFamily:"var(--font-mono)" }}>{value}%</span>
+          </div>
+        </Stack>
+      </Preview>
+      <Code language="jsx">{`import { Progress } from "@monoset/react";
+
+<Progress value={60} aria-label="Upload progress"/>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"value",      type:"number", default:"—", desc:"Current progress, 0 to 100." },
+        { name:"max",        type:"number", default:"100", desc:"Maximum value." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Separator ─────────────────────────────────────────────────── */
+function PageSeparator() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Separator</H1>
+      <Lead>A horizontal or vertical hairline. Use it sparingly — most layouts don't need them; spacing alone usually carries the weight. Reach for one when two regions need a clear boundary.</Lead>
+
+      <H2 id="horizontal">Horizontal</H2>
+      <Preview bg="var(--bg)">
+        <div style={{ width:"100%", maxWidth:360 }}>
+          <div style={{ fontSize:13, color:"var(--fg1)", fontWeight:500 }}>Account</div>
+          <div style={{ fontSize:12, color:"var(--fg3)", marginTop:2 }}>Manage profile and billing</div>
+          <Separator style={{ margin:"14px 0" }}/>
+          <div style={{ fontSize:13, color:"var(--fg1)", fontWeight:500 }}>Notifications</div>
+          <div style={{ fontSize:12, color:"var(--fg3)", marginTop:2 }}>Email and push preferences</div>
+        </div>
+      </Preview>
+      <Code language="jsx">{`import { Separator } from "@monoset/react";
+
+<Separator/>
+<Separator orientation="vertical"/>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"orientation", type:'"horizontal" | "vertical"', default:'"horizontal"', desc:"Direction of the line." },
+        { name:"decorative",  type:"boolean",                   default:"true",         desc:"Hide from screen readers when purely visual." },
+      ]}/>
+    </div>
+  );
+}
+
 const PAGES = {
   introduction: PageIntroduction,
   installation: PageInstallation,
@@ -4050,6 +4485,17 @@ const PAGES = {
   appshell:     PageAppShell,
   combobox:     PageCombobox,
   hovercard:    PageHoverCard,
+  dialog:       PageDialog,
+  tooltip:      PageTooltip,
+  popover:      PagePopover,
+  dropdown:     PageDropdown,
+  radio:        PageRadio,
+  skeleton:     PageSkeleton,
+  empty:        PageEmptyState,
+  paging:       PagePagination,
+  breadcrumb:   PageBreadcrumb,
+  progress:     PageProgress,
+  separator:    PageSeparator,
   cli:          PageCli,
   llm:          PageLLM,
   playground:   PagePlayground,
