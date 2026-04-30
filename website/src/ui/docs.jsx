@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 import { motion } from 'framer-motion';
 
 /* ─── MONOSET MOTION PRESETS ──────────────────────────────────────────── */
@@ -142,7 +142,7 @@ export function Step({ n, title, children }) {
 }
 
 /* ─── DEMO COMPONENTS ─────────────────────────────────────────────────── */
-export function DemoButton({ variant="secondary", size, disabled, children }) {
+export const DemoButton = forwardRef(function DemoButton({ variant="secondary", size, disabled, children, style, ...rest }, ref) {
   const [hover, setHover] = useState(false);
   const base = { fontFamily:"inherit", fontWeight:500, lineHeight:1, borderRadius:6,
                   border:"1px solid transparent", cursor:disabled?"not-allowed":"pointer",
@@ -154,9 +154,9 @@ export function DemoButton({ variant="secondary", size, disabled, children }) {
           : variant==="ghost"   ? { background: hover?"var(--bg-muted)":"transparent", color:"var(--fg1)" }
           : { background: hover?"var(--bg-subtle)":"var(--bg)", color:"var(--fg1)", borderColor:"var(--border)" };
   const dis = disabled ? { background:"var(--bg-muted)", color:"var(--fg4)", borderColor:"transparent" } : {};
-  return <motion.button whileTap={disabled ? undefined : pressDown}
-           style={{...base,...sz,...v,...dis}} onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} disabled={disabled}>{children}</motion.button>;
-}
+  return <motion.button ref={ref} whileTap={disabled ? undefined : pressDown}
+           style={{...base,...sz,...v,...dis,...style}} onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} disabled={disabled} {...rest}>{children}</motion.button>;
+});
 
 export function DemoBadge({ variant="neutral", children }) {
   const v = {

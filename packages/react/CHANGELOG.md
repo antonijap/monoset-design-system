@@ -1,5 +1,11 @@
 # @monoset/react
 
+## 0.5.1
+
+### Patch Changes
+
+- Fix CommandPalette accessibility: add a visually-hidden DialogTitle so Radix doesn't warn about a missing title and screen readers announce the dialog correctly.
+
 ## 0.5.0
 
 ### Minor Changes

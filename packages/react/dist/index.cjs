@@ -806,6 +806,7 @@ var CommandPalette = (0, import_react13.forwardRef)(
           "aria-label": "Command palette",
           onKeyDown: onKey,
           children: [
+            /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(RDialog3.Title, { className: "ms-sr-only", children: "Command palette" }),
             /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)("div", { className: "ms-cmd__input-wrap", children: [
               /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(
                 "svg",

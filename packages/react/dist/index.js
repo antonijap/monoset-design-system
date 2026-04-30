@@ -687,6 +687,7 @@ var CommandPalette = forwardRef12(
           "aria-label": "Command palette",
           onKeyDown: onKey,
           children: [
+            /* @__PURE__ */ jsx16(RDialog3.Title, { className: "ms-sr-only", children: "Command palette" }),
             /* @__PURE__ */ jsxs13("div", { className: "ms-cmd__input-wrap", children: [
               /* @__PURE__ */ jsxs13(
                 "svg",

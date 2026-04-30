@@ -205,6 +205,7 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
             aria-label="Command palette"
             onKeyDown={onKey}
           >
+            <RDialog.Title className="ms-sr-only">Command palette</RDialog.Title>
             <div className="ms-cmd__input-wrap">
               <svg
                 className="ms-cmd__search-icon"
