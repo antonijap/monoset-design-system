@@ -273,7 +273,7 @@ function PageUsage() {
         <div className="monoset-dark" style={{ display:"flex", gap:8 }}>
           <DemoButton variant="primary">Save</DemoButton>
           <DemoButton variant="secondary">Cancel</DemoButton>
-          <DemoBadge variant="outline">v0.3</DemoBadge>
+          <DemoBadge variant="outline">v0.4</DemoBadge>
         </div>
       </Preview>
     </div>
@@ -838,7 +838,7 @@ function PageBadges() {
       <H2 id="tags">Tags</H2>
       <P>Dismissible tags for filters, categories, or multi-select inputs.</P>
       <Preview>
-        {["design","monotone","v0.3"].map(t => (
+        {["design","monotone","v0.4"].map(t => (
           <span key={t} style={{ fontSize:12, color:"var(--fg2)", background:"var(--bg-muted)", borderRadius:4,
                                   padding:"3px 8px", display:"inline-flex", alignItems:"center", gap:6 }}>
             {t}<span style={{ color:"var(--fg3)", cursor:"pointer" }}>×</span>
@@ -1956,7 +1956,7 @@ function PageLayout() {
       <P>Horizontal with wrap. Good for tag lists, button rows, or any set of items that should flow left to right and wrap naturally.</P>
       <Preview bg="var(--bg)">
         <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
-          {["design","monotone","v0.3","react","tokens","motion","layout"].map(t => (
+          {["design","monotone","v0.4","react","tokens","motion","layout"].map(t => (
             <span key={t} style={{ fontSize:12, color:"var(--fg2)", background:"var(--bg-muted)", borderRadius:4, padding:"3px 8px" }}>{t}</span>
           ))}
         </div>
@@ -1964,7 +1964,7 @@ function PageLayout() {
       <Code language="jsx">{`<Inline gap={2}>
   <Badge>design</Badge>
   <Badge>monotone</Badge>
-  <Badge>v0.3</Badge>
+  <Badge>v0.4</Badge>
 </Inline>`}</Code>
 
       <H2 id="grid">Grid</H2>
@@ -3415,6 +3415,252 @@ function PageMcpGuide() {
   );
 }
 
+function PageSheet() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Sheet</H1>
+      <Lead>A slide-over panel that enters from any edge. Built on Radix Dialog, so you get focus trapping, scroll locking, and accessible dismiss for free.</Lead>
+
+      <H2 id="basic">Basic sheet</H2>
+      <P>Use <InlineCode>Sheet</InlineCode> as the root, <InlineCode>SheetTrigger</InlineCode> to open it, and <InlineCode>SheetContent</InlineCode> for the panel. The <InlineCode>side</InlineCode> prop controls which edge it slides from.</P>
+      <Code language="jsx">{`import { Sheet, SheetTrigger, SheetContent, SheetClose, Button } from "@monoset/react";
+
+<Sheet>
+  <SheetTrigger asChild>
+    <Button>Open filters</Button>
+  </SheetTrigger>
+  <SheetContent title="Filters" description="Narrow down your results." side="right">
+    <p>Filter controls go here.</p>
+    <SheetClose asChild>
+      <Button variant="secondary">Done</Button>
+    </SheetClose>
+  </SheetContent>
+</Sheet>`}</Code>
+
+      <H2 id="sides">All four sides</H2>
+      <P>Pass <InlineCode>side="left"</InlineCode>, <InlineCode>"right"</InlineCode>, <InlineCode>"top"</InlineCode>, or <InlineCode>"bottom"</InlineCode>. Left and right panels span the full height; top and bottom span the full width.</P>
+      <Code language="jsx">{`<SheetContent side="left" size={320}>
+  Navigation drawer
+</SheetContent>
+
+<SheetContent side="bottom" size="50vh">
+  Mobile action sheet
+</SheetContent>`}</Code>
+
+      <H2 id="size">Custom size</H2>
+      <P>The <InlineCode>size</InlineCode> prop sets the panel width (for left/right) or height (for top/bottom). Accepts a number (pixels) or any CSS length string.</P>
+      <Code language="jsx">{`<SheetContent side="right" size={480}>
+  Wide detail panel
+</SheetContent>
+
+<SheetContent side="bottom" size="60vh">
+  Tall bottom sheet
+</SheetContent>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"side",        type:'"left" | "right" | "top" | "bottom"', default:'"right"', desc:"Which edge the panel enters from." },
+        { name:"size",        type:"string | number", default:"380",      desc:"Panel width (left/right) or height (top/bottom)." },
+        { name:"title",       type:"ReactNode",       default:"—",        desc:"Optional title rendered in the header." },
+        { name:"description", type:"ReactNode",       default:"—",        desc:"Optional description below the title." },
+        { name:"className",   type:"string",          default:"—",        desc:"Appended to the panel element." },
+      ]}/>
+
+      <H2 id="patterns">Common patterns</H2>
+
+      <H3>Mobile navigation drawer</H3>
+      <Code language="jsx">{`<Sheet>
+  <SheetTrigger asChild>
+    <Button variant="ghost" aria-label="Menu">☰</Button>
+  </SheetTrigger>
+  <SheetContent side="left" size={280} title="Navigation">
+    <nav>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/settings">Settings</a>
+    </nav>
+  </SheetContent>
+</Sheet>`}</Code>
+
+      <H3>Detail panel</H3>
+      <Code language="jsx">{`function UserRow({ user }) {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <button>{user.name}</button>
+      </SheetTrigger>
+      <SheetContent side="right" size={420} title={user.name} description={user.email}>
+        <Stack gap={4}>
+          <Card>Account details</Card>
+          <Card>Activity log</Card>
+        </Stack>
+      </SheetContent>
+    </Sheet>
+  );
+}`}</Code>
+    </div>
+  );
+}
+
+function PageCommand() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Command palette</H1>
+      <Lead>A searchable command menu with keyboard navigation. Built on Radix Dialog, styled to match the rest of Monoset. No extra dependencies.</Lead>
+
+      <H2 id="basic">Basic usage</H2>
+      <P>Pass an array of items, control the open state, and handle selection via <InlineCode>onSelect</InlineCode> on each item.</P>
+      <Code language="jsx">{`import { CommandPalette, Button } from "@monoset/react";
+import { useState } from "react";
+
+function App() {
+  const [open, setOpen] = useState(false);
+
+  const items = [
+    { id: "home",     label: "Go to Home",     onSelect: () => navigate("/") },
+    { id: "settings", label: "Open Settings",  onSelect: () => navigate("/settings") },
+    { id: "theme",    label: "Toggle theme",   onSelect: () => toggleTheme() },
+    { id: "logout",   label: "Log out",        onSelect: () => logout() },
+  ];
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Open commands</Button>
+      <CommandPalette open={open} onOpenChange={setOpen} items={items} />
+    </>
+  );
+}`}</Code>
+
+      <H2 id="groups">Grouped items</H2>
+      <P>Pass an array of groups instead of a flat list. Each group gets an optional heading.</P>
+      <Code language="jsx">{`const items = [
+  {
+    heading: "Navigation",
+    items: [
+      { id: "home",     label: "Home",     onSelect: () => navigate("/") },
+      { id: "projects", label: "Projects", onSelect: () => navigate("/projects") },
+    ],
+  },
+  {
+    heading: "Actions",
+    items: [
+      { id: "new",    label: "New project",  onSelect: () => createProject() },
+      { id: "theme",  label: "Toggle theme", onSelect: () => toggleTheme() },
+    ],
+  },
+];
+
+<CommandPalette open={open} onOpenChange={setOpen} items={items} />`}</Code>
+
+      <H2 id="keyboard">Keyboard shortcut</H2>
+      <P>The palette itself does not register a global keyboard shortcut. Wire it up yourself so you control when it activates.</P>
+      <Code language="jsx">{`useEffect(() => {
+  const onKey = (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      e.preventDefault();
+      setOpen(true);
+    }
+  };
+  window.addEventListener("keydown", onKey);
+  return () => window.removeEventListener("keydown", onKey);
+}, []);`}</Code>
+
+      <H2 id="filter">Custom filter</H2>
+      <P>By default the palette matches against <InlineCode>label</InlineCode>, <InlineCode>description</InlineCode>, and <InlineCode>keywords</InlineCode>. Pass a custom <InlineCode>filter</InlineCode> function to change this.</P>
+      <Code language="jsx">{`<CommandPalette
+  open={open}
+  onOpenChange={setOpen}
+  items={items}
+  filter={(query, item) => item.label.toLowerCase().startsWith(query.toLowerCase())}
+/>`}</Code>
+
+      <H2 id="footer">Footer</H2>
+      <P>Pass a <InlineCode>footer</InlineCode> prop to render keyboard hints or branding below the list.</P>
+      <Code language="jsx">{`<CommandPalette
+  open={open}
+  onOpenChange={setOpen}
+  items={items}
+  footer={
+    <>
+      <span>↑↓ navigate</span>
+      <span>↵ select</span>
+      <span>esc close</span>
+    </>
+  }
+/>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"open",          type:"boolean",                           default:"—",           desc:"Controlled open state." },
+        { name:"onOpenChange",  type:"(open: boolean) => void",          default:"—",           desc:"Called when the palette wants to open or close." },
+        { name:"items",         type:"CommandItem[] | CommandGroup[]",    default:"[]",          desc:"Flat or grouped list of commands." },
+        { name:"placeholder",   type:"string",                           default:'"Search..."', desc:"Input placeholder text." },
+        { name:"emptyMessage",  type:"string",                           default:'"No results."', desc:"Shown when nothing matches." },
+        { name:"filter",        type:"(query, item) => boolean",         default:"built-in",    desc:"Custom filter function." },
+        { name:"footer",        type:"ReactNode",                        default:"—",           desc:"Content rendered below the list." },
+      ]}/>
+
+      <H2 id="item-shape">CommandItem shape</H2>
+      <PropsTable rows={[
+        { name:"id",          type:"string",     default:"—",  desc:"Unique identifier." },
+        { name:"label",       type:"string",     default:"—",  desc:"Display label." },
+        { name:"description", type:"string",     default:"—",  desc:"Secondary text below the label." },
+        { name:"icon",        type:"ReactNode",  default:"—",  desc:"Leading icon." },
+        { name:"onSelect",    type:"() => void", default:"—",  desc:"Called when the item is picked." },
+        { name:"keywords",    type:"string[]",   default:"—",  desc:"Extra search terms (not displayed)." },
+        { name:"disabled",    type:"boolean",    default:"false", desc:"Prevents selection." },
+      ]}/>
+    </div>
+  );
+}
+
+function PageCli() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Tools</div>
+      <H1>CLI</H1>
+      <Lead>Add Monoset components to your project as source files. Keep full ownership of the code, customize whatever you want, and stay up to date by re-running the command.</Lead>
+
+      <H2 id="install">Install</H2>
+      <Code language="bash" filename="terminal">{`npm install -g @monoset/cli`}</Code>
+      <P>Or use it without installing via <InlineCode>npx</InlineCode>:</P>
+      <Code language="bash" filename="terminal">{`npx @monoset/cli add button card`}</Code>
+
+      <H2 id="init">Initialize a project</H2>
+      <P>Run <InlineCode>monoset init</InlineCode> to scaffold the CSS entry point and get instructions for installing the token and component packages.</P>
+      <Code language="bash" filename="terminal">{`monoset init`}</Code>
+      <P>This creates a <InlineCode>src/monoset.css</InlineCode> file that imports the token and component stylesheets. Then install the packages:</P>
+      <Code language="bash" filename="terminal">{`npm install @monoset/tokens @monoset/react`}</Code>
+
+      <H2 id="add">Add components</H2>
+      <P>Copy component source files directly into your project. The CLI resolves internal dependencies (like the <InlineCode>cx</InlineCode> utility) automatically.</P>
+      <Code language="bash" filename="terminal">{`monoset add button card input dialog`}</Code>
+      <P>Files land in <InlineCode>src/components/monoset/</InlineCode> by default. The CLI also extracts the relevant CSS from the component stylesheet and writes a single <InlineCode>monoset.css</InlineCode> file.</P>
+
+      <H2 id="add-all">Add everything</H2>
+      <Code language="bash" filename="terminal">{`monoset add --all`}</Code>
+
+      <H2 id="list">List available components</H2>
+      <Code language="bash" filename="terminal">{`monoset list`}</Code>
+
+      <H2 id="options">Options</H2>
+      <PropsTable rows={[
+        { name:"--out <dir>",   type:"flag", default:"src/components/monoset", desc:"Where to write the files." },
+        { name:"--overwrite",   type:"flag", default:"false",                  desc:"Replace existing files." },
+        { name:"--all",         type:"flag", default:"false",                  desc:"Add every component." },
+      ]}/>
+
+      <H2 id="how">How it works</H2>
+      <P>The CLI fetches component source directly from the GitHub repo. Each component is a single <InlineCode>.tsx</InlineCode> file that wraps a Radix primitive. The CSS is extracted from the monorepo stylesheet by matching named section banners.</P>
+      <P>Because you own the source files, you can rename props, strip features you don't need, or change the styling. When Monoset ships updates, run the command again with <InlineCode>--overwrite</InlineCode> and diff the result.</P>
+
+      <H2 id="vs-npm">CLI vs npm package</H2>
+      <P>Both approaches work. Use <InlineCode>@monoset/react</InlineCode> from npm if you want a standard dependency you can upgrade with a version bump. Use the CLI if you want full source ownership and the ability to modify components in place.</P>
+    </div>
+  );
+}
+
 const PAGES = {
   introduction: PageIntroduction,
   installation: PageInstallation,
@@ -3441,6 +3687,9 @@ const PAGES = {
   textarea:     PageTextarea,
   select:       PageSelect,
   layout:       PageLayout,
+  sheet:        PageSheet,
+  command:      PageCommand,
+  cli:          PageCli,
   llm:          PageLLM,
   playground:   PagePlayground,
   theming:      PageThemeGuide,

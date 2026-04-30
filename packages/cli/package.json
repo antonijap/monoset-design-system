@@ -1,0 +1,31 @@
+{
+  "name": "@monoset/cli",
+  "version": "0.1.0",
+  "description": "Add Monoset components to your project as source files. No npm install, no version drift.",
+  "keywords": [
+    "monoset",
+    "design-system",
+    "cli",
+    "components",
+    "react"
+  ],
+  "license": "MIT",
+  "homepage": "https://monoset.design",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antonijap/monoset-design-system.git",
+    "directory": "packages/cli"
+  },
+  "bugs": "https://github.com/antonijap/monoset-design-system/issues",
+  "type": "module",
+  "bin": {
+    "monoset": "bin/index.js"
+  },
+  "files": [
+    "bin",
+    "registry"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}

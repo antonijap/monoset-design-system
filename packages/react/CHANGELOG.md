@@ -1,5 +1,15 @@
 # @monoset/react
 
+## 0.4.0
+
+### Minor Changes
+
+- Add Sheet and CommandPalette components.
+
+  Sheet is a slide-over panel built on Radix Dialog. Four sides (left, right, top, bottom), configurable size, optional title and description header.
+
+  CommandPalette is a searchable command menu with keyboard navigation. Flat or grouped items, built-in fuzzy search across labels, descriptions, and keywords. Arrow keys to navigate, Enter to select, Esc to close. Built on Radix Dialog with no extra dependencies.
+
 ## 0.3.0
 
 ### Minor Changes

@@ -213,6 +213,55 @@ interface DialogContentProps extends Omit<React.ComponentPropsWithoutRef<typeof 
 }
 declare function DialogContent({ title, description, children, className, ...rest }: DialogContentProps): react_jsx_runtime.JSX.Element;
 
+declare const Sheet: react.FC<RDialog.DialogProps>;
+declare const SheetTrigger: react.ForwardRefExoticComponent<RDialog.DialogTriggerProps & react.RefAttributes<HTMLButtonElement>>;
+declare const SheetClose: react.ForwardRefExoticComponent<RDialog.DialogCloseProps & react.RefAttributes<HTMLButtonElement>>;
+type SheetSide = "left" | "right" | "top" | "bottom";
+interface SheetContentProps extends Omit<React.ComponentPropsWithoutRef<typeof RDialog.Content>, "title"> {
+    title?: ReactNode;
+    description?: ReactNode;
+    children?: ReactNode;
+    /** Which edge the panel slides in from. Default: "right". */
+    side?: SheetSide;
+    /** Panel width (left/right) or height (top/bottom). Default: 380px. */
+    size?: string | number;
+}
+declare function SheetContent({ title, description, children, className, side, size, style, ...rest }: SheetContentProps): react_jsx_runtime.JSX.Element;
+
+interface CommandItem {
+    id: string;
+    label: string;
+    description?: string;
+    icon?: ReactNode;
+    /** Called when the item is selected. */
+    onSelect?: () => void;
+    /** Keywords for search matching (not shown in the UI). */
+    keywords?: string[];
+    disabled?: boolean;
+}
+interface CommandGroup {
+    heading?: string;
+    items: CommandItem[];
+}
+interface CommandPaletteProps {
+    /** Controlled open state. */
+    open?: boolean;
+    /** Called when the palette wants to open or close. */
+    onOpenChange?: (open: boolean) => void;
+    /** Flat list of items or grouped items. */
+    items?: CommandItem[] | CommandGroup[];
+    /** Placeholder text for the search input. Default: "Search..." */
+    placeholder?: string;
+    /** Text shown when no items match. Default: "No results." */
+    emptyMessage?: string;
+    /** Custom filter function. Receives the query and an item, return true to keep. */
+    filter?: (query: string, item: CommandItem) => boolean;
+    /** Footer content (keyboard hints, etc). */
+    footer?: ReactNode;
+    className?: string;
+}
+declare const CommandPalette: react.ForwardRefExoticComponent<CommandPaletteProps & react.RefAttributes<HTMLDivElement>>;
+
 declare function TooltipProvider({ children, delayDuration }: {
     children: ReactNode;
     delayDuration?: number;
@@ -431,4 +480,4 @@ interface StaggerListProps {
 }
 declare const StaggerList: react.ForwardRefExoticComponent<StaggerListProps & react.RefAttributes<HTMLDivElement>>;
 
-export { Accordion, AccordionContent, AccordionItem, type AccordionItemProps, AccordionTrigger, type AccordionTriggerProps, Alert, type AlertProps, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Card, type CardProps, type CardVariant, Checkbox, type CheckboxProps, Container, type ContainerProps, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, EmptyState, type EmptyStateProps, Field, type FieldProps, type FieldState, Form, type FormProps, Grid, type GridProps, Inline, type InlineProps, Input, type InputProps, Kbd, type KbdProps, MonosetProvider, type MonosetProviderProps, Pagination, type PaginationProps, Popover, PopoverClose, PopoverContent, type PopoverContentProps, PopoverTrigger, Progress, type ProgressProps, Radio, RadioGroup, type RadioProps, Reveal, type RevealProps, Select, SelectContent, SelectItem, type SelectItemProps, SelectTrigger, type SelectTriggerProps, Separator, type SeparatorProps, Skeleton, type SkeletonProps, Slider, type SliderProps, type SortDirection, Spinner, type SpinnerProps, Stack, type StackProps, StaggerList, type StaggerListProps, Switch, type SwitchProps, Table, TableHeader, type TableHeaderProps, type TableProps, TableSelectAll, type TableSelectAllProps, TableSelectRow, type TableSelectRowProps, Tabs, TabsContent, TabsList, TabsTrigger, type TabsTriggerProps, Textarea, type TextareaProps, type Theme, ThemeProvider, type ThemeProviderProps, ThemeToggle, Toast, type ToastProps, ToastProvider, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, type TooltipProps, TooltipProvider, type UseFormOptions, type UseFormReturn, type ValidationRule, cx, useMonosetForm, useTheme };
+export { Accordion, AccordionContent, AccordionItem, type AccordionItemProps, AccordionTrigger, type AccordionTriggerProps, Alert, type AlertProps, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Card, type CardProps, type CardVariant, Checkbox, type CheckboxProps, type CommandGroup, type CommandItem, CommandPalette, type CommandPaletteProps, Container, type ContainerProps, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, EmptyState, type EmptyStateProps, Field, type FieldProps, type FieldState, Form, type FormProps, Grid, type GridProps, Inline, type InlineProps, Input, type InputProps, Kbd, type KbdProps, MonosetProvider, type MonosetProviderProps, Pagination, type PaginationProps, Popover, PopoverClose, PopoverContent, type PopoverContentProps, PopoverTrigger, Progress, type ProgressProps, Radio, RadioGroup, type RadioProps, Reveal, type RevealProps, Select, SelectContent, SelectItem, type SelectItemProps, SelectTrigger, type SelectTriggerProps, Separator, type SeparatorProps, Sheet, SheetClose, SheetContent, type SheetContentProps, type SheetSide, SheetTrigger, Skeleton, type SkeletonProps, Slider, type SliderProps, type SortDirection, Spinner, type SpinnerProps, Stack, type StackProps, StaggerList, type StaggerListProps, Switch, type SwitchProps, Table, TableHeader, type TableHeaderProps, type TableProps, TableSelectAll, type TableSelectAllProps, TableSelectRow, type TableSelectRowProps, Tabs, TabsContent, TabsList, TabsTrigger, type TabsTriggerProps, Textarea, type TextareaProps, type Theme, ThemeProvider, type ThemeProviderProps, ThemeToggle, Toast, type ToastProps, ToastProvider, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, type TooltipProps, TooltipProvider, type UseFormOptions, type UseFormReturn, type ValidationRule, cx, useMonosetForm, useTheme };

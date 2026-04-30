@@ -12,6 +12,8 @@ export { Tabs, TabsList, TabsTrigger, TabsContent, type TabsTriggerProps } from 
 export { Table, TableHeader, TableSelectAll, TableSelectRow, type TableProps, type TableHeaderProps, type TableSelectAllProps, type TableSelectRowProps, type SortDirection } from "./Table";
 export { Toast, ToastProvider, type ToastProps } from "./Toast";
 export { Dialog, DialogTrigger, DialogContent, DialogClose, type DialogContentProps } from "./Dialog";
+export { Sheet, SheetTrigger, SheetContent, SheetClose, type SheetContentProps, type SheetSide } from "./Sheet";
+export { CommandPalette, type CommandPaletteProps, type CommandItem, type CommandGroup } from "./CommandPalette";
 export { Tooltip, TooltipProvider, type TooltipProps } from "./Tooltip";
 export { Popover, PopoverTrigger, PopoverContent, PopoverClose, type PopoverContentProps } from "./Popover";
 export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "./DropdownMenu";

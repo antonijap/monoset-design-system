@@ -40,8 +40,11 @@ const NAV = [
     { id:"textarea",  label:"Textarea" },
     { id:"select",    label:"Select" },
     { id:"layout",    label:"Layout" },
+    { id:"sheet",     label:"Sheet" },
+    { id:"command",   label:"Command palette" },
   ]},
   { section: "Tools", items: [
+    { id:"cli",       label:"CLI" },
     { id:"playground", label:"Playground" },
   ]},
   { section: "Guides", items: [

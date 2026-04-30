@@ -1,0 +1,254 @@
+{
+  "button": {
+    "name": "Button",
+    "files": ["Button.tsx"],
+    "cssSection": "Button",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "badge": {
+    "name": "Badge",
+    "files": ["Badge.tsx"],
+    "cssSection": "Badge",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "avatar": {
+    "name": "Avatar",
+    "files": ["Avatar.tsx"],
+    "cssSection": "Avatar",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "card": {
+    "name": "Card",
+    "files": ["Card.tsx"],
+    "cssSection": "Card",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "alert": {
+    "name": "Alert",
+    "files": ["Alert.tsx"],
+    "cssSection": "Alert",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "input": {
+    "name": "Input",
+    "files": ["Input.tsx"],
+    "cssSection": "Input + Field",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "checkbox": {
+    "name": "Checkbox",
+    "files": ["Checkbox.tsx"],
+    "cssSection": "Checkbox + Switch",
+    "deps": ["@radix-ui/react-checkbox", "framer-motion", "@monoset/motion"],
+    "internalDeps": ["cx"]
+  },
+  "switch": {
+    "name": "Switch",
+    "files": ["Switch.tsx"],
+    "cssSection": "Checkbox + Switch",
+    "deps": ["@radix-ui/react-switch"],
+    "internalDeps": ["cx"]
+  },
+  "radio-group": {
+    "name": "RadioGroup",
+    "files": ["RadioGroup.tsx"],
+    "cssSection": "Radio",
+    "deps": ["@radix-ui/react-radio-group"],
+    "internalDeps": ["cx"]
+  },
+  "select": {
+    "name": "Select",
+    "files": ["Select.tsx"],
+    "cssSection": "Select trigger",
+    "deps": ["@radix-ui/react-select"],
+    "internalDeps": ["cx"]
+  },
+  "dialog": {
+    "name": "Dialog",
+    "files": ["Dialog.tsx"],
+    "cssSection": "Dialog / Modal",
+    "deps": ["@radix-ui/react-dialog"],
+    "internalDeps": ["cx"]
+  },
+  "tabs": {
+    "name": "Tabs",
+    "files": ["Tabs.tsx"],
+    "cssSection": "Tabs",
+    "deps": ["@radix-ui/react-tabs", "framer-motion", "@monoset/motion"],
+    "internalDeps": ["cx"]
+  },
+  "table": {
+    "name": "Table",
+    "files": ["Table.tsx"],
+    "cssSection": "Table",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "toast": {
+    "name": "Toast",
+    "files": ["Toast.tsx"],
+    "cssSection": "Toast",
+    "deps": ["@radix-ui/react-toast"],
+    "internalDeps": ["cx"]
+  },
+  "tooltip": {
+    "name": "Tooltip",
+    "files": ["Tooltip.tsx"],
+    "cssSection": "Popover / Tooltip / DropdownMenu shared",
+    "deps": ["@radix-ui/react-tooltip"],
+    "internalDeps": ["cx"]
+  },
+  "popover": {
+    "name": "Popover",
+    "files": ["Popover.tsx"],
+    "cssSection": "Popover / Tooltip / DropdownMenu shared",
+    "deps": ["@radix-ui/react-popover"],
+    "internalDeps": ["cx"]
+  },
+  "dropdown-menu": {
+    "name": "DropdownMenu",
+    "files": ["DropdownMenu.tsx"],
+    "cssSection": "Popover / Tooltip / DropdownMenu shared",
+    "deps": ["@radix-ui/react-dropdown-menu"],
+    "internalDeps": ["cx"]
+  },
+  "accordion": {
+    "name": "Accordion",
+    "files": ["Accordion.tsx"],
+    "cssSection": "Accordion",
+    "deps": ["@radix-ui/react-accordion"],
+    "internalDeps": ["cx"]
+  },
+  "slider": {
+    "name": "Slider",
+    "files": ["Slider.tsx"],
+    "cssSection": "Slider",
+    "deps": ["@radix-ui/react-slider"],
+    "internalDeps": ["cx"]
+  },
+  "skeleton": {
+    "name": "Skeleton",
+    "files": ["Skeleton.tsx"],
+    "cssSection": "Skeleton",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "spinner": {
+    "name": "Spinner",
+    "files": ["Spinner.tsx"],
+    "cssSection": "Spinner",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "progress": {
+    "name": "Progress",
+    "files": ["Progress.tsx"],
+    "cssSection": "Progress",
+    "deps": ["@radix-ui/react-progress"],
+    "internalDeps": ["cx"]
+  },
+  "separator": {
+    "name": "Separator",
+    "files": ["Separator.tsx"],
+    "cssSection": "Separator",
+    "deps": ["@radix-ui/react-separator"],
+    "internalDeps": ["cx"]
+  },
+  "kbd": {
+    "name": "Kbd",
+    "files": ["Kbd.tsx"],
+    "cssSection": "Kbd",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "pagination": {
+    "name": "Pagination",
+    "files": ["Pagination.tsx"],
+    "cssSection": "Pagination",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "breadcrumb": {
+    "name": "Breadcrumb",
+    "files": ["Breadcrumb.tsx"],
+    "cssSection": "Breadcrumb",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "empty-state": {
+    "name": "EmptyState",
+    "files": ["EmptyState.tsx"],
+    "cssSection": "Empty state",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "toggle-group": {
+    "name": "ToggleGroup",
+    "files": ["ToggleGroup.tsx"],
+    "cssSection": "Toggle / ToggleGroup",
+    "deps": ["@radix-ui/react-toggle-group", "@radix-ui/react-toggle"],
+    "internalDeps": ["cx"]
+  },
+  "layout": {
+    "name": "Layout",
+    "files": ["Layout.tsx"],
+    "cssSection": "Layout: Stack / Inline / Grid / Container",
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "form": {
+    "name": "Form",
+    "files": ["Form.tsx"],
+    "cssSection": null,
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "theme": {
+    "name": "Theme",
+    "files": ["Theme.tsx"],
+    "cssSection": null,
+    "deps": [],
+    "internalDeps": ["cx"]
+  },
+  "motion": {
+    "name": "Motion",
+    "files": ["Motion.tsx"],
+    "cssSection": null,
+    "deps": ["framer-motion", "@monoset/motion"],
+    "internalDeps": []
+  },
+  "monoset-provider": {
+    "name": "MonosetProvider",
+    "files": ["MonosetProvider.tsx"],
+    "cssSection": null,
+    "deps": ["framer-motion"],
+    "internalDeps": ["tooltip", "toast", "theme"]
+  },
+  "sheet": {
+    "name": "Sheet",
+    "files": ["Sheet.tsx"],
+    "cssSection": "Sheet",
+    "deps": ["@radix-ui/react-dialog"],
+    "internalDeps": ["cx"]
+  },
+  "command-palette": {
+    "name": "CommandPalette",
+    "files": ["CommandPalette.tsx"],
+    "cssSection": "Command palette",
+    "deps": ["@radix-ui/react-dialog"],
+    "internalDeps": ["cx"]
+  },
+  "cx": {
+    "name": "cx",
+    "files": ["cx.ts"],
+    "cssSection": null,
+    "deps": [],
+    "internalDeps": []
+  }
+}

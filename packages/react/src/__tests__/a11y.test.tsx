@@ -26,6 +26,8 @@ import {
   TabsList,
   TabsTrigger,
   TabsContent,
+  SheetContent,
+  Sheet,
 } from "../index";
 
 // Each test renders the component in a minimal-but-complete accessible
@@ -171,6 +173,17 @@ describe("a11y", () => {
 
   it("Spinner has no violations", async () => {
     const { container } = render(<Spinner label="Loading" />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("Sheet has no violations", async () => {
+    const { container } = render(
+      <Sheet open>
+        <SheetContent title="Filters" description="Narrow down results.">
+          <p>Sheet body content</p>
+        </SheetContent>
+      </Sheet>,
+    );
     expect(await axe(container)).toHaveNoViolations();
   });
 });

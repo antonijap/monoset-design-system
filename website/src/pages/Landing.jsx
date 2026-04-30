@@ -830,7 +830,7 @@ export default function Hero({ onStart }) {
         <div data-ms="hero-header-actions" style={{ marginLeft:"auto", display:"flex", gap:8, alignItems:"center" }}>
           <span style={{ fontSize:12, fontWeight:500, color:"var(--fg3)", background:"var(--bg-muted)",
                          border:"1px solid var(--border-subtle)", padding:"0 12px", borderRadius:6,
-                         height:32, display:"inline-flex", alignItems:"center", boxSizing:"border-box" }}>v0.3</span>
+                         height:32, display:"inline-flex", alignItems:"center", boxSizing:"border-box" }}>v0.4</span>
           <button onClick={()=>onStart("introduction")} style={{ background:"var(--mono-1000)", color:"#fff",
             fontSize:13, fontWeight:500, border:"none", borderRadius:6, padding:"0 16px", cursor:"pointer",
             height:32, display:"inline-flex", alignItems:"center", fontFamily:"inherit", boxSizing:"border-box" }}>
@@ -848,7 +848,7 @@ export default function Hero({ onStart }) {
           <span style={{ width:6, height:6, borderRadius:"50%", background:"var(--fg1)" }}/>
           Design system
           <span style={{ width:1, height:10, background:"var(--border)" }}/>
-          <span style={{ color:"var(--fg3)" }}>v0.3</span>
+          <span style={{ color:"var(--fg3)" }}>v0.4</span>
         </div>
         <h1 data-ms="hero-title" style={{ fontSize:64, fontWeight:700, letterSpacing:"-0.03em", lineHeight:1.05, margin:"0 0 20px",
                      color:"var(--fg1)" }}>
@@ -941,7 +941,7 @@ export default function Hero({ onStart }) {
                        display:"flex", alignItems:"center", justifyContent:"space-between" }}>
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
           <img src="/assets/monoset-mark.svg" width="16" height="16" alt=""/>
-          <span style={{ fontSize:12, color:"var(--fg3)" }}>Monoset v0.3</span>
+          <span style={{ fontSize:12, color:"var(--fg3)" }}>Monoset v0.4</span>
         </div>
         <div style={{ fontSize:12, color:"var(--fg4)" }}>MIT license · No opinions supplied.</div>
       </footer>
