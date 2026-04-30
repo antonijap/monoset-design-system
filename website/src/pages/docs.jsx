@@ -9,6 +9,7 @@ import {
   H1, H2, H3, P, Lead, Divider,
   Preview, Step,
   DemoButton, DemoBadge,
+  PropsTable,
 } from '../ui/docs.jsx';
 
 function PageIntroduction({ setPage }) {

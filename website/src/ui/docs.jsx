@@ -167,3 +167,41 @@ export function DemoBadge({ variant="neutral", children }) {
   return <span style={{ ...v, fontSize:11, fontWeight:500, padding:"3px 9px", borderRadius:999,
                          display:"inline-flex", alignItems:"center", lineHeight:1 }}>{children}</span>;
 }
+
+export function PropsTable({ rows = [] }) {
+  return (
+    <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden", marginBottom:18 }}>
+      <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
+        <thead>
+          <tr style={{ background:"var(--bg-subtle)" }}>
+            <th style={thStyle}>Prop</th>
+            <th style={thStyle}>Type</th>
+            <th style={thStyle}>Default</th>
+            <th style={thStyle}>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr key={r.name} style={{ borderTop: i === 0 ? "none" : "1px solid var(--border-subtle)" }}>
+              <td style={tdMonoStyle}>{r.name}</td>
+              <td style={tdMonoStyle}>{r.type}</td>
+              <td style={tdMonoStyle}>{r.default}</td>
+              <td style={tdStyle}>{r.desc}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+const thStyle = {
+  textAlign: "left", padding: "8px 12px",
+  fontWeight: 600, color: "var(--fg2)", fontSize: 11,
+};
+const tdStyle = {
+  padding: "10px 12px", color: "var(--fg2)", lineHeight: 1.55, verticalAlign: "top",
+};
+const tdMonoStyle = {
+  ...tdStyle, fontFamily: "var(--font-mono)", color: "var(--fg1)", fontSize: 12, whiteSpace: "nowrap",
+};
