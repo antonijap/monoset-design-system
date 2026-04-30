@@ -7,6 +7,7 @@ import * as RRadio from '@radix-ui/react-radio-group';
 import * as RTabs from '@radix-ui/react-tabs';
 import * as RToast from '@radix-ui/react-toast';
 import * as RDialog from '@radix-ui/react-dialog';
+import * as RHoverCard from '@radix-ui/react-hover-card';
 import * as RPopover from '@radix-ui/react-popover';
 import * as RDropdown from '@radix-ui/react-dropdown-menu';
 import * as RSelect from '@radix-ui/react-select';
@@ -262,6 +263,111 @@ interface CommandPaletteProps {
 }
 declare const CommandPalette: react.ForwardRefExoticComponent<CommandPaletteProps & react.RefAttributes<HTMLDivElement>>;
 
+interface AppShellProps {
+    children: ReactNode;
+    /** Sidebar width in px. Default: 240. */
+    sidebarWidth?: number;
+    className?: string;
+}
+declare const AppShellRoot: react.ForwardRefExoticComponent<AppShellProps & react.RefAttributes<HTMLDivElement>>;
+interface AppShellSidebarProps {
+    children: ReactNode;
+    /** Optional brand block rendered at the top. */
+    brand?: ReactNode;
+    /** Optional footer block rendered at the bottom. */
+    footer?: ReactNode;
+    className?: string;
+}
+declare function AppShellSidebar({ children, brand, footer, className }: AppShellSidebarProps): react_jsx_runtime.JSX.Element;
+interface AppShellSidebarGroupProps {
+    label?: ReactNode;
+    children: ReactNode;
+    className?: string;
+}
+declare function AppShellSidebarGroup({ label, children, className }: AppShellSidebarGroupProps): react_jsx_runtime.JSX.Element;
+interface AppShellSidebarItemProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+    icon?: ReactNode;
+    active?: boolean;
+    children: ReactNode;
+}
+declare const AppShellSidebarItem: react.ForwardRefExoticComponent<AppShellSidebarItemProps & react.RefAttributes<HTMLButtonElement>>;
+interface AppShellMainProps {
+    children?: ReactNode;
+    className?: string;
+}
+declare function AppShellMain({ children, className }: AppShellMainProps): react_jsx_runtime.JSX.Element;
+interface AppShellHeaderProps {
+    children?: ReactNode;
+    className?: string;
+}
+declare function AppShellHeader({ children, className }: AppShellHeaderProps): react_jsx_runtime.JSX.Element;
+interface AppShellMobileTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    /** Visually hidden label for the button. Default: "Open navigation". */
+    label?: string;
+}
+declare const AppShellMobileTrigger: react.ForwardRefExoticComponent<AppShellMobileTriggerProps & react.RefAttributes<HTMLButtonElement>>;
+interface AppShellContentProps {
+    children?: ReactNode;
+    className?: string;
+}
+declare function AppShellContent({ children, className }: AppShellContentProps): react_jsx_runtime.JSX.Element;
+/** Read or update the AppShell's mobile drawer state from anywhere inside. */
+declare function useAppShellMobile(): {
+    open: boolean;
+    setOpen: (open: boolean) => void;
+};
+type AppShellComponent = typeof AppShellRoot & {
+    Sidebar: typeof AppShellSidebar;
+    SidebarGroup: typeof AppShellSidebarGroup;
+    SidebarItem: typeof AppShellSidebarItem;
+    Main: typeof AppShellMain;
+    Header: typeof AppShellHeader;
+    MobileTrigger: typeof AppShellMobileTrigger;
+    Content: typeof AppShellContent;
+};
+declare const AppShell: AppShellComponent;
+
+interface ComboboxOption {
+    value: string;
+    label: string;
+    description?: string;
+    disabled?: boolean;
+    /** Extra terms used by search but not displayed. */
+    keywords?: string[];
+}
+interface ComboboxProps {
+    options: ComboboxOption[];
+    /** Controlled value. */
+    value?: string;
+    /** Called with the new value when an option is picked. */
+    onValueChange?: (value: string) => void;
+    /** Placeholder text on the trigger when nothing is selected. Default: "Select..." */
+    placeholder?: string;
+    /** Placeholder text inside the search input. Default: "Search..." */
+    searchPlaceholder?: string;
+    /** Text shown when no options match the query. Default: "No results." */
+    emptyMessage?: string;
+    /** Custom filter function. Receives the query and an option, return true to keep. */
+    filter?: (query: string, option: ComboboxOption) => boolean;
+    /** Disabled state for the whole control. */
+    disabled?: boolean;
+    /** Forwarded to the trigger button. */
+    id?: string;
+    className?: string;
+    "aria-label"?: string;
+    "aria-labelledby"?: string;
+    "aria-describedby"?: string;
+    "aria-invalid"?: boolean;
+}
+declare const Combobox: react.ForwardRefExoticComponent<ComboboxProps & react.RefAttributes<HTMLButtonElement>>;
+
+declare const HoverCard: react.FC<RHoverCard.HoverCardProps>;
+declare const HoverCardTrigger: react.ForwardRefExoticComponent<RHoverCard.HoverCardTriggerProps & react.RefAttributes<HTMLAnchorElement>>;
+interface HoverCardContentProps extends React.ComponentPropsWithoutRef<typeof RHoverCard.Content> {
+    children?: ReactNode;
+}
+declare function HoverCardContent({ className, children, sideOffset, ...rest }: HoverCardContentProps): react_jsx_runtime.JSX.Element;
+
 declare function TooltipProvider({ children, delayDuration }: {
     children: ReactNode;
     delayDuration?: number;
@@ -480,4 +586,4 @@ interface StaggerListProps {
 }
 declare const StaggerList: react.ForwardRefExoticComponent<StaggerListProps & react.RefAttributes<HTMLDivElement>>;
 
-export { Accordion, AccordionContent, AccordionItem, type AccordionItemProps, AccordionTrigger, type AccordionTriggerProps, Alert, type AlertProps, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Card, type CardProps, type CardVariant, Checkbox, type CheckboxProps, type CommandGroup, type CommandItem, CommandPalette, type CommandPaletteProps, Container, type ContainerProps, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, EmptyState, type EmptyStateProps, Field, type FieldProps, type FieldState, Form, type FormProps, Grid, type GridProps, Inline, type InlineProps, Input, type InputProps, Kbd, type KbdProps, MonosetProvider, type MonosetProviderProps, Pagination, type PaginationProps, Popover, PopoverClose, PopoverContent, type PopoverContentProps, PopoverTrigger, Progress, type ProgressProps, Radio, RadioGroup, type RadioProps, Reveal, type RevealProps, Select, SelectContent, SelectItem, type SelectItemProps, SelectTrigger, type SelectTriggerProps, Separator, type SeparatorProps, Sheet, SheetClose, SheetContent, type SheetContentProps, type SheetSide, SheetTrigger, Skeleton, type SkeletonProps, Slider, type SliderProps, type SortDirection, Spinner, type SpinnerProps, Stack, type StackProps, StaggerList, type StaggerListProps, Switch, type SwitchProps, Table, TableHeader, type TableHeaderProps, type TableProps, TableSelectAll, type TableSelectAllProps, TableSelectRow, type TableSelectRowProps, Tabs, TabsContent, TabsList, TabsTrigger, type TabsTriggerProps, Textarea, type TextareaProps, type Theme, ThemeProvider, type ThemeProviderProps, ThemeToggle, Toast, type ToastProps, ToastProvider, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, type TooltipProps, TooltipProvider, type UseFormOptions, type UseFormReturn, type ValidationRule, cx, useMonosetForm, useTheme };
+export { Accordion, AccordionContent, AccordionItem, type AccordionItemProps, AccordionTrigger, type AccordionTriggerProps, Alert, type AlertProps, AppShell, type AppShellContentProps, type AppShellHeaderProps, type AppShellMainProps, type AppShellMobileTriggerProps, type AppShellProps, type AppShellSidebarGroupProps, type AppShellSidebarItemProps, type AppShellSidebarProps, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Card, type CardProps, type CardVariant, Checkbox, type CheckboxProps, Combobox, type ComboboxOption, type ComboboxProps, type CommandGroup, type CommandItem, CommandPalette, type CommandPaletteProps, Container, type ContainerProps, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, EmptyState, type EmptyStateProps, Field, type FieldProps, type FieldState, Form, type FormProps, Grid, type GridProps, HoverCard, HoverCardContent, type HoverCardContentProps, HoverCardTrigger, Inline, type InlineProps, Input, type InputProps, Kbd, type KbdProps, MonosetProvider, type MonosetProviderProps, Pagination, type PaginationProps, Popover, PopoverClose, PopoverContent, type PopoverContentProps, PopoverTrigger, Progress, type ProgressProps, Radio, RadioGroup, type RadioProps, Reveal, type RevealProps, Select, SelectContent, SelectItem, type SelectItemProps, SelectTrigger, type SelectTriggerProps, Separator, type SeparatorProps, Sheet, SheetClose, SheetContent, type SheetContentProps, type SheetSide, SheetTrigger, Skeleton, type SkeletonProps, Slider, type SliderProps, type SortDirection, Spinner, type SpinnerProps, Stack, type StackProps, StaggerList, type StaggerListProps, Switch, type SwitchProps, Table, TableHeader, type TableHeaderProps, type TableProps, TableSelectAll, type TableSelectAllProps, TableSelectRow, type TableSelectRowProps, Tabs, TabsContent, TabsList, TabsTrigger, type TabsTriggerProps, Textarea, type TextareaProps, type Theme, ThemeProvider, type ThemeProviderProps, ThemeToggle, Toast, type ToastProps, ToastProvider, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, type TooltipProps, TooltipProvider, type UseFormOptions, type UseFormReturn, type ValidationRule, cx, useAppShellMobile, useMonosetForm, useTheme };

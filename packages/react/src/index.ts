@@ -14,6 +14,20 @@ export { Toast, ToastProvider, type ToastProps } from "./Toast";
 export { Dialog, DialogTrigger, DialogContent, DialogClose, type DialogContentProps } from "./Dialog";
 export { Sheet, SheetTrigger, SheetContent, SheetClose, type SheetContentProps, type SheetSide } from "./Sheet";
 export { CommandPalette, type CommandPaletteProps, type CommandItem, type CommandGroup } from "./CommandPalette";
+export {
+  AppShell,
+  useAppShellMobile,
+  type AppShellProps,
+  type AppShellSidebarProps,
+  type AppShellSidebarGroupProps,
+  type AppShellSidebarItemProps,
+  type AppShellMainProps,
+  type AppShellHeaderProps,
+  type AppShellMobileTriggerProps,
+  type AppShellContentProps,
+} from "./AppShell";
+export { Combobox, type ComboboxProps, type ComboboxOption } from "./Combobox";
+export { HoverCard, HoverCardTrigger, HoverCardContent, type HoverCardContentProps } from "./HoverCard";
 export { Tooltip, TooltipProvider, type TooltipProps } from "./Tooltip";
 export { Popover, PopoverTrigger, PopoverContent, PopoverClose, type PopoverContentProps } from "./Popover";
 export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "./DropdownMenu";

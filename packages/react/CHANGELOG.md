@@ -1,5 +1,17 @@
 # @monoset/react
 
+## 0.5.0
+
+### Minor Changes
+
+- Add AppShell, Combobox, and HoverCard.
+
+  AppShell is a composable application layout: `AppShell.Sidebar` (with brand and footer slots), `AppShell.SidebarGroup`, `AppShell.SidebarItem`, `AppShell.Main`, `AppShell.Header`, `AppShell.MobileTrigger`, and `AppShell.Content`. The mobile drawer behavior is built in -- below 768px the sidebar collapses and a hamburger trigger opens the same nav as a Radix Dialog drawer.
+
+  Combobox is a searchable single-select. Built on Radix Popover with a custom keyboard-navigable list and pluggable filter function. Same zero-runtime-dep pattern as CommandPalette.
+
+  HoverCard is a thin wrapper around `@radix-ui/react-hover-card` for rich tooltips: user mentions, link previews, ticket summaries.
+
 ## 0.4.0
 
 ### Minor Changes

@@ -1,6 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Table, Button, Badge, Alert, Avatar, Input, Textarea, Switch, Checkbox, Spinner, Card, Select, SelectTrigger, SelectContent, SelectItem } from '@monoset/react';
+import {
+  Table, Button, Badge, Alert, Avatar, Input, Textarea, Switch, Checkbox, Spinner, Card,
+  Select, SelectTrigger, SelectContent, SelectItem,
+  Combobox,
+  Sheet, SheetTrigger, SheetContent, SheetClose,
+  CommandPalette,
+  HoverCard, HoverCardTrigger, HoverCardContent,
+  Stack,
+} from '@monoset/react';
 import {
   EASE_STANDARD, EASE_EMPHASIS, EASE_EXIT, DUR,
   fadeUp, hoverLift, pressDown,
@@ -274,7 +282,7 @@ function PageUsage() {
         <div className="monoset-dark" style={{ display:"flex", gap:8 }}>
           <DemoButton variant="primary">Save</DemoButton>
           <DemoButton variant="secondary">Cancel</DemoButton>
-          <DemoBadge variant="outline">v0.4</DemoBadge>
+          <DemoBadge variant="outline">v0.5</DemoBadge>
         </div>
       </Preview>
     </div>
@@ -839,7 +847,7 @@ function PageBadges() {
       <H2 id="tags">Tags</H2>
       <P>Dismissible tags for filters, categories, or multi-select inputs.</P>
       <Preview>
-        {["design","monotone","v0.4"].map(t => (
+        {["design","monotone","v0.5"].map(t => (
           <span key={t} style={{ fontSize:12, color:"var(--fg2)", background:"var(--bg-muted)", borderRadius:4,
                                   padding:"3px 8px", display:"inline-flex", alignItems:"center", gap:6 }}>
             {t}<span style={{ color:"var(--fg3)", cursor:"pointer" }}>×</span>
@@ -1957,7 +1965,7 @@ function PageLayout() {
       <P>Horizontal with wrap. Good for tag lists, button rows, or any set of items that should flow left to right and wrap naturally.</P>
       <Preview bg="var(--bg)">
         <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
-          {["design","monotone","v0.4","react","tokens","motion","layout"].map(t => (
+          {["design","monotone","v0.5","react","tokens","motion","layout"].map(t => (
             <span key={t} style={{ fontSize:12, color:"var(--fg2)", background:"var(--bg-muted)", borderRadius:4, padding:"3px 8px" }}>{t}</span>
           ))}
         </div>
@@ -1965,7 +1973,7 @@ function PageLayout() {
       <Code language="jsx">{`<Inline gap={2}>
   <Badge>design</Badge>
   <Badge>monotone</Badge>
-  <Badge>v0.4</Badge>
+  <Badge>v0.5</Badge>
 </Inline>`}</Code>
 
       <H2 id="grid">Grid</H2>
@@ -3425,6 +3433,22 @@ function PageSheet() {
 
       <H2 id="basic">Basic sheet</H2>
       <P>Use <InlineCode>Sheet</InlineCode> as the root, <InlineCode>SheetTrigger</InlineCode> to open it, and <InlineCode>SheetContent</InlineCode> for the panel. The <InlineCode>side</InlineCode> prop controls which edge it slides from.</P>
+      <Preview bg="var(--bg)">
+        <Sheet>
+          <SheetTrigger asChild>
+            <DemoButton>Open filters</DemoButton>
+          </SheetTrigger>
+          <SheetContent title="Filters" description="Narrow down your results." side="right">
+            <Stack gap={3}>
+              <Input placeholder="Search…"/>
+              <Input placeholder="Status: all"/>
+              <SheetClose asChild>
+                <DemoButton variant="primary">Apply</DemoButton>
+              </SheetClose>
+            </Stack>
+          </SheetContent>
+        </Sheet>
+      </Preview>
       <Code language="jsx">{`import { Sheet, SheetTrigger, SheetContent, SheetClose, Button } from "@monoset/react";
 
 <Sheet>
@@ -3504,6 +3528,13 @@ function PageSheet() {
 }
 
 function PageCommand() {
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const paletteItems = [
+    { id: "home",     label: "Go to Home",     description: "Jump back to the dashboard" },
+    { id: "settings", label: "Open Settings",  description: "Account, billing, and team" },
+    { id: "theme",    label: "Toggle theme",   description: "Switch between light and dark" },
+    { id: "logout",   label: "Log out",        description: "Sign out of this session" },
+  ];
   return (
     <div>
       <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
@@ -3512,6 +3543,15 @@ function PageCommand() {
 
       <H2 id="basic">Basic usage</H2>
       <P>Pass an array of items, control the open state, and handle selection via <InlineCode>onSelect</InlineCode> on each item.</P>
+      <Preview bg="var(--bg)">
+        <DemoButton onClick={() => setPaletteOpen(true)}>Open command palette</DemoButton>
+        <CommandPalette
+          open={paletteOpen}
+          onOpenChange={setPaletteOpen}
+          items={paletteItems}
+          placeholder="Type a command…"
+        />
+      </Preview>
       <Code language="jsx">{`import { CommandPalette, Button } from "@monoset/react";
 import { useState } from "react";
 
@@ -3662,6 +3702,323 @@ function PageCli() {
   );
 }
 
+function PageAppShell() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>AppShell</H1>
+      <Lead>The shell every dashboard ends up needing: a sidebar, a sticky header, a scrollable content area, and a mobile drawer. Composed from sub-components so you can drop in your own brand and nav items.</Lead>
+
+      <H2 id="basic">Basic structure</H2>
+      <P>Five pieces compose the shell: <InlineCode>AppShell</InlineCode> as the root, <InlineCode>AppShell.Sidebar</InlineCode> as the left rail, and <InlineCode>AppShell.Main</InlineCode> wrapping the header and scrollable content.</P>
+      <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden", marginBottom:16, height:380 }}>
+        <div style={{ height:"100%", display:"grid", gridTemplateColumns:"180px 1fr" }}>
+          <aside style={{ background:"var(--bg-subtle)", borderRight:"1px solid var(--border-subtle)", padding:"12px 10px", display:"flex", flexDirection:"column", gap:14 }}>
+            <div style={{ fontSize:13, fontWeight:600, padding:"4px 8px 8px", borderBottom:"1px solid var(--border-subtle)" }}>Acme</div>
+            <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+              <div style={{ fontSize:9, fontWeight:600, letterSpacing:"0.1em", textTransform:"uppercase", color:"var(--fg3)", padding:"0 8px" }}>Main</div>
+              <div style={{ display:"flex", flexDirection:"column", gap:1 }}>
+                <div style={{ padding:"6px 10px", borderRadius:6, fontSize:12, color:"var(--fg1)", fontWeight:500, background:"var(--bg-muted)" }}>Dashboard</div>
+                <div style={{ padding:"6px 10px", borderRadius:6, fontSize:12, color:"var(--fg2)" }}>Reports</div>
+                <div style={{ padding:"6px 10px", borderRadius:6, fontSize:12, color:"var(--fg2)" }}>Activity</div>
+              </div>
+            </div>
+            <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+              <div style={{ fontSize:9, fontWeight:600, letterSpacing:"0.1em", textTransform:"uppercase", color:"var(--fg3)", padding:"0 8px" }}>Settings</div>
+              <div style={{ display:"flex", flexDirection:"column", gap:1 }}>
+                <div style={{ padding:"6px 10px", borderRadius:6, fontSize:12, color:"var(--fg2)" }}>Team</div>
+                <div style={{ padding:"6px 10px", borderRadius:6, fontSize:12, color:"var(--fg2)" }}>Billing</div>
+              </div>
+            </div>
+          </aside>
+          <div style={{ display:"flex", flexDirection:"column", overflow:"hidden", minWidth:0 }}>
+            <div style={{ height:48, padding:"0 16px", borderBottom:"1px solid var(--border-subtle)", display:"flex", alignItems:"center", gap:10, fontSize:13, fontWeight:600 }}>Dashboard</div>
+            <div style={{ flex:1, overflow:"auto", padding:16, fontSize:12, color:"var(--fg2)", lineHeight:1.6 }}>
+              The content area scrolls independently. Header is sticky, sidebar is fixed.
+            </div>
+          </div>
+        </div>
+      </div>
+      <Code language="jsx">{`import { AppShell } from "@monoset/react";
+
+function Layout({ children }) {
+  return (
+    <AppShell>
+      <AppShell.Sidebar brand={<strong>Acme</strong>}>
+        <AppShell.SidebarGroup label="Main">
+          <AppShell.SidebarItem active>Dashboard</AppShell.SidebarItem>
+          <AppShell.SidebarItem>Reports</AppShell.SidebarItem>
+        </AppShell.SidebarGroup>
+        <AppShell.SidebarGroup label="Settings">
+          <AppShell.SidebarItem>Team</AppShell.SidebarItem>
+          <AppShell.SidebarItem>Billing</AppShell.SidebarItem>
+        </AppShell.SidebarGroup>
+      </AppShell.Sidebar>
+
+      <AppShell.Main>
+        <AppShell.Header>
+          <AppShell.MobileTrigger/>
+          <h1 style={{ fontSize:14, fontWeight:600 }}>Dashboard</h1>
+        </AppShell.Header>
+        <AppShell.Content>{children}</AppShell.Content>
+      </AppShell.Main>
+    </AppShell>
+  );
+}`}</Code>
+
+      <H2 id="responsive">Responsive behavior</H2>
+      <P>Below 768px the sidebar disappears and a hamburger trigger appears in the header. Tap it to open the same nav as a slide-over drawer. The trigger only shows on mobile, so you can leave it in your header at all sizes.</P>
+
+      <H2 id="active">Active state</H2>
+      <P>Pass <InlineCode>active</InlineCode> on the current page's item. AppShell handles the visual style and sets <InlineCode>aria-current="page"</InlineCode>. You drive the routing.</P>
+      <Code language="jsx">{`<AppShell.SidebarItem
+  active={path === "/reports"}
+  onClick={() => navigate("/reports")}
+>
+  Reports
+</AppShell.SidebarItem>`}</Code>
+
+      <H2 id="icons">Icons</H2>
+      <P>Pass any element as the <InlineCode>icon</InlineCode> prop. Lucide icons work well at 15-16px.</P>
+      <Code language="jsx">{`import { LayoutDashboard, BarChart3 } from "lucide-react";
+
+<AppShell.SidebarItem icon={<LayoutDashboard size={15}/>}>Dashboard</AppShell.SidebarItem>
+<AppShell.SidebarItem icon={<BarChart3 size={15}/>}>Reports</AppShell.SidebarItem>`}</Code>
+
+      <H2 id="footer">Sidebar footer</H2>
+      <P>Pass any element as <InlineCode>footer</InlineCode>. It sticks to the bottom of the sidebar with a separator above it.</P>
+      <Code language="jsx">{`<AppShell.Sidebar
+  brand={<strong>Acme</strong>}
+  footer={
+    <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+      <Avatar name="Ada T."/>
+      <span style={{ fontSize:12, color:"var(--fg2)" }}>ada@acme.com</span>
+    </div>
+  }>
+  ...
+</AppShell.Sidebar>`}</Code>
+
+      <H2 id="sidebar-width">Custom sidebar width</H2>
+      <P>The default is 240px. Pass <InlineCode>sidebarWidth</InlineCode> on the root to change it.</P>
+      <Code language="jsx">{`<AppShell sidebarWidth={280}>...</AppShell>`}</Code>
+
+      <H2 id="hook">useAppShellMobile</H2>
+      <P>Anywhere inside the shell, you can read or update the mobile drawer state.</P>
+      <Code language="jsx">{`import { useAppShellMobile } from "@monoset/react";
+
+function CloseDrawerOnRouteChange() {
+  const { setOpen } = useAppShellMobile();
+  const path = useRouterPath();
+  useEffect(() => setOpen(false), [path]);
+  return null;
+}`}</Code>
+
+      <H2 id="api">API</H2>
+      <H3>AppShell</H3>
+      <PropsTable rows={[
+        { name:"sidebarWidth", type:"number", default:"240", desc:"Sidebar width in pixels." },
+        { name:"className",    type:"string", default:"—",   desc:"Appended to the root grid." },
+      ]}/>
+
+      <H3>AppShell.Sidebar</H3>
+      <PropsTable rows={[
+        { name:"brand",     type:"ReactNode", default:"—", desc:"Block rendered at the top of the sidebar." },
+        { name:"footer",    type:"ReactNode", default:"—", desc:"Block rendered at the bottom." },
+      ]}/>
+
+      <H3>AppShell.SidebarItem</H3>
+      <PropsTable rows={[
+        { name:"icon",   type:"ReactNode", default:"—",     desc:"Leading icon." },
+        { name:"active", type:"boolean",   default:"false", desc:"Marks the item as the current page." },
+      ]}/>
+    </div>
+  );
+}
+
+function PageCombobox() {
+  const [country, setCountry] = useState("");
+  const countries = [
+    { value: "us", label: "United States" },
+    { value: "ca", label: "Canada" },
+    { value: "fr", label: "France" },
+    { value: "de", label: "Germany" },
+    { value: "jp", label: "Japan" },
+    { value: "au", label: "Australia" },
+    { value: "br", label: "Brazil" },
+    { value: "mx", label: "Mexico" },
+  ];
+
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Combobox</H1>
+      <Lead>A searchable select. Use it when the list is too long to scroll comfortably or when typing is the natural way to find an item. The keyboard works the way you'd expect: arrow keys to move, Enter to pick, Escape to close.</Lead>
+
+      <H2 id="basic">Basic usage</H2>
+      <Preview bg="var(--bg)">
+        <div style={{ width:"100%", maxWidth:280 }}>
+          <Combobox
+            aria-label="Country"
+            value={country}
+            onValueChange={setCountry}
+            options={countries}
+            placeholder="Pick a country"
+          />
+        </div>
+      </Preview>
+      <Code language="jsx">{`import { Combobox } from "@monoset/react";
+import { useState } from "react";
+
+function CountryPicker() {
+  const [country, setCountry] = useState("");
+  return (
+    <Combobox
+      value={country}
+      onValueChange={setCountry}
+      options={[
+        { value: "us", label: "United States" },
+        { value: "fr", label: "France" },
+        { value: "de", label: "Germany" },
+      ]}
+      placeholder="Pick a country"
+    />
+  );
+}`}</Code>
+
+      <H2 id="descriptions">With descriptions</H2>
+      <P>Add a <InlineCode>description</InlineCode> on any option to show secondary text below the label. Useful when labels alone are ambiguous.</P>
+      <Code language="jsx">{`const plans = [
+  { value: "free", label: "Free",    description: "1 project, 100 MB" },
+  { value: "pro",  label: "Pro",     description: "10 projects, 10 GB" },
+  { value: "team", label: "Team",    description: "Unlimited" },
+];
+
+<Combobox options={plans} placeholder="Pick a plan"/>`}</Code>
+
+      <H2 id="keywords">Search keywords</H2>
+      <P>The default filter matches against label, description, and an optional <InlineCode>keywords</InlineCode> array. Use keywords for terms you want to find but not show.</P>
+      <Code language="jsx">{`{ value: "us", label: "United States", keywords: ["usa", "america"] }`}</Code>
+
+      <H2 id="custom-filter">Custom filter</H2>
+      <P>Pass a <InlineCode>filter</InlineCode> function for non-default matching, like prefix-only or fuzzy.</P>
+      <Code language="jsx">{`<Combobox
+  options={options}
+  filter={(query, option) =>
+    option.label.toLowerCase().startsWith(query.toLowerCase())
+  }
+/>`}</Code>
+
+      <H2 id="form">In a form</H2>
+      <P>Wrap the Combobox in <InlineCode>Field</InlineCode> for a label, helper text, and error states. The Field renders an associated label automatically.</P>
+      <Code language="jsx">{`<Field label="Country" help="We'll use this for billing.">
+  {({ id }) => (
+    <Combobox id={id} options={countries} value={country} onValueChange={setCountry}/>
+  )}
+</Field>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"options",            type:"ComboboxOption[]",          default:"[]",           desc:"List of selectable options." },
+        { name:"value",              type:"string",                    default:"—",            desc:"Controlled selected value." },
+        { name:"onValueChange",      type:"(value: string) => void",   default:"—",            desc:"Called when an option is picked." },
+        { name:"placeholder",        type:"string",                    default:'"Select..."',  desc:"Trigger placeholder when nothing is selected." },
+        { name:"searchPlaceholder",  type:"string",                    default:'"Search..."',  desc:"Search input placeholder." },
+        { name:"emptyMessage",       type:"string",                    default:'"No results."', desc:"Shown when nothing matches." },
+        { name:"filter",             type:"(query, option) => boolean", default:"built-in",    desc:"Custom filter function." },
+        { name:"disabled",           type:"boolean",                   default:"false",        desc:"Disables the trigger." },
+      ]}/>
+
+      <H3>ComboboxOption</H3>
+      <PropsTable rows={[
+        { name:"value",       type:"string",   default:"—",     desc:"Unique identifier." },
+        { name:"label",       type:"string",   default:"—",     desc:"Visible label." },
+        { name:"description", type:"string",   default:"—",     desc:"Secondary text under the label." },
+        { name:"keywords",    type:"string[]", default:"—",     desc:"Extra search terms (not displayed)." },
+        { name:"disabled",    type:"boolean",  default:"false", desc:"Prevents selection." },
+      ]}/>
+    </div>
+  );
+}
+
+function PageHoverCard() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>HoverCard</H1>
+      <Lead>A rich tooltip. Use it when the preview content is too much for a one-line tooltip but not so much that it deserves its own page. Common cases: user mentions, link previews, ticket summaries.</Lead>
+
+      <H2 id="basic">Basic usage</H2>
+      <Preview bg="var(--bg)">
+        <span style={{ fontSize:13, color:"var(--fg2)" }}>
+          Hover over{" "}
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <a href="#" onClick={(e) => e.preventDefault()}
+                 style={{ color:"var(--fg1)", fontWeight:500, textDecoration:"underline", textUnderlineOffset:2 }}>
+                @ada
+              </a>
+            </HoverCardTrigger>
+            <HoverCardContent side="bottom" sideOffset={8}>
+              <div style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
+                <Avatar name="Ada Turing" size="md"/>
+                <div>
+                  <div style={{ fontWeight:600, fontSize:13 }}>Ada Turing</div>
+                  <div style={{ fontSize:12, color:"var(--fg3)", marginTop:2 }}>Designer · Joined 2026</div>
+                  <div style={{ fontSize:12, color:"var(--fg2)", marginTop:8, lineHeight:1.55 }}>
+                    Working on the new dashboard design.
+                  </div>
+                </div>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
+          {" "}to see a card.
+        </span>
+      </Preview>
+      <Code language="jsx">{`import { HoverCard, HoverCardTrigger, HoverCardContent } from "@monoset/react";
+
+<HoverCard>
+  <HoverCardTrigger asChild>
+    <a href="/users/ada">@ada</a>
+  </HoverCardTrigger>
+  <HoverCardContent>
+    <strong>Ada Turing</strong>
+    <p style={{ marginTop: 6, color: "var(--fg2)" }}>
+      Designer · Joined 2026
+    </p>
+  </HoverCardContent>
+</HoverCard>`}</Code>
+
+      <H2 id="link-preview">Link preview</H2>
+      <P>Wrap any link to show a preview when the user hovers. Good for internal mentions, doc links, or external services where you want to show context before the click.</P>
+      <Code language="jsx">{`<HoverCard>
+  <HoverCardTrigger asChild>
+    <a href="/issues/247">#247</a>
+  </HoverCardTrigger>
+  <HoverCardContent>
+    <Stack gap={2}>
+      <Badge variant="solid">Open</Badge>
+      <strong>Email digest is missing the unsubscribe link</strong>
+      <p style={{ color: "var(--fg2)" }}>
+        Reported by ada@acme.com · 4 comments
+      </p>
+    </Stack>
+  </HoverCardContent>
+</HoverCard>`}</Code>
+
+      <H2 id="vs-tooltip">HoverCard vs Tooltip</H2>
+      <P>Use <InlineCode>Tooltip</InlineCode> for short labels, keyboard hints, or any content that's a few words. Use <InlineCode>HoverCard</InlineCode> for content with structure: headings, paragraphs, badges, multiple lines. The interaction is also different: HoverCard is dismissed by moving the cursor away, but it doesn't open on focus, so it's not for keyboard-only critical info.</P>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"side",       type:'"top" | "right" | "bottom" | "left"', default:'"bottom"', desc:"Which side of the trigger to render." },
+        { name:"sideOffset", type:"number",                              default:"6",        desc:"Distance from the trigger in pixels." },
+        { name:"align",      type:'"start" | "center" | "end"',          default:'"center"', desc:"Alignment relative to the trigger." },
+      ]}/>
+      <P>The root <InlineCode>HoverCard</InlineCode> also accepts <InlineCode>openDelay</InlineCode> and <InlineCode>closeDelay</InlineCode> in milliseconds. Defaults are 700 and 300, the same as Radix.</P>
+    </div>
+  );
+}
+
 const PAGES = {
   introduction: PageIntroduction,
   installation: PageInstallation,
@@ -3690,6 +4047,9 @@ const PAGES = {
   layout:       PageLayout,
   sheet:        PageSheet,
   command:      PageCommand,
+  appshell:     PageAppShell,
+  combobox:     PageCombobox,
+  hovercard:    PageHoverCard,
   cli:          PageCli,
   llm:          PageLLM,
   playground:   PagePlayground,

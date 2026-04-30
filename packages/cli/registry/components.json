@@ -244,6 +244,27 @@
     "deps": ["@radix-ui/react-dialog"],
     "internalDeps": ["cx"]
   },
+  "app-shell": {
+    "name": "AppShell",
+    "files": ["AppShell.tsx"],
+    "cssSection": "AppShell",
+    "deps": ["@radix-ui/react-dialog"],
+    "internalDeps": ["cx"]
+  },
+  "combobox": {
+    "name": "Combobox",
+    "files": ["Combobox.tsx"],
+    "cssSection": "Combobox",
+    "deps": ["@radix-ui/react-popover"],
+    "internalDeps": ["cx"]
+  },
+  "hover-card": {
+    "name": "HoverCard",
+    "files": ["HoverCard.tsx"],
+    "cssSection": "HoverCard",
+    "deps": ["@radix-ui/react-hover-card"],
+    "internalDeps": ["cx"]
+  },
   "cx": {
     "name": "cx",
     "files": ["cx.ts"],

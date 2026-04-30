@@ -42,6 +42,9 @@ const NAV = [
     { id:"layout",    label:"Layout" },
     { id:"sheet",     label:"Sheet" },
     { id:"command",   label:"Command palette" },
+    { id:"appshell",  label:"AppShell" },
+    { id:"combobox",  label:"Combobox" },
+    { id:"hovercard", label:"HoverCard" },
   ]},
   { section: "Tools", items: [
     { id:"cli",       label:"CLI" },
@@ -124,6 +127,20 @@ export default function DocsLayout({ page, setPage, onHome }) {
         </button>
         <span style={{ color:"var(--border)", fontSize:18, fontWeight:300 }}>/</span>
         <span style={{ fontSize:13, color:"var(--fg3)" }}>Docs</span>
+        <a
+          href="https://github.com/antonijap/monoset-design-system/releases"
+          target="_blank"
+          rel="noreferrer noopener"
+          aria-label="View releases on GitHub"
+          data-ms="docs-version"
+          style={{ marginLeft:4, fontSize:11, fontWeight:500, color:"var(--fg3)",
+                   background:"var(--bg-subtle)", border:"1px solid var(--border-subtle)",
+                   borderRadius:999, padding:"2px 8px", textDecoration:"none", lineHeight:1.4,
+                   transition:"color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard)" }}
+          onMouseEnter={e => { e.currentTarget.style.color="var(--fg1)"; e.currentTarget.style.background="var(--bg-muted)"; }}
+          onMouseLeave={e => { e.currentTarget.style.color="var(--fg3)"; e.currentTarget.style.background="var(--bg-subtle)"; }}>
+          v0.5
+        </a>
         <div style={{ marginLeft:"auto", display:"flex", gap:8, alignItems:"center" }}>
           <button data-ms="docs-search" type="button"
             onClick={() => window.dispatchEvent(new CustomEvent("monoset:open-palette"))}

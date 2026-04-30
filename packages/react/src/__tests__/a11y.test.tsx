@@ -28,6 +28,8 @@ import {
   TabsContent,
   SheetContent,
   Sheet,
+  AppShell,
+  Combobox,
 } from "../index";
 
 // Each test renders the component in a minimal-but-complete accessible
@@ -183,6 +185,43 @@ describe("a11y", () => {
           <p>Sheet body content</p>
         </SheetContent>
       </Sheet>,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("Combobox has no violations", async () => {
+    const { container } = render(
+      <Combobox
+        aria-label="Country"
+        options={[
+          { value: "us", label: "United States" },
+          { value: "fr", label: "France" },
+          { value: "de", label: "Germany" },
+        ]}
+      />,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("AppShell has no violations", async () => {
+    const { container } = render(
+      <AppShell>
+        <AppShell.Sidebar brand={<span>Acme</span>}>
+          <AppShell.SidebarGroup label="Main">
+            <AppShell.SidebarItem active>Dashboard</AppShell.SidebarItem>
+            <AppShell.SidebarItem>Settings</AppShell.SidebarItem>
+          </AppShell.SidebarGroup>
+        </AppShell.Sidebar>
+        <AppShell.Main>
+          <AppShell.Header>
+            <AppShell.MobileTrigger />
+            <h1>Page title</h1>
+          </AppShell.Header>
+          <AppShell.Content>
+            <p>Main content here.</p>
+          </AppShell.Content>
+        </AppShell.Main>
+      </AppShell>,
     );
     expect(await axe(container)).toHaveNoViolations();
   });
