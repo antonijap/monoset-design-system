@@ -122,6 +122,14 @@ img { max-width: 100%; display: block; }
   [data-ms="docs-search"] { display: none !important; }
   [data-ms="docs-mobile-btn"] { display: flex !important; }
 
+  /* Hide secondary topbar items on mobile -- they live in the drawer instead */
+  [data-ms="docs-breadcrumb"] { display: none !important; }
+  [data-ms="docs-version"]    { display: none !important; }
+  [data-ms="docs-github"]     { display: none !important; }
+  [data-ms="docs-platform"]   { display: none !important; }
+  /* Mobile drawer hosts the platform toggle */
+  [data-ms="docs-platform-mobile"] { display: inline-flex !important; }
+
   /* Docs page headings scale */
   [data-ms="docs-content"] h1 { font-size: 28px !important; }
   [data-ms="docs-content"] h2 { font-size: 18px !important; }

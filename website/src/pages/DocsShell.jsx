@@ -123,13 +123,18 @@ function Sidebar({ active, setPage, mobile, onClose, nav = NAV }) {
   return (
     <div style={{ width:"100%", padding:"16px 0", overflowY:"auto", height:"100%" }}>
       {mobile && (
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
-                      padding:"0 20px 16px", borderBottom:"1px solid var(--border-subtle)" }}>
-          <span style={{ fontSize:14, fontWeight:600 }}>Docs</span>
-          <button onClick={onClose} style={{ background:"none",border:"none",cursor:"pointer",color:"var(--fg2)",padding:4 }}>
-            <Icon name="x" size={18}/>
-          </button>
-        </div>
+        <>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
+                        padding:"0 20px 16px", borderBottom:"1px solid var(--border-subtle)" }}>
+            <span style={{ fontSize:14, fontWeight:600 }}>Docs</span>
+            <button onClick={onClose} style={{ background:"none",border:"none",cursor:"pointer",color:"var(--fg2)",padding:4 }}>
+              <Icon name="x" size={18}/>
+            </button>
+          </div>
+          <div style={{ padding:"12px 20px", borderBottom:"1px solid var(--border-subtle)" }}>
+            <PlatformToggle dataMs="docs-platform-mobile" fullWidth/>
+          </div>
+        </>
       )}
       {nav.map(group => (
         <div key={group.section} style={{ padding:"12px 12px 4px" }}>
@@ -153,19 +158,26 @@ function Sidebar({ active, setPage, mobile, onClose, nav = NAV }) {
   );
 }
 
-function PlatformToggle() {
+function PlatformToggle({ dataMs = "docs-platform", fullWidth = false }) {
   const { platform, setPlatform } = usePlatform();
   return (
-    <div role="tablist" aria-label="Platform" style={{
-      display:"inline-flex", padding:2, background:"var(--bg-subtle)",
-      border:"1px solid var(--border-subtle)", borderRadius:7, height:30, boxSizing:"border-box",
+    <div role="tablist" aria-label="Platform" data-ms={dataMs} style={{
+      display: fullWidth ? "flex" : "inline-flex",
+      width: fullWidth ? "100%" : "auto",
+      padding:2, background:"var(--bg-subtle)",
+      border:"1px solid var(--border-subtle)", borderRadius:7,
+      height: fullWidth ? 36 : 30, boxSizing:"border-box",
     }}>
       {[["react","React"],["native","Native"]].map(([k,label]) => (
         <button key={k} role="tab" aria-selected={platform===k}
           onClick={() => setPlatform(k)}
           style={{ position:"relative", border:"none", background: platform===k?"var(--bg)":"transparent",
-            color: platform===k?"var(--fg1)":"var(--fg3)", fontFamily:"inherit", fontSize:11,
-            fontWeight: platform===k?500:400, padding:"0 10px", borderRadius:5, cursor:"pointer",
+            color: platform===k?"var(--fg1)":"var(--fg3)", fontFamily:"inherit",
+            fontSize: fullWidth ? 13 : 11,
+            fontWeight: platform===k?500:400,
+            padding: fullWidth ? "0" : "0 10px",
+            flex: fullWidth ? 1 : "none",
+            borderRadius:5, cursor:"pointer",
             boxShadow: platform===k?"var(--shadow-xs)":"none",
             transition:"color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard)" }}>
           {label}
@@ -235,8 +247,10 @@ export default function DocsLayout({ page, setPage, onHome }) {
           <img src="/assets/monoset-mark.svg" width="22" height="22" alt=""/>
           <span style={{ fontSize:15, fontWeight:600, letterSpacing:"-0.01em", color:"var(--fg1)" }}>Monoset</span>
         </button>
-        <span style={{ color:"var(--border)", fontSize:18, fontWeight:300 }}>/</span>
-        <span style={{ fontSize:13, color:"var(--fg3)" }}>Docs</span>
+        <span data-ms="docs-breadcrumb" style={{ display:"inline-flex", alignItems:"center", gap:12 }}>
+          <span style={{ color:"var(--border)", fontSize:18, fontWeight:300 }}>/</span>
+          <span style={{ fontSize:13, color:"var(--fg3)" }}>Docs</span>
+        </span>
         <a
           href="https://github.com/antonijap/monoset-design-system/releases"
           target="_blank"
