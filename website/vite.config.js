@@ -11,7 +11,18 @@ export default defineConfig({
     }),
   ],
   resolve: {
-    dedupe: ['react', 'react-dom'],
+    dedupe: ['react', 'react-dom', 'react-native', 'react-native-web'],
+    alias: {
+      // Render @monoset/native components on the web via react-native-web.
+      'react-native': 'react-native-web',
+    },
+    extensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.tsx', '.ts', '.jsx', '.js', '.json'],
+  },
+  define: {
+    // react-native-web's Animated code references Node globals.
+    global: 'globalThis',
+    __DEV__: 'false',
+    'process.env.JEST_WORKER_ID': 'undefined',
   },
   build: {
     target: 'es2022',

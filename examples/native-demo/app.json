@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "Monoset Native Demo",
+    "slug": "monoset-native-demo",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "design.monoset.nativedemo"
+    },
+    "android": {
+      "package": "design.monoset.nativedemo"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    }
+  }
+}

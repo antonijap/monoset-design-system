@@ -5,9 +5,12 @@ import {
   Icon,
 } from '../ui/docs.jsx';
 import { PAGE_META } from './docs-meta.js';
+import { NATIVE_PAGE_META } from './native-meta.js';
 import ThemeToggle from '../components/ThemeToggle.jsx';
+import { usePlatform } from '../lib/platform.jsx';
 
 const DocsContent = lazy(() => import('./docs.jsx'));
+const NativeDocsContent = lazy(() => import('./native-docs.jsx'));
 
 const NAV = [
   { section: "Getting Started", items: [
@@ -73,7 +76,50 @@ const NAV = [
   ]},
 ];
 
-function Sidebar({ active, setPage, mobile, onClose }) {
+const NATIVE_NAV = [
+  { section: "Getting Started", items: [
+    { id:"introduction", label:"Introduction" },
+    { id:"installation", label:"Installation" },
+    { id:"usage",        label:"Basic usage" },
+  ]},
+  { section: "Foundations", items: [
+    { id:"tokens", label:"Tokens" },
+    { id:"motion", label:"Motion" },
+  ]},
+  { section: "Display", items: [
+    { id:"avatar",   label:"Avatar" },
+    { id:"badge",    label:"Badge" },
+    { id:"alert",    label:"Alert" },
+    { id:"divider",  label:"Divider" },
+    { id:"empty",    label:"Empty state" },
+    { id:"list",     label:"List item" },
+    { id:"chip",     label:"Chip" },
+    { id:"progress", label:"Progress" },
+    { id:"skeleton", label:"Skeleton" },
+    { id:"spinner",  label:"Spinner" },
+  ]},
+  { section: "Form", items: [
+    { id:"buttons",   label:"Button" },
+    { id:"inputs",    label:"Input" },
+    { id:"checkbox",  label:"Checkbox" },
+    { id:"radio",     label:"Radio group" },
+    { id:"switch",    label:"Switch" },
+    { id:"slider",    label:"Slider" },
+    { id:"segmented", label:"Segmented control" },
+  ]},
+  { section: "Layout", items: [
+    { id:"cards",  label:"Card" },
+    { id:"layout", label:"Stack & Inline" },
+  ]},
+  { section: "Overlay & navigation", items: [
+    { id:"sheet",  label:"Sheet" },
+    { id:"dialog", label:"Dialog" },
+    { id:"toast",  label:"Toast" },
+    { id:"tabbar", label:"Tab bar" },
+  ]},
+];
+
+function Sidebar({ active, setPage, mobile, onClose, nav = NAV }) {
   return (
     <div style={{ width:"100%", padding:"16px 0", overflowY:"auto", height:"100%" }}>
       {mobile && (
@@ -85,7 +131,7 @@ function Sidebar({ active, setPage, mobile, onClose }) {
           </button>
         </div>
       )}
-      {NAV.map(group => (
+      {nav.map(group => (
         <div key={group.section} style={{ padding:"12px 12px 4px" }}>
           <div style={{ fontSize:10, fontWeight:600, letterSpacing:"0.1em", textTransform:"uppercase",
                         color:"var(--fg3)", padding:"0 8px 8px" }}>{group.section}</div>
@@ -107,25 +153,78 @@ function Sidebar({ active, setPage, mobile, onClose }) {
   );
 }
 
+function PlatformToggle() {
+  const { platform, setPlatform } = usePlatform();
+  return (
+    <div role="tablist" aria-label="Platform" style={{
+      display:"inline-flex", padding:2, background:"var(--bg-subtle)",
+      border:"1px solid var(--border-subtle)", borderRadius:7, height:30, boxSizing:"border-box",
+    }}>
+      {[["react","React"],["native","Native"]].map(([k,label]) => (
+        <button key={k} role="tab" aria-selected={platform===k}
+          onClick={() => setPlatform(k)}
+          style={{ position:"relative", border:"none", background: platform===k?"var(--bg)":"transparent",
+            color: platform===k?"var(--fg1)":"var(--fg3)", fontFamily:"inherit", fontSize:11,
+            fontWeight: platform===k?500:400, padding:"0 10px", borderRadius:5, cursor:"pointer",
+            boxShadow: platform===k?"var(--shadow-xs)":"none",
+            transition:"color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard)" }}>
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function NativeBanner() {
+  const { platform, setPlatform } = usePlatform();
+  if (platform !== 'native') return null;
+  return (
+    <div role="status" style={{
+      display:"flex", alignItems:"center", gap:10,
+      padding:"10px 14px", marginBottom:24,
+      background:"var(--bg-subtle)", border:"1px solid var(--border-subtle)", borderRadius:8,
+      fontSize:12, color:"var(--fg2)" }}>
+      <span style={{ width:6, height:6, borderRadius:"50%", background:"var(--fg1)" }}/>
+      <span style={{ flex:1 }}>
+        <strong style={{ color:"var(--fg1)", fontWeight:500 }}>React Native mode.</strong>{" "}
+        Previews on supported pages re-render via <code style={{ fontFamily:"var(--font-mono)", fontSize:11 }}>react-native-web</code>.
+        v0.1 covers Button, Card, Input, Switch, Spinner, Skeleton, and Layout.
+      </span>
+      <button onClick={() => setPlatform('react')} style={{
+        background:"none", border:"none", cursor:"pointer", color:"var(--fg3)",
+        fontSize:11, padding:"4px 8px", borderRadius:4, fontFamily:"inherit" }}>
+        Switch back
+      </button>
+    </div>
+  );
+}
+
 export default function DocsLayout({ page, setPage, onHome }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const contentRef = useRef(null);
+  const { platform } = usePlatform();
+  const isNative = platform === 'native';
+  const meta = isNative ? NATIVE_PAGE_META : PAGE_META;
+  const nav  = isNative ? NATIVE_NAV : NAV;
+  const Content = isNative ? NativeDocsContent : DocsContent;
+  // If the current slug has no entry in this platform's meta, fall back to introduction.
+  const safePage = meta[page] ? page : 'introduction';
 
   useEffect(() => {
     if (contentRef.current) contentRef.current.scrollTop = 0;
-    const meta = PAGE_META[page];
-    if (meta) {
-      document.title = `${meta.title} · Monoset`;
+    const m = meta[safePage];
+    if (m) {
+      document.title = `${m.title} · Monoset${isNative ? ' Native' : ''}`;
       const desc = document.querySelector('meta[name="description"]');
-      if (desc) desc.setAttribute("content", meta.desc);
+      if (desc) desc.setAttribute("content", m.desc);
       const ogTitle = document.querySelector('meta[property="og:title"]');
-      if (ogTitle) ogTitle.setAttribute("content", `${meta.title} · Monoset`);
+      if (ogTitle) ogTitle.setAttribute("content", `${m.title} · Monoset${isNative ? ' Native' : ''}`);
       const ogDesc = document.querySelector('meta[property="og:description"]');
-      if (ogDesc) ogDesc.setAttribute("content", meta.desc);
+      if (ogDesc) ogDesc.setAttribute("content", m.desc);
       const canonical = document.querySelector('link[rel="canonical"]');
-      if (canonical) canonical.setAttribute("href", `https://monoset.design/${page}`);
+      if (canonical) canonical.setAttribute("href", `https://monoset.design/${safePage}`);
     }
-  }, [page]);
+  }, [safePage, isNative, meta]);
 
   return (
     <div data-ms="docs-layout" style={{ height:"100vh", display:"flex", flexDirection:"column", background:"var(--bg)", color:"var(--fg1)" }}>
@@ -153,6 +252,7 @@ export default function DocsLayout({ page, setPage, onHome }) {
           v0.5
         </a>
         <div style={{ marginLeft:"auto", display:"flex", gap:8, alignItems:"center" }}>
+          <PlatformToggle/>
           <button data-ms="docs-search" type="button"
             onClick={() => window.dispatchEvent(new CustomEvent("monoset:open-palette"))}
             aria-label="Open command palette (Cmd K)"
@@ -193,18 +293,18 @@ export default function DocsLayout({ page, setPage, onHome }) {
       <div style={{ flex:1, display:"grid", gridTemplateColumns:"var(--sidebar-w) 1fr", overflow:"hidden", minHeight:0 }}>
         <aside data-ms="docs-sidebar" style={{ borderRight:"1px solid var(--border-subtle)", background:"var(--bg-subtle)",
                         overflowY:"auto", flexShrink:0 }}>
-          <Sidebar active={page} setPage={p => setPage(p)}/>
+          <Sidebar active={safePage} setPage={p => setPage(p)} nav={nav}/>
         </aside>
         <div data-ms="docs-content" ref={contentRef} style={{ overflowY:"auto", padding:"32px 48px 80px" }}>
           <div style={{ maxWidth:720 }}>
             <AnimatePresence mode="wait">
               <motion.div
-                key={page}
+                key={`${platform}:${safePage}`}
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0, transition: { duration: DUR.base, ease: EASE_EMPHASIS } }}
                 exit={{ opacity: 0, transition: { duration: DUR.fast, ease: EASE_EXIT } }}>
                 <Suspense fallback={<div style={{height:200}}/>}>
-                  <DocsContent page={page} setPage={setPage}/>
+                  <Content page={safePage} setPage={setPage}/>
                 </Suspense>
               </motion.div>
             </AnimatePresence>
@@ -227,7 +327,7 @@ export default function DocsLayout({ page, setPage, onHome }) {
               transition={{ duration: DUR.slow, ease: EASE_EMPHASIS }}
               style={{ position:"absolute", right:0, top:0, bottom:0, width:280,
                        background:"var(--bg)", overflowY:"auto", boxShadow:"var(--shadow-xl)" }}>
-              <Sidebar active={page} setPage={p => setPage(p)} mobile onClose={() => setMobileNavOpen(false)}/>
+              <Sidebar active={safePage} setPage={p => setPage(p)} mobile onClose={() => setMobileNavOpen(false)} nav={nav}/>
             </motion.div>
           </motion.div>
         )}

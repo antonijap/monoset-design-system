@@ -30,13 +30,16 @@ import '@monoset/tokens/css'
 import '@monoset/react/styles.css'
 import './index.css'
 import App from './App.jsx'
+import { PlatformProvider } from './lib/platform.jsx'
 import { initAnalytics } from './lib/analytics.js'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <MonosetProvider>
-        <App />
+        <PlatformProvider>
+          <App />
+        </PlatformProvider>
       </MonosetProvider>
     </BrowserRouter>
   </StrictMode>,

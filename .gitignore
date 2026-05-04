@@ -10,6 +10,10 @@ dist-ssr
 .env.local
 .vercel
 
+# Expo local state
+.expo/
+**/.expo/
+
 # Internal planning/working notes — kept locally, not for the public repo
 task_plan.md
 findings.md

@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { PAGE_META } from './pages/docs-meta.js';
+import { NATIVE_PAGE_META } from './pages/native-meta.js';
 import CommandPalette from './components/CommandPalette.jsx';
 
 // Route-level code splitting. Landing and DocsShell each ship as a separate
@@ -59,7 +60,9 @@ function App() {
   const location = useLocation();
   const slug = location.pathname.slice(1);
   const screen = slug ? "docs" : "home";
-  const page = PAGE_META[slug] ? slug : "introduction";
+  // A slug is valid if it exists in EITHER platform's meta. DocsLayout falls
+  // back to "introduction" when the active platform doesn't have a page for it.
+  const page = (PAGE_META[slug] || NATIVE_PAGE_META[slug]) ? slug : "introduction";
 
   const [tweaksVisible, setTweaksVisible] = useState(false);
   const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS);

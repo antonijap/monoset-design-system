@@ -25,6 +25,7 @@ import {
   DemoButton, DemoBadge,
   PropsTable,
 } from '../ui/docs.jsx';
+import { PlatformPreview } from '../components/NativePreview.jsx';
 
 function PageIntroduction({ setPage }) {
   return (
@@ -705,12 +706,17 @@ function PageButtons() {
       <Lead>Four variants across three sizes. Keep labels short (two or three words) and write them in sentence case. All-caps looks shouty in a monotone system.</Lead>
 
       <H2 id="variants">Variants</H2>
-      <Preview>
-        <DemoButton variant="primary">Save changes</DemoButton>
-        <DemoButton variant="secondary">Cancel</DemoButton>
-        <DemoButton variant="ghost">Skip</DemoButton>
-        <DemoButton variant="danger">Delete</DemoButton>
-      </Preview>
+      <PlatformPreview
+        web={
+          <>
+            <DemoButton variant="primary">Save changes</DemoButton>
+            <DemoButton variant="secondary">Cancel</DemoButton>
+            <DemoButton variant="ghost">Skip</DemoButton>
+            <DemoButton variant="danger">Delete</DemoButton>
+          </>
+        }
+        native="ButtonDemo"
+      />
       <Code>{`<Button variant="primary">Save changes</Button>
 <Button variant="secondary">Cancel</Button>
 <Button variant="ghost">Skip</Button>
@@ -774,26 +780,30 @@ function PageInputs() {
       <Lead>Text fields, textareas, selects. Wrap them in a <InlineCode>Field</InlineCode> and you get the label, helper text, and error state wired up. Otherwise you'll end up copy-pasting the same aria boilerplate around every input.</Lead>
 
       <H2 id="field">Field</H2>
-      <Preview bg="var(--bg)">
-        <div style={{ width:280, display:"flex", flexDirection:"column", gap:14 }}>
-          <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-            <label style={{ fontSize:12, fontWeight:500 }}>Email</label>
-            <input defaultValue="ada@monoset.dev"
-              onFocus={()=>setFocused(true)} onBlur={()=>setFocused(false)}
-              style={{ fontFamily:"inherit", fontSize:13, padding:"9px 12px",
-              border:`1px solid ${focused?"var(--fg1)":"var(--border)"}`, borderRadius:6, color:"var(--fg1)", background:"var(--bg)", outline:"none",
-              transition:"border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard)",
-              boxShadow: focused?"0 0 0 3px var(--mono-100)":"none" }}/>
-            <span style={{ fontSize:11, color:"var(--fg3)" }}>We'll send a confirmation.</span>
+      <PlatformPreview
+        bg="var(--bg)"
+        native="InputDemo"
+        web={
+          <div style={{ width:280, display:"flex", flexDirection:"column", gap:14 }}>
+            <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+              <label style={{ fontSize:12, fontWeight:500 }}>Email</label>
+              <input defaultValue="ada@monoset.dev"
+                onFocus={()=>setFocused(true)} onBlur={()=>setFocused(false)}
+                style={{ fontFamily:"inherit", fontSize:13, padding:"9px 12px",
+                border:`1px solid ${focused?"var(--fg1)":"var(--border)"}`, borderRadius:6, color:"var(--fg1)", background:"var(--bg)", outline:"none",
+                transition:"border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard)",
+                boxShadow: focused?"0 0 0 3px var(--mono-100)":"none" }}/>
+              <span style={{ fontSize:11, color:"var(--fg3)" }}>We'll send a confirmation.</span>
+            </div>
+            <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+              <label style={{ fontSize:12, fontWeight:500 }}>Password</label>
+              <input readOnly type="password" defaultValue="••••••" style={{ fontFamily:"inherit", fontSize:13, padding:"9px 12px",
+                border:"1px solid var(--status-danger, #5a2626)", borderRadius:6, color:"var(--fg1)", background:"var(--bg)", outline:"none" }}/>
+              <span style={{ fontSize:11, color:"var(--status-danger, #5a2626)" }}>At least 8 characters.</span>
+            </div>
           </div>
-          <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-            <label style={{ fontSize:12, fontWeight:500 }}>Password</label>
-            <input readOnly type="password" defaultValue="••••••" style={{ fontFamily:"inherit", fontSize:13, padding:"9px 12px",
-              border:"1px solid var(--status-danger, #5a2626)", borderRadius:6, color:"var(--fg1)", background:"var(--bg)", outline:"none" }}/>
-            <span style={{ fontSize:11, color:"var(--status-danger, #5a2626)" }}>At least 8 characters.</span>
-          </div>
-        </div>
-      </Preview>
+        }
+      />
       <Code>{`<Field label="Email" help="We'll send a confirmation.">
   <Input type="email" placeholder="you@example.com"/>
 </Field>
@@ -916,12 +926,16 @@ function PageCards() {
       <Lead>A surface container. Outline by default. Use the elevated variant when a card needs to feel lifted off the page, or the inset variant inside forms and modals where the surrounding panel already does the grouping.</Lead>
 
       <H2 id="outline">Outline</H2>
-      <Preview bg="var(--bg)">
-        <div style={{ width:"100%", maxWidth:320, border:"1px solid var(--border-subtle)", borderRadius:6, padding:16 }}>
-          <div style={{ fontSize:13, fontWeight:600, marginBottom:6 }}>Outline card</div>
-          <div style={{ fontSize:12, color:"var(--fg3)", lineHeight:1.5 }}>Default surface. Hairline border, no shadow.</div>
-        </div>
-      </Preview>
+      <PlatformPreview
+        bg="var(--bg)"
+        web={
+          <div style={{ width:"100%", maxWidth:320, border:"1px solid var(--border-subtle)", borderRadius:6, padding:16 }}>
+            <div style={{ fontSize:13, fontWeight:600, marginBottom:6 }}>Outline card</div>
+            <div style={{ fontSize:12, color:"var(--fg3)", lineHeight:1.5 }}>Default surface. Hairline border, no shadow.</div>
+          </div>
+        }
+        native="CardDemo"
+      />
       <Code>{`<Card>
   <h3>Outline card</h3>
   <p>Default surface. Hairline border, no shadow.</p>
@@ -983,21 +997,25 @@ function PageToggles() {
       <Code>{`<Checkbox checked={cb} onChange={setCb} label="Accept terms"/>`}</Code>
 
       <H2 id="switch">Switch</H2>
-      <Preview bg="var(--bg)">
-        <label onClick={()=>setSw(v=>!v)} style={{ display:"inline-flex", alignItems:"center", gap:10, fontSize:13, cursor:"pointer" }}>
-          <span
-            style={{ width:32, height:18, borderRadius:999, position:"relative", display:"inline-block",
-                     background: sw ? "var(--accent)" : "var(--border)",
-                     transition:"background var(--duration-base) var(--ease-standard)" }}>
-            <motion.span
-              animate={{ x: sw ? 14 : 0 }}
-              transition={{ duration: DUR.base, ease: EASE_EMPHASIS }}
-              style={{ position:"absolute", top:2, left:2, width:14, height:14, borderRadius:"50%",
-                       background:"var(--accent-fg)", boxShadow:"0 1px 2px rgb(0 0 0 / 0.2)" }}/>
-          </span>
-          Email alerts {sw?"on":"off"}
-        </label>
-      </Preview>
+      <PlatformPreview
+        bg="var(--bg)"
+        native="SwitchDemo"
+        web={
+          <label onClick={()=>setSw(v=>!v)} style={{ display:"inline-flex", alignItems:"center", gap:10, fontSize:13, cursor:"pointer" }}>
+            <span
+              style={{ width:32, height:18, borderRadius:999, position:"relative", display:"inline-block",
+                       background: sw ? "var(--accent)" : "var(--border)",
+                       transition:"background var(--duration-base) var(--ease-standard)" }}>
+              <motion.span
+                animate={{ x: sw ? 14 : 0 }}
+                transition={{ duration: DUR.base, ease: EASE_EMPHASIS }}
+                style={{ position:"absolute", top:2, left:2, width:14, height:14, borderRadius:"50%",
+                         background:"var(--accent-fg)", boxShadow:"0 1px 2px rgb(0 0 0 / 0.2)" }}/>
+            </span>
+            Email alerts {sw?"on":"off"}
+          </label>
+        }
+      />
       <Code>{`<Switch checked={on} onChange={setOn}/>
 <label>Email alerts</label>`}</Code>
     </div>
@@ -1332,7 +1350,7 @@ function PageAvatars() {
         </div>
       </Preview>
       <Code>{`<Avatar initials="AT" src="/team/ada.jpg" alt="Ada Turing"/>
-<Avatar initials="GH"/>  {/* No image — shows initials */}`}</Code>
+<Avatar initials="GH"/>  {/* No image, falls back to initials */}`}</Code>
 
       <H2 id="stack">Stacked group</H2>
       <P>Overlap avatars with a negative margin. The overflow chip at the end shows the remaining count.</P>
@@ -1656,16 +1674,20 @@ function PageSpinner() {
 
       <H2 id="sizes">Sizes</H2>
       <P>Pass a pixel value. Match the spinner to the text size around it.</P>
-      <Preview bg="var(--bg)">
-        <div style={{ display:"flex", gap:24, alignItems:"center" }}>
-          {[14, 20, 28, 40].map(s => (
-            <div key={s} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:8 }}>
-              <SpinnerSpan size={s}/>
-              <span style={{ fontSize:11, color:"var(--fg3)", fontFamily:"var(--font-mono)" }}>{s}px</span>
-            </div>
-          ))}
-        </div>
-      </Preview>
+      <PlatformPreview
+        bg="var(--bg)"
+        native="SpinnerDemo"
+        web={
+          <div style={{ display:"flex", gap:24, alignItems:"center" }}>
+            {[14, 20, 28, 40].map(s => (
+              <div key={s} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:8 }}>
+                <SpinnerSpan size={s}/>
+                <span style={{ fontSize:11, color:"var(--fg3)", fontFamily:"var(--font-mono)" }}>{s}px</span>
+              </div>
+            ))}
+          </div>
+        }
+      />
       <Code language="jsx">{`<Spinner size={14}/>
 <Spinner size={20}/>
 <Spinner size={28}/>
@@ -1954,13 +1976,17 @@ function PageLayout() {
 
       <H2 id="stack">Stack</H2>
       <P>Vertical spacing. The <InlineCode>gap</InlineCode> prop maps to the <InlineCode>--space-*</InlineCode> token scale (0-14).</P>
-      <Preview bg="var(--bg)">
-        <div style={{ width:"100%", maxWidth:300, display:"flex", flexDirection:"column", gap:16 }}>
-          {["First item","Second item","Third item"].map(t => (
-            <div key={t} style={{ padding:"10px 14px", background:"var(--bg-muted)", borderRadius:6, fontSize:13 }}>{t}</div>
-          ))}
-        </div>
-      </Preview>
+      <PlatformPreview
+        bg="var(--bg)"
+        native="LayoutDemo"
+        web={
+          <div style={{ width:"100%", maxWidth:300, display:"flex", flexDirection:"column", gap:16 }}>
+            {["First item","Second item","Third item"].map(t => (
+              <div key={t} style={{ padding:"10px 14px", background:"var(--bg-muted)", borderRadius:6, fontSize:13 }}>{t}</div>
+            ))}
+          </div>
+        }
+      />
       <Code language="jsx">{`<Stack gap={4}>
   <Card>First item</Card>
   <Card>Second item</Card>
@@ -3703,7 +3729,7 @@ function PageCli() {
       <P>Because you own the source files, you can rename props, strip features you don't need, or change the styling. When Monoset ships updates, run the command again with <InlineCode>--overwrite</InlineCode> and diff the result.</P>
 
       <H2 id="vs-npm">CLI vs npm package</H2>
-      <P>Both approaches work. Use <InlineCode>@monoset/react</InlineCode> from npm if you want a standard dependency you can upgrade with a version bump. Use the CLI if you want full source ownership and the ability to modify components in place.</P>
+      <P>Both approaches work. Use <InlineCode>@monoset/react</InlineCode> from npm if you want a standard dependency you can upgrade with a version bump. Use the CLI if you want to own the source and modify components in place.</P>
     </div>
   );
 }
@@ -4128,7 +4154,7 @@ function PagePopover() {
     <div>
       <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Popover</H1>
-      <Lead>A floating panel anchored to a trigger. Use it for inline forms, filter controls, color pickers — anything that's too much for a Tooltip but doesn't deserve a full Dialog.</Lead>
+      <Lead>A floating panel anchored to a trigger. Reach for it when content is too much for a Tooltip but not big enough to deserve its own Dialog: inline forms, filter controls, color pickers.</Lead>
 
       <H2 id="basic">Basic popover</H2>
       <Preview bg="var(--bg)">
@@ -4179,7 +4205,7 @@ function PageDropdown() {
     <div>
       <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Dropdown menu</H1>
-      <Lead>A vertical list of actions triggered by a button. For navigation use the sidebar, not this — DropdownMenu is for actions on a row, a record, or the current view.</Lead>
+      <Lead>A vertical list of actions triggered by a button. For navigation use the sidebar instead. DropdownMenu is for actions on a row, a record, or the current view.</Lead>
 
       <H2 id="basic">Basic menu</H2>
       <Preview bg="var(--bg)">
@@ -4215,7 +4241,7 @@ function PageDropdown() {
 </DropdownMenu>`}</Code>
 
       <H2 id="vs-popover">DropdownMenu vs Popover</H2>
-      <P>If your panel is a list of clickable actions, use <InlineCode>DropdownMenu</InlineCode> — it has the right keyboard semantics (arrow keys, type-ahead, Enter to activate). For a panel containing inputs, sliders, or anything that isn't a menu of actions, use <InlineCode>Popover</InlineCode>.</P>
+      <P>If your panel is a list of clickable actions, use <InlineCode>DropdownMenu</InlineCode>. It has the right keyboard semantics (arrow keys, type-ahead, Enter to activate). For a panel containing inputs, sliders, or anything that isn't a menu of actions, use <InlineCode>Popover</InlineCode>.</P>
     </div>
   );
 }
@@ -4267,19 +4293,23 @@ function PageSkeleton() {
       <Lead>A placeholder shape while real content loads. Show one only if the wait is over 400ms; faster than that, just render the result.</Lead>
 
       <H2 id="basic">Basic skeletons</H2>
-      <Preview bg="var(--bg)">
-        <Stack gap={2} style={{ width:"100%", maxWidth:320 }}>
-          <Skeleton style={{ height:14, width:"60%" }}/>
-          <Skeleton style={{ height:14, width:"100%" }}/>
-          <Skeleton style={{ height:14, width:"85%" }}/>
-        </Stack>
-      </Preview>
+      <PlatformPreview
+        bg="var(--bg)"
+        native="SkeletonDemo"
+        web={
+          <Stack gap={2} style={{ width:"100%", maxWidth:320 }}>
+            <Skeleton style={{ height:14, width:"60%" }}/>
+            <Skeleton style={{ height:14, width:"100%" }}/>
+            <Skeleton style={{ height:14, width:"85%" }}/>
+          </Stack>
+        }
+      />
       <Code language="jsx">{`import { Skeleton } from "@monoset/react";
 
 <Skeleton style={{ height: 14, width: "60%" }}/>`}</Code>
 
       <H2 id="card">Card skeleton</H2>
-      <P>Match the shape of the real content. Three lines, an avatar, a button — whatever the loaded state will show.</P>
+      <P>Match the shape of the real content. Three lines, an avatar, a button: whatever the loaded state will show.</P>
       <Preview bg="var(--bg)">
         <div style={{ display:"flex", gap:12, alignItems:"flex-start", padding:14, border:"1px solid var(--border-subtle)", borderRadius:8, width:"100%", maxWidth:360 }}>
           <Skeleton style={{ width:36, height:36, borderRadius:"50%", flexShrink:0 }}/>
@@ -4300,7 +4330,7 @@ function PageEmptyState() {
     <div>
       <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Empty state</H1>
-      <Lead>A friendly message when there's nothing to show. Title, one-line description, and an action — that's the recipe. Don't apologize and don't write a paragraph.</Lead>
+      <Lead>A friendly message when there's nothing to show. Title, one-line description, an action. That's the recipe. Don't apologize and don't write a paragraph.</Lead>
 
       <H2 id="basic">Basic empty state</H2>
       <Preview bg="var(--bg)">
@@ -4336,7 +4366,7 @@ function PagePagination() {
     <div>
       <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Pagination</H1>
-      <Lead>Page-by-page navigation for tables and long lists. If you're not sure how many pages there are, prefer infinite scroll or load-more — pagination needs a known total.</Lead>
+      <Lead>Page-by-page navigation for tables and long lists. If you don't know the total upfront, prefer infinite scroll or load-more. Pagination needs a known total.</Lead>
 
       <H2 id="basic">Basic pagination</H2>
       <Preview bg="var(--bg)">
@@ -4363,7 +4393,7 @@ function PageBreadcrumb() {
     <div>
       <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Breadcrumb</H1>
-      <Lead>Show where the current page sits in the hierarchy. Two levels deep is fine, four is a smell — if you need that many, the navigation is too nested.</Lead>
+      <Lead>Show where the current page sits in the hierarchy. Two levels deep is fine, four is a smell. If you need that many, the navigation is too nested.</Lead>
 
       <H2 id="basic">Basic breadcrumb</H2>
       <Preview bg="var(--bg)">
@@ -4428,7 +4458,7 @@ function PageSeparator() {
     <div>
       <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
       <H1>Separator</H1>
-      <Lead>A horizontal or vertical hairline. Use it sparingly — most layouts don't need them; spacing alone usually carries the weight. Reach for one when two regions need a clear boundary.</Lead>
+      <Lead>A horizontal or vertical hairline. Use it sparingly. Most layouts don't need them; spacing alone usually carries the weight. Reach for one when two regions need a clear boundary.</Lead>
 
       <H2 id="horizontal">Horizontal</H2>
       <Preview bg="var(--bg)">

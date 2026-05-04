@@ -1,0 +1,50 @@
+{
+  "name": "@monoset/motion-native",
+  "version": "0.1.0",
+  "description": "Monoset motion presets for React Native via Reanimated. Same easings and durations as the web kit.",
+  "keywords": [
+    "design-system",
+    "motion",
+    "react-native",
+    "reanimated",
+    "monoset"
+  ],
+  "license": "MIT",
+  "homepage": "https://monoset.design",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antonijap/monoset-design-system.git",
+    "directory": "packages/motion-native"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react-native": ">=0.74",
+    "react-native-reanimated": ">=3"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "react": "^18.3.1",
+    "react-native": "^0.76.0",
+    "react-native-reanimated": "^3.16.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3"
+  }
+}

@@ -126,6 +126,95 @@ export function Preview({ children, bg = "var(--bg-subtle)" }) {
   );
 }
 
+/* ─── PHONE PREVIEW (for native demos) ────────────────────────────────── */
+
+function SignalIcon() {
+  return (
+    <svg width="17" height="11" viewBox="0 0 17 11" aria-hidden>
+      <rect x="0"  y="7" width="3" height="4" rx="1" fill="currentColor"/>
+      <rect x="4"  y="5" width="3" height="6" rx="1" fill="currentColor"/>
+      <rect x="8"  y="2" width="3" height="9" rx="1" fill="currentColor"/>
+      <rect x="12" y="0" width="3" height="11" rx="1" fill="currentColor"/>
+    </svg>
+  );
+}
+function WifiIcon() {
+  return (
+    <svg width="15" height="11" viewBox="0 0 15 11" aria-hidden>
+      <path d="M7.5 1.5C5 1.5 2.6 2.4 0.7 4l1.4 1.4C3.6 4 5.5 3.2 7.5 3.2s3.9 0.8 5.4 2.2L14.3 4C12.4 2.4 10 1.5 7.5 1.5zm0 3.7C6.1 5.2 4.7 5.7 3.6 6.7l1.4 1.4c0.7-0.6 1.6-1 2.5-1s1.8 0.4 2.5 1l1.4-1.4c-1.1-1-2.5-1.5-3.9-1.5zm0 3.5c-0.7 0-1.3 0.3-1.7 0.7L7.5 11l1.7-1.6c-0.4-0.4-1-0.7-1.7-0.7z" fill="currentColor"/>
+    </svg>
+  );
+}
+function BatteryIcon() {
+  return (
+    <svg width="26" height="12" viewBox="0 0 26 12" aria-hidden>
+      <rect x="0.5" y="0.5" width="22" height="11" rx="2.5" fill="none" stroke="currentColor" strokeOpacity="0.4"/>
+      <rect x="2"   y="2"   width="19" height="8"  rx="1.4" fill="currentColor"/>
+      <rect x="23"  y="4"   width="2"  height="4"  rx="0.5" fill="currentColor" opacity="0.4"/>
+    </svg>
+  );
+}
+
+/**
+ * A monotone phone frame in real iPhone proportions (~19.5:9, ~2.17:1).
+ * Children render inside a 360x780 screen with a status bar and home
+ * indicator. The screen area scrolls when content overflows.
+ */
+export function PhonePreview({ children, screenBg = "#fff", title }) {
+  return (
+    <div data-ms="preview" style={{ border:"1px solid var(--border-subtle)", borderRadius:8,
+        overflow:"hidden", marginBottom:18, background:"var(--bg-subtle)",
+        padding:"32px 0", display:"flex", justifyContent:"center" }}>
+      <div data-ms="phone-frame" style={{
+        width: 360,
+        height: 780,
+        background:"#0a0a0c",
+        borderRadius: 52,
+        padding: 8,
+        boxShadow: "0 24px 48px -12px rgb(0 0 0 / 0.18), 0 0 0 1px rgb(0 0 0 / 0.04)",
+        position:"relative",
+        flexShrink: 0,
+      }}>
+        {/* dynamic island */}
+        <div style={{ position:"absolute", top:14, left:"50%", transform:"translateX(-50%)",
+            width: 118, height: 32, background:"#0a0a0c", borderRadius:18, zIndex:2 }}/>
+        <div data-ms="phone-screen" style={{
+          width:"100%", height:"100%", background: screenBg, borderRadius: 44,
+          overflow: "hidden", position:"relative", display:"flex", flexDirection:"column",
+        }}>
+          {/* status bar */}
+          <div style={{ flexShrink:0, height:44, paddingTop:14, paddingLeft:30, paddingRight:24,
+              display:"flex", alignItems:"center", justifyContent:"space-between",
+              fontFamily:"-apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui",
+              fontWeight:600, fontSize:13, color:"#000" }}>
+            <span>9:41</span>
+            <span style={{ display:"inline-flex", alignItems:"center", gap:5 }}>
+              <SignalIcon/>
+              <WifiIcon/>
+              <BatteryIcon/>
+            </span>
+          </div>
+          {/* optional title bar */}
+          {title && (
+            <div style={{ flexShrink:0, padding:"6px 20px 10px", fontSize:15, fontWeight:600, color:"#0a0a0c",
+                borderBottom:"1px solid rgba(0,0,0,0.06)" }}>
+              {title}
+            </div>
+          )}
+          {/* scrollable content */}
+          <div data-ms="phone-content" style={{ flex:1, overflow:"auto", padding:"16px 16px 28px" }}>
+            {children}
+          </div>
+          {/* home indicator */}
+          <div style={{ flexShrink:0, padding:"8px 0 10px", display:"flex", justifyContent:"center" }}>
+            <div style={{ width:130, height:5, borderRadius:5, background:"#000", opacity:0.85 }}/>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── STEP ─────────────────────────────────────────────────────────────── */
 export function Step({ n, title, children }) {
   return (

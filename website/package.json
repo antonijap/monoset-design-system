@@ -16,11 +16,13 @@
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
     "@fontsource/jetbrains-mono": "^5.2.8",
+    "@monoset/native": "*",
     "@orama/orama": "^3.1.18",
     "framer-motion": "^12.38.0",
     "posthog-js": "^1.369.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-native-web": "^0.19.13",
     "react-router-dom": "^7.14.1"
   },
   "devDependencies": {

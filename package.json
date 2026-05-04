@@ -5,7 +5,8 @@
   "description": "Monoset:a minimal, monotone, unopinionated design system.",
   "workspaces": [
     "packages/*",
-    "website"
+    "website",
+    "examples/*"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
