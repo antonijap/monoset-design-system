@@ -27,7 +27,26 @@ export {
   type AppShellContentProps,
 } from "./AppShell";
 export { Combobox, type ComboboxProps, type ComboboxOption } from "./Combobox";
+export { MultiCombobox, type MultiComboboxProps, type MultiComboboxOption } from "./MultiCombobox";
 export { HoverCard, HoverCardTrigger, HoverCardContent, type HoverCardContentProps } from "./HoverCard";
+export { PasswordInput, type PasswordInputProps } from "./PasswordInput";
+export { NumberInput, type NumberInputProps } from "./NumberInput";
+export { PinInput, type PinInputProps } from "./PinInput";
+export { FileUpload, type FileUploadProps } from "./FileUpload";
+export { Stepper, type StepperProps, type StepperStep } from "./Stepper";
+export {
+  NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger,
+  NavigationMenuContent, NavigationMenuLink,
+  type NavigationMenuItemProps, type NavigationMenuTriggerProps,
+  type NavigationMenuContentProps, type NavigationMenuLinkProps,
+} from "./NavigationMenu";
+export {
+  ContextMenu, ContextMenuTrigger, ContextMenuContent,
+  ContextMenuItem, ContextMenuLabel, ContextMenuSeparator,
+  type ContextMenuContentProps, type ContextMenuItemProps,
+} from "./ContextMenu";
+export { Carousel, type CarouselProps } from "./Carousel";
+export { DatePicker, type DatePickerProps } from "./DatePicker";
 export { Tooltip, TooltipProvider, type TooltipProps } from "./Tooltip";
 export { Popover, PopoverTrigger, PopoverContent, PopoverClose, type PopoverContentProps } from "./Popover";
 export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "./DropdownMenu";

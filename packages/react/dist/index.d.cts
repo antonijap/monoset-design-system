@@ -8,6 +8,8 @@ import * as RTabs from '@radix-ui/react-tabs';
 import * as RToast from '@radix-ui/react-toast';
 import * as RDialog from '@radix-ui/react-dialog';
 import * as RHoverCard from '@radix-ui/react-hover-card';
+import * as RNav from '@radix-ui/react-navigation-menu';
+import * as RCtx from '@radix-ui/react-context-menu';
 import * as RPopover from '@radix-ui/react-popover';
 import * as RDropdown from '@radix-ui/react-dropdown-menu';
 import * as RSelect from '@radix-ui/react-select';
@@ -361,12 +363,188 @@ interface ComboboxProps {
 }
 declare const Combobox: react.ForwardRefExoticComponent<ComboboxProps & react.RefAttributes<HTMLButtonElement>>;
 
+interface MultiComboboxOption {
+    value: string;
+    label: string;
+    description?: string;
+    disabled?: boolean;
+    keywords?: string[];
+}
+interface MultiComboboxProps {
+    options: MultiComboboxOption[];
+    /** Currently selected values. Controlled. */
+    value?: string[];
+    defaultValue?: string[];
+    onValueChange?: (value: string[]) => void;
+    placeholder?: string;
+    searchPlaceholder?: string;
+    emptyMessage?: string;
+    filter?: (query: string, option: MultiComboboxOption) => boolean;
+    disabled?: boolean;
+    id?: string;
+    className?: string;
+    "aria-label"?: string;
+    "aria-labelledby"?: string;
+}
+declare const MultiCombobox: react.ForwardRefExoticComponent<MultiComboboxProps & react.RefAttributes<HTMLButtonElement>>;
+
 declare const HoverCard: react.FC<RHoverCard.HoverCardProps>;
 declare const HoverCardTrigger: react.ForwardRefExoticComponent<RHoverCard.HoverCardTriggerProps & react.RefAttributes<HTMLAnchorElement>>;
 interface HoverCardContentProps extends React.ComponentPropsWithoutRef<typeof RHoverCard.Content> {
     children?: ReactNode;
 }
 declare function HoverCardContent({ className, children, sideOffset, ...rest }: HoverCardContentProps): react_jsx_runtime.JSX.Element;
+
+interface PasswordInputProps extends Omit<InputProps, "type"> {
+    /** Show the toggle button. Default: true. */
+    showToggle?: boolean;
+    /** Override the visible-state text on the toggle button. */
+    showLabel?: string;
+    hideLabel?: string;
+}
+declare const PasswordInput: react.ForwardRefExoticComponent<PasswordInputProps & react.RefAttributes<HTMLInputElement>>;
+
+interface NumberInputProps extends Omit<InputProps, "type" | "value" | "onChange" | "defaultValue"> {
+    value?: number;
+    defaultValue?: number;
+    onValueChange?: (value: number) => void;
+    min?: number;
+    max?: number;
+    step?: number;
+    /** Hide the +/- buttons. Default: false. */
+    hideStepper?: boolean;
+}
+declare const NumberInput: react.ForwardRefExoticComponent<NumberInputProps & react.RefAttributes<HTMLInputElement>>;
+
+interface PinInputProps {
+    /** Number of cells. Default: 6. */
+    length?: number;
+    /** Controlled value (must equal `length` when provided in full). */
+    value?: string;
+    defaultValue?: string;
+    onValueChange?: (value: string) => void;
+    /** Fired when the user fills the last cell. */
+    onComplete?: (value: string) => void;
+    /** Mask all cells like a password. */
+    mask?: boolean;
+    /** Restrict to a regex. Default: digits only. */
+    pattern?: RegExp;
+    disabled?: boolean;
+    autoFocus?: boolean;
+    className?: string;
+    "aria-label"?: string;
+}
+declare const PinInput: react.ForwardRefExoticComponent<PinInputProps & react.RefAttributes<HTMLDivElement>>;
+
+interface FileUploadProps {
+    /** Files selected. */
+    files?: File[];
+    /** Fires when files are picked or dropped. */
+    onFilesChange?: (files: File[]) => void;
+    /** Native file input accept string, e.g. "image/*,.pdf". */
+    accept?: string;
+    multiple?: boolean;
+    disabled?: boolean;
+    /** Element rendered inside the dropzone. Defaults to a friendly hint. */
+    children?: ReactNode;
+    className?: string;
+    /** Visually hidden label for the file input. */
+    "aria-label"?: string;
+}
+declare const FileUpload: react.ForwardRefExoticComponent<FileUploadProps & react.RefAttributes<HTMLDivElement>>;
+
+interface StepperStep {
+    label: ReactNode;
+    /** Optional sublabel below the main label. */
+    description?: ReactNode;
+}
+interface StepperProps {
+    steps: StepperStep[];
+    /** Current step (0-indexed). */
+    current: number;
+    className?: string;
+    "aria-label"?: string;
+}
+/**
+ * A horizontal multi-step indicator (1 of N). Use it at the top of a wizard
+ * to show progress. The component is presentational; you drive the step state.
+ */
+declare const Stepper: react.ForwardRefExoticComponent<StepperProps & react.RefAttributes<HTMLOListElement>>;
+
+declare const NavigationMenu: react.ForwardRefExoticComponent<RNav.NavigationMenuProps & react.RefAttributes<HTMLElement>>;
+declare const NavigationMenuList: react.ForwardRefExoticComponent<RNav.NavigationMenuListProps & react.RefAttributes<HTMLUListElement>>;
+interface NavigationMenuItemProps extends React.ComponentPropsWithoutRef<typeof RNav.Item> {
+    children?: ReactNode;
+}
+declare const NavigationMenuItem: react.ForwardRefExoticComponent<NavigationMenuItemProps & react.RefAttributes<HTMLLIElement>>;
+interface NavigationMenuTriggerProps extends React.ComponentPropsWithoutRef<typeof RNav.Trigger> {
+    children?: ReactNode;
+}
+declare const NavigationMenuTrigger: react.ForwardRefExoticComponent<NavigationMenuTriggerProps & react.RefAttributes<HTMLButtonElement>>;
+interface NavigationMenuContentProps extends React.ComponentPropsWithoutRef<typeof RNav.Content> {
+    children?: ReactNode;
+}
+declare const NavigationMenuContent: react.ForwardRefExoticComponent<NavigationMenuContentProps & react.RefAttributes<HTMLDivElement>>;
+interface NavigationMenuLinkProps extends React.ComponentPropsWithoutRef<typeof RNav.Link> {
+    children?: ReactNode;
+}
+declare const NavigationMenuLink: react.ForwardRefExoticComponent<NavigationMenuLinkProps & react.RefAttributes<HTMLAnchorElement>>;
+
+declare const ContextMenu: react.FC<RCtx.ContextMenuProps>;
+declare const ContextMenuTrigger: react.ForwardRefExoticComponent<RCtx.ContextMenuTriggerProps & react.RefAttributes<HTMLSpanElement>>;
+interface ContextMenuContentProps extends React.ComponentPropsWithoutRef<typeof RCtx.Content> {
+    children?: ReactNode;
+}
+declare const ContextMenuContent: react.ForwardRefExoticComponent<ContextMenuContentProps & react.RefAttributes<HTMLDivElement>>;
+interface ContextMenuItemProps extends React.ComponentPropsWithoutRef<typeof RCtx.Item> {
+    children?: ReactNode;
+}
+declare const ContextMenuItem: react.ForwardRefExoticComponent<ContextMenuItemProps & react.RefAttributes<HTMLDivElement>>;
+declare const ContextMenuLabel: react.ForwardRefExoticComponent<Omit<RCtx.ContextMenuLabelProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+declare const ContextMenuSeparator: react.ForwardRefExoticComponent<Omit<RCtx.ContextMenuSeparatorProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+
+interface CarouselProps {
+    children: ReactNode[];
+    /** Currently visible index (0-based). Controlled. */
+    index?: number;
+    defaultIndex?: number;
+    onIndexChange?: (index: number) => void;
+    /** Show prev/next buttons. Default: true. */
+    showArrows?: boolean;
+    /** Show pagination dots. Default: true. */
+    showDots?: boolean;
+    /** Auto-advance interval in ms. Omit to disable. */
+    autoplay?: number;
+    className?: string;
+    "aria-label"?: string;
+}
+/**
+ * A simple horizontal carousel. Slides snap to each child via CSS scroll-snap;
+ * arrows scroll programmatically; dots reflect/control the current index.
+ */
+declare const Carousel: react.ForwardRefExoticComponent<CarouselProps & react.RefAttributes<HTMLDivElement>>;
+
+interface DatePickerProps {
+    /** Currently selected date. Controlled. */
+    value?: Date | null;
+    defaultValue?: Date | null;
+    onValueChange?: (value: Date | null) => void;
+    /** Earliest selectable date (inclusive). */
+    min?: Date;
+    /** Latest selectable date (inclusive). */
+    max?: Date;
+    /** Locale for month/weekday labels. Defaults to the browser's locale. */
+    locale?: string;
+    placeholder?: string;
+    disabled?: boolean;
+    id?: string;
+    className?: string;
+    "aria-label"?: string;
+    "aria-labelledby"?: string;
+    /** Format function for the trigger label. Default: locale-aware short date. */
+    format?: (date: Date) => string;
+}
+declare const DatePicker: react.ForwardRefExoticComponent<DatePickerProps & react.RefAttributes<HTMLButtonElement>>;
 
 declare function TooltipProvider({ children, delayDuration }: {
     children: ReactNode;
@@ -586,4 +764,4 @@ interface StaggerListProps {
 }
 declare const StaggerList: react.ForwardRefExoticComponent<StaggerListProps & react.RefAttributes<HTMLDivElement>>;
 
-export { Accordion, AccordionContent, AccordionItem, type AccordionItemProps, AccordionTrigger, type AccordionTriggerProps, Alert, type AlertProps, AppShell, type AppShellContentProps, type AppShellHeaderProps, type AppShellMainProps, type AppShellMobileTriggerProps, type AppShellProps, type AppShellSidebarGroupProps, type AppShellSidebarItemProps, type AppShellSidebarProps, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Card, type CardProps, type CardVariant, Checkbox, type CheckboxProps, Combobox, type ComboboxOption, type ComboboxProps, type CommandGroup, type CommandItem, CommandPalette, type CommandPaletteProps, Container, type ContainerProps, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, EmptyState, type EmptyStateProps, Field, type FieldProps, type FieldState, Form, type FormProps, Grid, type GridProps, HoverCard, HoverCardContent, type HoverCardContentProps, HoverCardTrigger, Inline, type InlineProps, Input, type InputProps, Kbd, type KbdProps, MonosetProvider, type MonosetProviderProps, Pagination, type PaginationProps, Popover, PopoverClose, PopoverContent, type PopoverContentProps, PopoverTrigger, Progress, type ProgressProps, Radio, RadioGroup, type RadioProps, Reveal, type RevealProps, Select, SelectContent, SelectItem, type SelectItemProps, SelectTrigger, type SelectTriggerProps, Separator, type SeparatorProps, Sheet, SheetClose, SheetContent, type SheetContentProps, type SheetSide, SheetTrigger, Skeleton, type SkeletonProps, Slider, type SliderProps, type SortDirection, Spinner, type SpinnerProps, Stack, type StackProps, StaggerList, type StaggerListProps, Switch, type SwitchProps, Table, TableHeader, type TableHeaderProps, type TableProps, TableSelectAll, type TableSelectAllProps, TableSelectRow, type TableSelectRowProps, Tabs, TabsContent, TabsList, TabsTrigger, type TabsTriggerProps, Textarea, type TextareaProps, type Theme, ThemeProvider, type ThemeProviderProps, ThemeToggle, Toast, type ToastProps, ToastProvider, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, type TooltipProps, TooltipProvider, type UseFormOptions, type UseFormReturn, type ValidationRule, cx, useAppShellMobile, useMonosetForm, useTheme };
+export { Accordion, AccordionContent, AccordionItem, type AccordionItemProps, AccordionTrigger, type AccordionTriggerProps, Alert, type AlertProps, AppShell, type AppShellContentProps, type AppShellHeaderProps, type AppShellMainProps, type AppShellMobileTriggerProps, type AppShellProps, type AppShellSidebarGroupProps, type AppShellSidebarItemProps, type AppShellSidebarProps, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Card, type CardProps, type CardVariant, Carousel, type CarouselProps, Checkbox, type CheckboxProps, Combobox, type ComboboxOption, type ComboboxProps, type CommandGroup, type CommandItem, CommandPalette, type CommandPaletteProps, Container, type ContainerProps, ContextMenu, ContextMenuContent, type ContextMenuContentProps, ContextMenuItem, type ContextMenuItemProps, ContextMenuLabel, ContextMenuSeparator, ContextMenuTrigger, DatePicker, type DatePickerProps, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, EmptyState, type EmptyStateProps, Field, type FieldProps, type FieldState, FileUpload, type FileUploadProps, Form, type FormProps, Grid, type GridProps, HoverCard, HoverCardContent, type HoverCardContentProps, HoverCardTrigger, Inline, type InlineProps, Input, type InputProps, Kbd, type KbdProps, MonosetProvider, type MonosetProviderProps, MultiCombobox, type MultiComboboxOption, type MultiComboboxProps, NavigationMenu, NavigationMenuContent, type NavigationMenuContentProps, NavigationMenuItem, type NavigationMenuItemProps, NavigationMenuLink, type NavigationMenuLinkProps, NavigationMenuList, NavigationMenuTrigger, type NavigationMenuTriggerProps, NumberInput, type NumberInputProps, Pagination, type PaginationProps, PasswordInput, type PasswordInputProps, PinInput, type PinInputProps, Popover, PopoverClose, PopoverContent, type PopoverContentProps, PopoverTrigger, Progress, type ProgressProps, Radio, RadioGroup, type RadioProps, Reveal, type RevealProps, Select, SelectContent, SelectItem, type SelectItemProps, SelectTrigger, type SelectTriggerProps, Separator, type SeparatorProps, Sheet, SheetClose, SheetContent, type SheetContentProps, type SheetSide, SheetTrigger, Skeleton, type SkeletonProps, Slider, type SliderProps, type SortDirection, Spinner, type SpinnerProps, Stack, type StackProps, StaggerList, type StaggerListProps, Stepper, type StepperProps, type StepperStep, Switch, type SwitchProps, Table, TableHeader, type TableHeaderProps, type TableProps, TableSelectAll, type TableSelectAllProps, TableSelectRow, type TableSelectRowProps, Tabs, TabsContent, TabsList, TabsTrigger, type TabsTriggerProps, Textarea, type TextareaProps, type Theme, ThemeProvider, type ThemeProviderProps, ThemeToggle, Toast, type ToastProps, ToastProvider, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, type TooltipProps, TooltipProvider, type UseFormOptions, type UseFormReturn, type ValidationRule, cx, useAppShellMobile, useMonosetForm, useTheme };

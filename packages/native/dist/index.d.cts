@@ -1,5 +1,5 @@
 import * as react from 'react';
-import { ReactNode } from 'react';
+import { ReactNode, ReactElement } from 'react';
 import { PressableProps, StyleProp, ViewStyle, ViewProps, View, TextInputProps, TextStyle, TextInput, AccessibilityProps, DimensionValue, ImageSourcePropType, ModalProps } from 'react-native';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { space } from './tokens.cjs';
@@ -304,4 +304,230 @@ interface TabBarProps extends Omit<ViewProps, "children"> {
  */
 declare const TabBar: react.ForwardRefExoticComponent<TabBarProps & react.RefAttributes<View>>;
 
-export { Alert, type AlertProps, type AlertVariant, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Card, type CardProps, type CardVariant, Checkbox, type CheckboxProps, Chip, type ChipProps, Dialog, type DialogProps, Divider, type DividerProps, EmptyState, type EmptyStateProps, Field, type FieldProps, Inline, type InlineProps, Input, type InputProps, ListItem, type ListItemProps, Progress, type ProgressProps, Radio, RadioGroup, type RadioGroupProps, type RadioProps, SegmentedControl, type SegmentedControlProps, type SegmentedItem, Sheet, type SheetProps, Skeleton, type SkeletonProps, Slider, type SliderProps, Spinner, type SpinnerProps, Stack, type StackProps, Switch, type SwitchProps, TabBar, type TabBarItem, type TabBarProps, type ToastItem, ToastProvider, type ToastProviderProps, space, useToast };
+interface PasswordInputProps extends Omit<InputProps, "secureTextEntry"> {
+    /** Hide the show/hide toggle. */
+    hideToggle?: boolean;
+}
+declare const PasswordInput: react.ForwardRefExoticComponent<PasswordInputProps & react.RefAttributes<TextInput>>;
+
+interface NumberInputProps {
+    value?: number;
+    defaultValue?: number;
+    onValueChange?: (value: number) => void;
+    min?: number;
+    max?: number;
+    step?: number;
+    disabled?: boolean;
+    placeholder?: string;
+    style?: StyleProp<ViewStyle>;
+}
+declare const NumberInput: react.ForwardRefExoticComponent<NumberInputProps & react.RefAttributes<TextInput>>;
+
+interface PinInputProps {
+    length?: number;
+    value?: string;
+    defaultValue?: string;
+    onValueChange?: (value: string) => void;
+    onComplete?: (value: string) => void;
+    mask?: boolean;
+    disabled?: boolean;
+    autoFocus?: boolean;
+    style?: StyleProp<ViewStyle>;
+    "aria-label"?: string;
+}
+declare const PinInput: react.ForwardRefExoticComponent<PinInputProps & react.RefAttributes<View>>;
+
+interface TabItem {
+    value: string;
+    label: ReactNode;
+    disabled?: boolean;
+}
+interface TabsProps {
+    items: TabItem[];
+    value?: string;
+    defaultValue?: string;
+    onValueChange?: (value: string) => void;
+    /** Allow horizontal scroll when tabs overflow. Default: true. */
+    scrollable?: boolean;
+    style?: StyleProp<ViewStyle>;
+}
+/**
+ * Top-tab navigation. Underline indicator on the active tab. Scrolls
+ * horizontally when there are more tabs than fit. The component renders
+ * just the tab bar; you handle which screen mounts based on the value.
+ */
+declare const Tabs: react.ForwardRefExoticComponent<TabsProps & react.RefAttributes<View>>;
+
+interface PopoverProps {
+    open: boolean;
+    onClose: () => void;
+    /** Anchor element. Required for positioning. */
+    anchorRef: React.RefObject<View | null>;
+    /** Side of the anchor. Default: "bottom". */
+    side?: "top" | "bottom";
+    /** Distance from the anchor in pixels. Default: 6. */
+    sideOffset?: number;
+    /** Custom width. Default: matches the anchor. */
+    width?: number;
+    children?: ReactNode;
+    contentStyle?: StyleProp<ViewStyle>;
+}
+/**
+ * A floating panel anchored to a trigger. The anchor's screen coordinates
+ * are measured when the popover opens; reposition by closing/reopening.
+ *
+ * Usage:
+ *   const triggerRef = useRef<View>(null);
+ *   <Pressable ref={triggerRef} onPress={() => setOpen(true)}>...</Pressable>
+ *   <Popover open={open} onClose={() => setOpen(false)} anchorRef={triggerRef}>
+ *     ...
+ *   </Popover>
+ */
+declare const Popover: react.ForwardRefExoticComponent<PopoverProps & react.RefAttributes<View>>;
+
+interface ComboboxOption {
+    value: string;
+    label: string;
+    description?: string;
+    disabled?: boolean;
+    keywords?: string[];
+}
+interface ComboboxProps {
+    options: ComboboxOption[];
+    value?: string;
+    onValueChange?: (value: string) => void;
+    placeholder?: string;
+    searchPlaceholder?: string;
+    emptyMessage?: string;
+    filter?: (query: string, option: ComboboxOption) => boolean;
+    disabled?: boolean;
+    style?: StyleProp<ViewStyle>;
+}
+/**
+ * Searchable single-select. Opens a full-screen sheet on tap, with a
+ * search field at the top and a scrollable list of matches.
+ */
+declare const Combobox: react.ForwardRefExoticComponent<ComboboxProps & react.RefAttributes<View>>;
+
+type Mode = "single" | "multiple";
+interface AccordionProps {
+    type?: Mode;
+    defaultValue?: string | string[];
+    value?: string | string[];
+    onValueChange?: (value: string | string[]) => void;
+    children: ReactNode;
+    style?: StyleProp<ViewStyle>;
+}
+declare function Accordion({ type, defaultValue, value, onValueChange, children, style }: AccordionProps): react_jsx_runtime.JSX.Element;
+interface AccordionItemProps {
+    value: string;
+    title: ReactNode;
+    children: ReactNode;
+    disabled?: boolean;
+}
+declare function AccordionItem({ value, title, children, disabled }: AccordionItemProps): react_jsx_runtime.JSX.Element;
+
+interface NavigationHeaderProps {
+    /** Page title. */
+    title?: ReactNode;
+    /** Element on the left (back arrow, menu icon). */
+    leading?: ReactNode;
+    /** Element on the right (action button, avatar). */
+    trailing?: ReactNode;
+    /** Show a thin bottom border. Default: true. */
+    border?: boolean;
+    style?: StyleProp<ViewStyle>;
+}
+/**
+ * Top app bar. Renders a 56pt-tall header with leading/trailing slots and a
+ * centered or left-aligned title. Use `<Stack>` it above your screen content
+ * or use `<AppShell.Header>` for full layout.
+ */
+declare const NavigationHeader: react.ForwardRefExoticComponent<NavigationHeaderProps & react.RefAttributes<View>>;
+/** Quick back-arrow trigger. Renders a chevron-left glyph. */
+declare function NavigationBack({ onPress, label }: {
+    onPress?: () => void;
+    label?: string;
+}): react_jsx_runtime.JSX.Element;
+
+interface ActionSheetAction {
+    label: string;
+    onPress?: () => void;
+    /** Visual destructive styling. */
+    destructive?: boolean;
+    disabled?: boolean;
+}
+interface ActionSheetProps extends Omit<SheetProps, "children" | "title" | "description"> {
+    title?: string;
+    description?: string;
+    actions: ActionSheetAction[];
+    cancelLabel?: string;
+}
+/**
+ * iOS-style list of mutually exclusive actions plus a Cancel. Each action
+ * dismisses the sheet on press by default. Destructive actions render in red.
+ */
+declare const ActionSheet: react.ForwardRefExoticComponent<ActionSheetProps & react.RefAttributes<View>>;
+
+interface AppShellProps {
+    /** Top app bar element. Usually a `<NavigationHeader/>`. */
+    header?: ReactNode;
+    /** Bottom navigation. Usually a `<TabBar/>`. */
+    tabBar?: ReactNode;
+    children?: ReactNode;
+    /** Background color of the safe area. Defaults to colors.bg. */
+    backgroundColor?: string;
+    style?: StyleProp<ViewStyle>;
+}
+/**
+ * The root layout for an app screen. Wraps content in a SafeAreaView,
+ * stacks `header` (optional), the children, and `tabBar` (optional).
+ * The middle section flexes; pass a ScrollView/FlatList as the child
+ * to make content scrollable.
+ *
+ * Compose it with `NavigationHeader` and `TabBar`:
+ *
+ *   <AppShell
+ *     header={<NavigationHeader title="Home"/>}
+ *     tabBar={<TabBar items={...} value={...} onValueChange={...}/>}
+ *   >
+ *     <ScrollView>...</ScrollView>
+ *   </AppShell>
+ */
+declare const AppShell: react.ForwardRefExoticComponent<AppShellProps & react.RefAttributes<View>>;
+
+interface TooltipProps {
+    /** Tooltip body. String renders styled; ReactNode renders raw. */
+    content: ReactNode;
+    /** The element that triggers the tooltip. Wrapped to capture press. */
+    children: ReactElement;
+    /** Side relative to the trigger. Default: "top". */
+    side?: "top" | "bottom";
+    /** Width of the bubble. Default: undefined (auto-fit, max 240). */
+    width?: number;
+    /** Long-press duration in ms before showing. Default: 400. */
+    longPressDelay?: number;
+}
+/**
+ * A short label shown on long-press. Less critical on touch devices
+ * than on web, but still useful for icon-only buttons or accessibility.
+ */
+declare function Tooltip({ content, children, side, width, longPressDelay }: TooltipProps): react_jsx_runtime.JSX.Element;
+
+interface DatePickerProps {
+    value?: Date | null;
+    defaultValue?: Date | null;
+    onValueChange?: (value: Date | null) => void;
+    min?: Date;
+    max?: Date;
+    /** Locale for month/weekday labels. Default: device locale. */
+    locale?: string;
+    placeholder?: string;
+    disabled?: boolean;
+    /** Format function for the trigger label. Default: locale-aware short date. */
+    format?: (date: Date) => string;
+    style?: StyleProp<ViewStyle>;
+}
+declare const DatePicker: react.ForwardRefExoticComponent<DatePickerProps & react.RefAttributes<View>>;
+
+export { Accordion, AccordionItem, type AccordionItemProps, type AccordionProps, ActionSheet, type ActionSheetAction, type ActionSheetProps, Alert, type AlertProps, type AlertVariant, AppShell, type AppShellProps, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Card, type CardProps, type CardVariant, Checkbox, type CheckboxProps, Chip, type ChipProps, Combobox, type ComboboxOption, type ComboboxProps, DatePicker, type DatePickerProps, Dialog, type DialogProps, Divider, type DividerProps, EmptyState, type EmptyStateProps, Field, type FieldProps, Inline, type InlineProps, Input, type InputProps, ListItem, type ListItemProps, NavigationBack, NavigationHeader, type NavigationHeaderProps, NumberInput, type NumberInputProps, PasswordInput, type PasswordInputProps, PinInput, type PinInputProps, Popover, type PopoverProps, Progress, type ProgressProps, Radio, RadioGroup, type RadioGroupProps, type RadioProps, SegmentedControl, type SegmentedControlProps, type SegmentedItem, Sheet, type SheetProps, Skeleton, type SkeletonProps, Slider, type SliderProps, Spinner, type SpinnerProps, Stack, type StackProps, Switch, type SwitchProps, TabBar, type TabBarItem, type TabBarProps, type TabItem, Tabs, type TabsProps, type ToastItem, ToastProvider, type ToastProviderProps, Tooltip, type TooltipProps, space, useToast };

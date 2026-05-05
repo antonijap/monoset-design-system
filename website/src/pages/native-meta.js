@@ -38,4 +38,18 @@ export const NATIVE_PAGE_META = {
   dialog:       { title: "Dialog", desc: "Centered modal for confirmations and short flows." },
   toast:        { title: "Toast", desc: "Transient banner anchored to the bottom of the screen." },
   tabbar:       { title: "Tab bar", desc: "Bottom navigation for the app's primary destinations." },
+
+  // v0.3
+  datepickern:  { title: "DatePicker", desc: "Calendar bottom sheet for picking a single date." },
+  numberinputn: { title: "Number input", desc: "Stepper-flanked numeric input for cart quantities and settings." },
+  pininputn:    { title: "Pin input", desc: "OTP-style cells with auto-advance and paste support." },
+  passwordn:    { title: "Password input", desc: "TextInput with a Show / Hide toggle." },
+  tabsn:        { title: "Tabs", desc: "Top tabs with an underline indicator. Scrolls when overflowing." },
+  popovern:     { title: "Popover", desc: "Floating panel anchored to a trigger." },
+  comboboxn:    { title: "Combobox", desc: "Searchable single-select with a bottom-sheet picker." },
+  accordionn:   { title: "Accordion", desc: "Collapsible disclosure panels." },
+  navheader:    { title: "Navigation header", desc: "Top app bar with leading, title, and trailing slots." },
+  actionsheet:  { title: "Action sheet", desc: "iOS-style list of actions plus a Cancel button." },
+  appshell:     { title: "AppShell", desc: "Root layout combining header, content, and tab bar." },
+  tooltipn:     { title: "Tooltip", desc: "Long-press popover for short labels and accessibility hints." },
 };

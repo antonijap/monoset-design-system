@@ -50,4 +50,16 @@ export const PAGE_META = {
   mcp:          { title: "MCP server", desc: "Give your AI coding agent direct access to Monoset components, tokens, and docs." },
   dashboard:    { title: "Building a dashboard", desc: "Sidebar, stat cards, and a data table in one layout." },
   datatable:    { title: "Data table with filters", desc: "Searchable, sortable, filterable table with row selection and bulk actions." },
+
+  // v0.6 components
+  datepicker:   { title: "DatePicker", desc: "Calendar in a popover for picking a single date." },
+  numberinput:  { title: "Number input", desc: "Text input with +/- stepper buttons for numeric fields." },
+  pininput:     { title: "Pin input", desc: "Multi-cell input for OTP and short codes. Auto-advance, paste support." },
+  password:     { title: "Password input", desc: "Input with a show/hide toggle." },
+  fileupload:   { title: "File upload", desc: "Drop zone with click-to-pick fallback and accessible keyboard handling." },
+  stepper:      { title: "Stepper", desc: "Horizontal multi-step indicator for wizards." },
+  navmenu:      { title: "Navigation menu", desc: "Header dropdown nav with rich content panes." },
+  contextmenu:  { title: "Context menu", desc: "Right-click menu with items, labels, and separators." },
+  multicombobox:{ title: "Multi-select Combobox", desc: "Searchable Combobox that selects multiple values." },
+  carousel:     { title: "Carousel", desc: "Horizontal slider with arrows and pagination dots." },
 };

@@ -1,6 +1,6 @@
 {
   "name": "@monoset/native",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Monoset for React Native. Monotone, minimal, unopinionated. Variant API on the surface, vanilla StyleSheet inside.",
   "keywords": [
     "design-system",

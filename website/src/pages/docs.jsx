@@ -14,6 +14,11 @@ import {
   RadioGroup, Radio,
   Skeleton, EmptyState, Pagination, Breadcrumb, Progress, Separator,
   Stack,
+  DatePicker, NumberInput, PinInput, PasswordInput, FileUpload,
+  Stepper, MultiCombobox, Carousel,
+  NavigationMenu, NavigationMenuList, NavigationMenuItem,
+  NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink,
+  ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
 } from '@monoset/react';
 import {
   EASE_STANDARD, EASE_EMPHASIS, EASE_EXIT, DUR,
@@ -4484,6 +4489,372 @@ function PageSeparator() {
   );
 }
 
+/* ─── DatePicker ───────────────────────────────────────────────── */
+function PageDatePicker() {
+  const [d, setD] = useState(null);
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>DatePicker</H1>
+      <Lead>A calendar in a popover. Click the trigger, pick a date, the popover dismisses. Keyboard works through the cells. No external date library — pure JS Date math under the hood.</Lead>
+
+      <H2 id="basic">Basic</H2>
+      <Preview bg="var(--bg)">
+        <DatePicker value={d} onValueChange={setD} placeholder="Pick a date"/>
+      </Preview>
+      <Code language="jsx">{`import { DatePicker } from "@monoset/react";
+
+const [d, setD] = useState(null);
+<DatePicker value={d} onValueChange={setD} placeholder="Pick a date"/>`}</Code>
+
+      <H2 id="bounds">Min and max</H2>
+      <P>Pass <InlineCode>min</InlineCode> and <InlineCode>max</InlineCode> to bound selection.</P>
+      <Code language="jsx">{`<DatePicker
+  value={d}
+  onValueChange={setD}
+  min={new Date()}
+  max={new Date(Date.now() + 30 * 86400000)}
+/>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"value",         type:"Date | null", default:"—", desc:"Selected date (controlled)." },
+        { name:"defaultValue",  type:"Date | null", default:"—", desc:"Uncontrolled initial value." },
+        { name:"onValueChange", type:"(value: Date | null) => void", default:"—", desc:"Called when the user picks a date or clears." },
+        { name:"min",           type:"Date",        default:"—", desc:"Earliest selectable date." },
+        { name:"max",           type:"Date",        default:"—", desc:"Latest selectable date." },
+        { name:"locale",        type:"string",      default:"browser", desc:"Locale for month/weekday labels." },
+        { name:"format",        type:"(d: Date) => string", default:"locale-aware short", desc:"Trigger label formatter." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── NumberInput ──────────────────────────────────────────────── */
+function PageNumberInput() {
+  const [qty, setQty] = useState(1);
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Number input</H1>
+      <Lead>An <InlineCode>Input</InlineCode> with +/- buttons. For quantity, age, settings numerics. Pass <InlineCode>min</InlineCode>, <InlineCode>max</InlineCode>, and <InlineCode>step</InlineCode> to constrain.</Lead>
+
+      <H2 id="basic">Basic</H2>
+      <Preview bg="var(--bg)">
+        <NumberInput value={qty} onValueChange={setQty} min={0} max={99}/>
+      </Preview>
+      <Code language="jsx">{`<NumberInput value={qty} onValueChange={setQty} min={0} max={99}/>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"value",         type:"number",  default:"—", desc:"Controlled value." },
+        { name:"onValueChange", type:"(n: number) => void", default:"—", desc:"Called with the new value (already clamped)." },
+        { name:"min",           type:"number",  default:"-Infinity", desc:"Lower bound." },
+        { name:"max",           type:"number",  default:"Infinity",  desc:"Upper bound." },
+        { name:"step",          type:"number",  default:"1", desc:"Increment." },
+        { name:"hideStepper",   type:"boolean", default:"false", desc:"Hide the +/- buttons." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── PinInput ─────────────────────────────────────────────────── */
+function PagePinInput() {
+  const [code, setCode] = useState("");
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Pin input</H1>
+      <Lead>One cell per character. Auto-advances on type, shifts back on backspace, accepts paste of the whole code. Default is digits only; pass a custom <InlineCode>pattern</InlineCode> to allow letters or alphanumeric.</Lead>
+
+      <H2 id="basic">Basic</H2>
+      <Preview bg="var(--bg)">
+        <PinInput length={6} value={code} onValueChange={setCode} onComplete={(v) => alert("Submitted: " + v)}/>
+      </Preview>
+      <Code language="jsx">{`const [code, setCode] = useState("");
+
+<PinInput
+  length={6}
+  value={code}
+  onValueChange={setCode}
+  onComplete={(v) => verifyCode(v)}
+/>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"length",        type:"number",   default:"6", desc:"Number of cells." },
+        { name:"value",         type:"string",   default:"—", desc:"Controlled value." },
+        { name:"onValueChange", type:"(v: string) => void", default:"—", desc:"Called on each change." },
+        { name:"onComplete",    type:"(v: string) => void", default:"—", desc:"Fires when the last cell fills." },
+        { name:"mask",          type:"boolean",  default:"false", desc:"Mask each cell (password style)." },
+        { name:"pattern",       type:"RegExp",   default:"/^[0-9]$/", desc:"Allowed character pattern." },
+        { name:"autoFocus",     type:"boolean",  default:"false", desc:"Focus the first cell on mount." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── PasswordInput ────────────────────────────────────────────── */
+function PagePasswordInput() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Password input</H1>
+      <Lead>An <InlineCode>Input</InlineCode> with a Show / Hide toggle on the right. Tabs to the toggle so keyboard users can flip visibility too.</Lead>
+
+      <H2 id="basic">Basic</H2>
+      <Preview bg="var(--bg)">
+        <PasswordInput placeholder="Password" defaultValue="secret123"/>
+      </Preview>
+      <Code language="jsx">{`<PasswordInput placeholder="Password"/>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"showToggle", type:"boolean", default:"true", desc:"Show the visibility toggle." },
+        { name:"showLabel",  type:"string", default:'"Show"', desc:"Label when password is hidden." },
+        { name:"hideLabel",  type:"string", default:'"Hide"', desc:"Label when password is visible." },
+      ]}/>
+      <P>Other props forward to <InlineCode>Input</InlineCode>.</P>
+    </div>
+  );
+}
+
+/* ─── FileUpload ───────────────────────────────────────────────── */
+function PageFileUpload() {
+  const [files, setFiles] = useState([]);
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>File upload</H1>
+      <Lead>A drop zone you can also click to open the file picker. Keyboard activatable (Enter or Space). Accepts the standard <InlineCode>accept</InlineCode> string and <InlineCode>multiple</InlineCode> flag.</Lead>
+
+      <H2 id="basic">Basic</H2>
+      <Preview bg="var(--bg)">
+        <FileUpload files={files} onFilesChange={setFiles} accept="image/*,.pdf" multiple/>
+      </Preview>
+      <Code language="jsx">{`const [files, setFiles] = useState([]);
+
+<FileUpload
+  files={files}
+  onFilesChange={setFiles}
+  accept="image/*,.pdf"
+  multiple
+/>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"files",         type:"File[]", default:"—", desc:"Currently selected files." },
+        { name:"onFilesChange", type:"(files: File[]) => void", default:"—", desc:"Called when files are picked or dropped." },
+        { name:"accept",        type:"string", default:"—", desc:"Native accept string, e.g. \"image/*,.pdf\"." },
+        { name:"multiple",      type:"boolean", default:"false", desc:"Allow multiple files." },
+        { name:"disabled",      type:"boolean", default:"false", desc:"Block selection." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Stepper ──────────────────────────────────────────────────── */
+function PageStepper() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Stepper</H1>
+      <Lead>A horizontal multi-step indicator. Pass a list of steps and the current index — done steps get a checkmark, the current one gets the accent color, pending steps stay neutral.</Lead>
+
+      <H2 id="basic">Basic</H2>
+      <Preview bg="var(--bg)">
+        <div style={{ width:"100%", maxWidth:480 }}>
+          <Stepper
+            current={1}
+            steps={[
+              { label: "Account", description: "Email, password" },
+              { label: "Profile", description: "Display name" },
+              { label: "Plan", description: "Pick a tier" },
+              { label: "Done" },
+            ]}
+          />
+        </div>
+      </Preview>
+      <Code language="jsx">{`<Stepper
+  current={currentStep}
+  steps={[
+    { label: "Account",   description: "Email, password" },
+    { label: "Profile",   description: "Display name" },
+    { label: "Plan",      description: "Pick a tier" },
+    { label: "Done" },
+  ]}
+/>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"steps",   type:"StepperStep[]", default:"—", desc:"Each step has a label and optional description." },
+        { name:"current", type:"number",        default:"—", desc:"0-indexed current step." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── NavigationMenu ───────────────────────────────────────────── */
+function PageNavMenu() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Navigation menu</H1>
+      <Lead>Header dropdown nav with rich content panes. Built on Radix's <InlineCode>NavigationMenu</InlineCode> primitive — keyboard nav, focus management, and the right ARIA roles come for free.</Lead>
+
+      <H2 id="basic">Basic</H2>
+      <Preview bg="var(--bg)">
+        <NavigationMenu>
+          <NavigationMenuList style={{ display:"flex", gap:4, listStyle:"none", padding:0, margin:0 }}>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Products</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <NavigationMenuLink href="#">Web kit</NavigationMenuLink>
+                <NavigationMenuLink href="#">Native kit</NavigationMenuLink>
+                <NavigationMenuLink href="#">CLI</NavigationMenuLink>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <NavigationMenuLink href="#">Docs</NavigationMenuLink>
+                <NavigationMenuLink href="#">Changelog</NavigationMenuLink>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+      </Preview>
+      <Code language="jsx">{`<NavigationMenu>
+  <NavigationMenuList>
+    <NavigationMenuItem>
+      <NavigationMenuTrigger>Products</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <NavigationMenuLink href="/web">Web kit</NavigationMenuLink>
+        <NavigationMenuLink href="/native">Native kit</NavigationMenuLink>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  </NavigationMenuList>
+</NavigationMenu>`}</Code>
+    </div>
+  );
+}
+
+/* ─── ContextMenu ──────────────────────────────────────────────── */
+function PageContextMenu() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Context menu</H1>
+      <Lead>Right-click menu. Use it for row actions in tables, file lists, or any contextual operation that doesn't deserve a dedicated button. Built on Radix's <InlineCode>ContextMenu</InlineCode> primitive.</Lead>
+
+      <H2 id="basic">Basic</H2>
+      <Preview bg="var(--bg)">
+        <ContextMenu>
+          <ContextMenuTrigger>
+            <div style={{ padding:"24px 32px", border:"1px dashed var(--border)", borderRadius:8, color:"var(--fg2)", fontSize:13 }}>
+              Right-click me
+            </div>
+          </ContextMenuTrigger>
+          <ContextMenuContent>
+            <ContextMenuItem>Edit</ContextMenuItem>
+            <ContextMenuItem>Duplicate</ContextMenuItem>
+            <ContextMenuSeparator/>
+            <ContextMenuItem>Delete</ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
+      </Preview>
+      <Code language="jsx">{`<ContextMenu>
+  <ContextMenuTrigger>
+    <Row/>
+  </ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem onSelect={edit}>Edit</ContextMenuItem>
+    <ContextMenuItem onSelect={duplicate}>Duplicate</ContextMenuItem>
+    <ContextMenuSeparator/>
+    <ContextMenuItem onSelect={remove}>Delete</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>`}</Code>
+    </div>
+  );
+}
+
+/* ─── MultiCombobox ────────────────────────────────────────────── */
+function PageMultiCombobox() {
+  const [tags, setTags] = useState(["react", "design"]);
+  const opts = [
+    { value: "react",    label: "React" },
+    { value: "design",   label: "Design" },
+    { value: "tokens",   label: "Tokens" },
+    { value: "motion",   label: "Motion" },
+    { value: "tools",    label: "Tools" },
+    { value: "guides",   label: "Guides" },
+  ];
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Multi-select</H1>
+      <Lead>A searchable Combobox that selects multiple values. Picked items render as removable tags inside the trigger; the dropdown shows checkmarks beside selected options.</Lead>
+
+      <H2 id="basic">Basic</H2>
+      <Preview bg="var(--bg)">
+        <div style={{ width:"100%", maxWidth:320 }}>
+          <MultiCombobox aria-label="Tags" options={opts} value={tags} onValueChange={setTags} placeholder="Pick tags"/>
+        </div>
+      </Preview>
+      <Code language="jsx">{`const [tags, setTags] = useState(["react"]);
+
+<MultiCombobox
+  options={[
+    { value: "react",  label: "React" },
+    { value: "tokens", label: "Tokens" },
+  ]}
+  value={tags}
+  onValueChange={setTags}
+  placeholder="Pick tags"
+/>`}</Code>
+    </div>
+  );
+}
+
+/* ─── Carousel ─────────────────────────────────────────────────── */
+function PageCarousel() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Carousel</H1>
+      <Lead>Horizontal slider with arrow buttons and pagination dots. Each child becomes a slide; CSS scroll-snap keeps slides aligned. Optional <InlineCode>autoplay</InlineCode> for hero sections.</Lead>
+
+      <H2 id="basic">Basic</H2>
+      <Preview bg="var(--bg)">
+        <div style={{ width:"100%", maxWidth:520 }}>
+          <Carousel>
+            {[1,2,3,4].map((n) => (
+              <div key={n} style={{ height:160, background:"var(--bg-muted)", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center", fontSize:48, fontWeight:700, color:"var(--fg2)" }}>
+                {n}
+              </div>
+            ))}
+          </Carousel>
+        </div>
+      </Preview>
+      <Code language="jsx">{`<Carousel>
+  <Slide>1</Slide>
+  <Slide>2</Slide>
+  <Slide>3</Slide>
+</Carousel>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"index",          type:"number", default:"—", desc:"Controlled current slide." },
+        { name:"defaultIndex",   type:"number", default:"0", desc:"Uncontrolled initial slide." },
+        { name:"onIndexChange",  type:"(i: number) => void", default:"—", desc:"Called when the slide changes." },
+        { name:"showArrows",     type:"boolean", default:"true", desc:"Render previous/next arrow buttons." },
+        { name:"showDots",       type:"boolean", default:"true", desc:"Render pagination dots." },
+        { name:"autoplay",       type:"number", default:"—", desc:"Auto-advance interval in ms." },
+      ]}/>
+    </div>
+  );
+}
+
 const PAGES = {
   introduction: PageIntroduction,
   installation: PageInstallation,
@@ -4526,6 +4897,17 @@ const PAGES = {
   breadcrumb:   PageBreadcrumb,
   progress:     PageProgress,
   separator:    PageSeparator,
+  // v0.6 components
+  datepicker:    PageDatePicker,
+  numberinput:   PageNumberInput,
+  pininput:      PagePinInput,
+  password:      PagePasswordInput,
+  fileupload:    PageFileUpload,
+  stepper:       PageStepper,
+  navmenu:       PageNavMenu,
+  contextmenu:   PageContextMenu,
+  multicombobox: PageMultiCombobox,
+  carousel:      PageCarousel,
   cli:          PageCli,
   llm:          PageLLM,
   playground:   PagePlayground,

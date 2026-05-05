@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import {
   Code, InlineCode, H1, H2, H3, P, Lead, PhonePreview, PropsTable,
@@ -9,6 +9,10 @@ import {
   RadioGroup, Radio, Chip, Progress,
   Sheet, Dialog, ToastProvider, useToast,
   Slider, SegmentedControl, TabBar,
+  PasswordInput, NumberInput, PinInput,
+  Tabs, Combobox, Accordion, AccordionItem,
+  NavigationHeader, NavigationBack, ActionSheet, AppShell,
+  DatePicker,
   colors, mono, fontSize, space,
 } from '@monoset/native';
 
@@ -1337,6 +1341,486 @@ function PageTabBar() {
   );
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   v0.3 component pages
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── Page: PasswordInput ─────────────────────────────────────── */
+function PagePasswordN() {
+  const [pw, setPw] = useState("");
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>Password input</H1>
+      <Lead>An <InlineCode>Input</InlineCode> with a Show / Hide toggle on the right edge. Tap to flip visibility. Sized to the same 44pt minimum as the rest of the kit.</Lead>
+
+      <H2 id="screen">Sign in</H2>
+      <PhonePreview title="Sign in">
+        <Stack gap={4}>
+          <Field label="Email"><Input keyboardType="email-address" autoCapitalize="none" placeholder="you@example.com"/></Field>
+          <Field label="Password"><PasswordInput value={pw} onChangeText={setPw} placeholder="••••••••"/></Field>
+          <Button variant="primary">Sign in</Button>
+        </Stack>
+      </PhonePreview>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"hideToggle", type:"boolean", default:"false", desc:"Hide the show/hide toggle." },
+      ]}/>
+      <P>Other props forward to <InlineCode>Input</InlineCode>.</P>
+    </div>
+  );
+}
+
+/* ─── Page: NumberInput ───────────────────────────────────────── */
+function PageNumberInputN() {
+  const [qty, setQty] = useState(1);
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>Number input</H1>
+      <Lead>A numeric <InlineCode>Input</InlineCode> with stepper buttons on either side. The +/- buttons hit the 44pt tap target so cart-quantity flows feel right.</Lead>
+
+      <H2 id="screen">Cart quantity</H2>
+      <PhonePreview title="Cart">
+        <Stack gap={4}>
+          <Card>
+            <Inline gap={3} align="center" justify="between">
+              <View style={{ flex: 1 }}>
+                <T.Body>Monoset hoodie</T.Body>
+                <View style={{ marginTop: 2 }}><T.Body dim>Black, M</T.Body></View>
+              </View>
+              <NumberInput value={qty} onValueChange={setQty} min={1} max={9}/>
+            </Inline>
+          </Card>
+        </Stack>
+      </PhonePreview>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"value",         type:"number", default:"—", desc:"Controlled value." },
+        { name:"onValueChange", type:"(n: number) => void", default:"—", desc:"Called with the clamped new value." },
+        { name:"min",           type:"number", default:"-Infinity", desc:"Lower bound." },
+        { name:"max",           type:"number", default:"Infinity",  desc:"Upper bound." },
+        { name:"step",          type:"number", default:"1",         desc:"Increment." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Page: PinInput ──────────────────────────────────────────── */
+function PagePinInputN() {
+  const [code, setCode] = useState("");
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>Pin input</H1>
+      <Lead>One cell per character with auto-advance, backspace-to-previous, and paste-the-whole-code support. Default is digits only and the first cell hints at <InlineCode>oneTimeCode</InlineCode> so iOS auto-fills SMS codes.</Lead>
+
+      <H2 id="screen">Verify</H2>
+      <PhonePreview title="Verify">
+        <Stack gap={5}>
+          <View style={{ alignItems: "center", gap: space[2] }}>
+            <T.H1>Enter the code</T.H1>
+            <T.Lead>We sent a 6-digit code to ada@monoset.dev</T.Lead>
+          </View>
+          <View style={{ alignItems: "center" }}>
+            <PinInput length={6} value={code} onValueChange={setCode}/>
+          </View>
+          <Button variant="primary" disabled={code.length < 6}>Verify</Button>
+        </Stack>
+      </PhonePreview>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"length",        type:"number",  default:"6", desc:"Number of cells." },
+        { name:"value",         type:"string",  default:"—", desc:"Controlled value." },
+        { name:"onValueChange", type:"(v: string) => void", default:"—", desc:"Called on every change." },
+        { name:"onComplete",    type:"(v: string) => void", default:"—", desc:"Fires when the last cell fills." },
+        { name:"mask",          type:"boolean", default:"false", desc:"Mask each cell." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Page: Tabs ──────────────────────────────────────────────── */
+function PageTabsN() {
+  const [tab, setTab] = useState("posts");
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>Tabs</H1>
+      <Lead>Top tabs with an underline indicator. Scrolls horizontally when items overflow. Pair it with a screen-level state and conditionally render the section below.</Lead>
+
+      <H2 id="screen">Profile</H2>
+      <PhonePreview title="Ada Turing">
+        <Stack gap={0}>
+          <Tabs
+            items={[
+              { value: "posts",    label: "Posts" },
+              { value: "replies",  label: "Replies" },
+              { value: "media",    label: "Media" },
+              { value: "likes",    label: "Likes" },
+            ]}
+            value={tab}
+            onValueChange={setTab}
+          />
+          <View style={{ paddingTop: space[5] }}>
+            <T.Body dim>Showing the {tab} feed.</T.Body>
+          </View>
+        </Stack>
+      </PhonePreview>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"items",         type:"TabItem[]",                default:"—", desc:"List of {value, label, disabled?}." },
+        { name:"value",         type:"string",                   default:"—", desc:"Controlled active tab." },
+        { name:"defaultValue",  type:"string",                   default:"first item", desc:"Uncontrolled initial tab." },
+        { name:"onValueChange", type:"(value: string) => void",  default:"—", desc:"Called on tap." },
+        { name:"scrollable",    type:"boolean",                  default:"true", desc:"Allow horizontal scroll when overflow." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Page: Popover ───────────────────────────────────────────── */
+function PagePopoverDemoTrigger() {
+  const ref = useRef(null);
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Pressable
+        ref={ref}
+        onPress={() => setOpen(true)}
+        style={({ pressed }) => ({ paddingHorizontal: 14, paddingVertical: 10, backgroundColor: pressed ? colors.bgMuted : colors.bgSubtle, borderRadius: 12, borderWidth: 1, borderColor: colors.border })}
+      >
+        <T.Body>Sort by ▾</T.Body>
+      </Pressable>
+      <Popover open={open} onClose={() => setOpen(false)} anchorRef={ref}>
+        <Stack gap={1}>
+          {["Newest", "Oldest", "Most replies", "Most likes"].map((label) => (
+            <Pressable key={label} onPress={() => setOpen(false)} style={({ pressed }) => ({ paddingVertical: 10, paddingHorizontal: 10, borderRadius: 8, backgroundColor: pressed ? colors.bgMuted : "transparent" })}>
+              <T.Body>{label}</T.Body>
+            </Pressable>
+          ))}
+        </Stack>
+      </Popover>
+    </>
+  );
+}
+
+function PagePopoverN() {
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>Popover</H1>
+      <Lead>A floating panel anchored to a trigger. Use it for filters, sort menus, or small inline actions. Pass an <InlineCode>anchorRef</InlineCode> so the popover knows where to position itself.</Lead>
+
+      <H2 id="screen">Sort menu</H2>
+      <PhonePreview title="Feed">
+        <Stack gap={4}>
+          <Inline justify="between">
+            <T.Body>87 posts</T.Body>
+            <PagePopoverDemoTrigger/>
+          </Inline>
+          <Card variant="inset">
+            <T.Body dim>Tap "Sort by" to open the popover.</T.Body>
+          </Card>
+        </Stack>
+      </PhonePreview>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"open",       type:"boolean",                  default:"—", desc:"Controlled visibility." },
+        { name:"onClose",    type:"() => void",               default:"—", desc:"Called when scrim is tapped or hardware back is pressed." },
+        { name:"anchorRef",  type:"RefObject<View>",          default:"—", desc:"Reference to the trigger element. Required." },
+        { name:"side",       type:'"top" | "bottom"',         default:'"bottom"', desc:"Which side of the anchor to position." },
+        { name:"sideOffset", type:"number",                   default:"6", desc:"Distance from the anchor in pixels." },
+        { name:"width",      type:"number",                   default:"anchor width", desc:"Custom panel width." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Page: Combobox ──────────────────────────────────────────── */
+function PageComboboxN() {
+  const [country, setCountry] = useState();
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>Combobox</H1>
+      <Lead>Searchable single-select. Tapping the trigger opens a bottom-sheet picker with a search field and a scrollable list of matches. Built for long lists where Select feels too cramped.</Lead>
+
+      <H2 id="screen">Country</H2>
+      <PhonePreview title="Profile">
+        <Stack gap={4}>
+          <Field label="Country" help="Used for billing and localization.">
+            <Combobox
+              value={country}
+              onValueChange={setCountry}
+              options={[
+                { value: "us", label: "United States" },
+                { value: "fr", label: "France" },
+                { value: "fi", label: "Finland" },
+                { value: "de", label: "Germany" },
+                { value: "es", label: "Spain" },
+                { value: "jp", label: "Japan" },
+              ]}
+              placeholder="Pick a country"
+            />
+          </Field>
+          <Button variant="primary">Save</Button>
+        </Stack>
+      </PhonePreview>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"options",       type:"ComboboxOption[]", default:"—", desc:"List of {value, label, description?, keywords?, disabled?}." },
+        { name:"value",         type:"string",           default:"—", desc:"Controlled value." },
+        { name:"onValueChange", type:"(v: string) => void", default:"—", desc:"Called when an option is picked." },
+        { name:"placeholder",   type:"string",           default:'"Select…"', desc:"Trigger placeholder." },
+        { name:"emptyMessage",  type:"string",           default:'"No results."', desc:"Shown when nothing matches." },
+        { name:"filter",        type:"(q, opt) => boolean", default:"built-in", desc:"Custom filter function." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Page: Accordion ─────────────────────────────────────────── */
+function PageAccordionN() {
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>Accordion</H1>
+      <Lead>Collapsible disclosure panels. Use it for FAQs, settings groupings, or any vertical list where you want to keep the page short by default.</Lead>
+
+      <H2 id="screen">FAQ</H2>
+      <PhonePreview title="Help">
+        <Accordion type="single" defaultValue="b">
+          <AccordionItem value="a" title="What is Monoset?">
+            A minimal, monotone design system. One neutral ramp, one typeface, no color. The constraint is the whole point.
+          </AccordionItem>
+          <AccordionItem value="b" title="Does it work on web and native?">
+            Yes. @monoset/react for web and @monoset/native for React Native, with the same component names and variant API.
+          </AccordionItem>
+          <AccordionItem value="c" title="Do I need Tailwind?">
+            No. Tokens ship as CSS variables on web and plain JS exports on native. No build step required.
+          </AccordionItem>
+        </Accordion>
+      </PhonePreview>
+
+      <H2 id="api">API</H2>
+      <H3>Accordion</H3>
+      <PropsTable rows={[
+        { name:"type",          type:'"single" | "multiple"', default:'"single"', desc:"Allow only one open item or multiple." },
+        { name:"defaultValue",  type:"string | string[]",     default:"—", desc:"Uncontrolled default open value(s)." },
+        { name:"value",         type:"string | string[]",     default:"—", desc:"Controlled open value(s)." },
+        { name:"onValueChange", type:"(v) => void",           default:"—", desc:"Called when open state changes." },
+      ]}/>
+      <H3>AccordionItem</H3>
+      <PropsTable rows={[
+        { name:"value",    type:"string",    default:"—", desc:"Identifier used by the parent." },
+        { name:"title",    type:"ReactNode", default:"—", desc:"Header content." },
+        { name:"disabled", type:"boolean",   default:"false", desc:"Prevents toggling." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Page: NavigationHeader ──────────────────────────────────── */
+function PageNavHeader() {
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>Navigation header</H1>
+      <Lead>A 56pt-tall top bar with leading, title, and trailing slots. Use the included <InlineCode>NavigationBack</InlineCode> for the iOS chevron-left back action, or pass any custom button.</Lead>
+
+      <H2 id="screen">Detail screen</H2>
+      <PhonePreview>
+        <View>
+          <NavigationHeader
+            leading={<NavigationBack/>}
+            title="Issue #218"
+            trailing={<Pressable hitSlop={8} style={({ pressed }) => ({ width: 40, height: 40, borderRadius: 999, alignItems: "center", justifyContent: "center", backgroundColor: pressed ? colors.bgMuted : "transparent" })}><T.Body>•••</T.Body></Pressable>}
+          />
+          <View style={{ padding: space[5] }}>
+            <Stack gap={3}>
+              <T.H2>Email digest is missing the unsubscribe link</T.H2>
+              <T.Body dim>Reported by ada@monoset.dev · 2h ago</T.Body>
+            </Stack>
+          </View>
+        </View>
+      </PhonePreview>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"title",    type:"ReactNode", default:"—", desc:"Header title." },
+        { name:"leading",  type:"ReactNode", default:"—", desc:"Left slot. Usually a back button or menu icon." },
+        { name:"trailing", type:"ReactNode", default:"—", desc:"Right slot. Usually an action button." },
+        { name:"border",   type:"boolean",   default:"true", desc:"Show the bottom hairline." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Page: ActionSheet ───────────────────────────────────────── */
+function PageActionSheetN() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>Action sheet</H1>
+      <Lead>iOS-style list of mutually exclusive actions plus a Cancel button. Built on <InlineCode>Sheet</InlineCode>. Destructive actions render in red.</Lead>
+
+      <H2 id="screen">Long-press menu</H2>
+      <PhonePreview title="Files">
+        <Stack gap={3}>
+          <ListItem
+            title="report-q4.pdf"
+            subtitle="Tap the dots to open"
+            trailing={<Pressable onPress={() => setOpen(true)} hitSlop={8}><T.Body>•••</T.Body></Pressable>}
+          />
+          <ActionSheet
+            open={open}
+            onClose={() => setOpen(false)}
+            title="report-q4.pdf"
+            description="Choose an action"
+            actions={[
+              { label: "Share",    onPress: () => {} },
+              { label: "Rename",   onPress: () => {} },
+              { label: "Move…",    onPress: () => {} },
+              { label: "Delete",   onPress: () => {}, destructive: true },
+            ]}
+          />
+        </Stack>
+      </PhonePreview>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"open",        type:"boolean", default:"—", desc:"Controlled visibility." },
+        { name:"onClose",     type:"() => void", default:"—", desc:"Called on dismiss." },
+        { name:"actions",     type:"ActionSheetAction[]", default:"—", desc:"List of {label, onPress?, destructive?, disabled?}." },
+        { name:"title",       type:"string", default:"—", desc:"Optional sheet title." },
+        { name:"description", type:"string", default:"—", desc:"Optional secondary text." },
+        { name:"cancelLabel", type:"string", default:'"Cancel"', desc:"Cancel button label." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Page: AppShell ──────────────────────────────────────────── */
+function PageAppShellN() {
+  const [tab, setTab] = useState("home");
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>AppShell</H1>
+      <Lead>Root layout for a screen. Wraps children in a <InlineCode>SafeAreaView</InlineCode> and stacks an optional <InlineCode>header</InlineCode>, the children, and an optional <InlineCode>tabBar</InlineCode>. Pair with <InlineCode>NavigationHeader</InlineCode> + <InlineCode>TabBar</InlineCode> for a complete app frame.</Lead>
+
+      <H2 id="screen">App frame</H2>
+      <PhonePreview>
+        <AppShell
+          header={<NavigationHeader title="Home"/>}
+          tabBar={
+            <TabBar
+              value={tab}
+              onValueChange={setTab}
+              items={[
+                { value: "home",   label: "Home" },
+                { value: "search", label: "Search" },
+                { value: "inbox",  label: "Inbox" },
+                { value: "me",     label: "Profile" },
+              ]}
+            />
+          }
+        >
+          <View style={{ flex: 1, padding: space[5] }}>
+            <Stack gap={3}>
+              <T.H2>{tab === "home" ? "Today's recap" : tab === "search" ? "Search" : tab === "inbox" ? "Inbox" : "Profile"}</T.H2>
+              <T.Body dim>The middle section flexes. Drop a ScrollView or FlatList here for scrollable content.</T.Body>
+            </Stack>
+          </View>
+        </AppShell>
+      </PhonePreview>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"header",          type:"ReactNode", default:"—", desc:"Optional top bar. Usually a NavigationHeader." },
+        { name:"tabBar",          type:"ReactNode", default:"—", desc:"Optional bottom nav. Usually a TabBar." },
+        { name:"children",        type:"ReactNode", default:"—", desc:"Screen content. Flexes to fill the middle." },
+        { name:"backgroundColor", type:"string",    default:"colors.bg", desc:"SafeArea background color." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Page: Tooltip ───────────────────────────────────────────── */
+function PageTooltipN() {
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>Tooltip</H1>
+      <Lead>A short label shown on long-press. Use it sparingly on touch — most actions should have visible labels. It's worth it for icon-only buttons and accessibility hints.</Lead>
+
+      <H2 id="screen">Icon row</H2>
+      <PhonePreview title="Editor">
+        <Inline gap={4} justify="center">
+          {["B", "I", "U", "↩"].map((g) => (
+            <Tooltip key={g} content={g === "B" ? "Bold" : g === "I" ? "Italic" : g === "U" ? "Underline" : "Undo"}>
+              <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: colors.bgMuted, alignItems: "center", justifyContent: "center" }}>
+                <T.Body>{g}</T.Body>
+              </View>
+            </Tooltip>
+          ))}
+        </Inline>
+        <View style={{ marginTop: space[5] }}>
+          <T.Body dim>Long-press an icon to see its label.</T.Body>
+        </View>
+      </PhonePreview>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"content",         type:"ReactNode",        default:"—", desc:"Tooltip body." },
+        { name:"side",            type:'"top" | "bottom"', default:'"top"', desc:"Side of the trigger to position." },
+        { name:"width",           type:"number",           default:"auto", desc:"Custom width." },
+        { name:"longPressDelay",  type:"number",           default:"400", desc:"Long-press duration in ms." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Page: DatePicker ────────────────────────────────────────── */
+function PageDatePickerN() {
+  const [d, setD] = useState(null);
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>DatePicker</H1>
+      <Lead>A bottom sheet hosting a calendar grid. Tap a day to pick it; the sheet dismisses on selection. Plain JS Date math under the hood — no external date library required.</Lead>
+
+      <H2 id="screen">Booking</H2>
+      <PhonePreview title="Reserve">
+        <Stack gap={4}>
+          <Field label="Date" help="Tap to open the calendar.">
+            <DatePicker value={d} onValueChange={setD} placeholder="Pick a date" min={new Date()}/>
+          </Field>
+          <Button variant="primary" disabled={!d}>Confirm</Button>
+        </Stack>
+      </PhonePreview>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"value",         type:"Date | null", default:"—", desc:"Selected date." },
+        { name:"onValueChange", type:"(d: Date | null) => void", default:"—", desc:"Called when the user picks or clears." },
+        { name:"min",           type:"Date",        default:"—", desc:"Earliest selectable date." },
+        { name:"max",           type:"Date",        default:"—", desc:"Latest selectable date." },
+        { name:"locale",        type:"string",      default:"device", desc:"Locale for labels." },
+        { name:"format",        type:"(d: Date) => string", default:"locale-aware short", desc:"Trigger label formatter." },
+      ]}/>
+    </div>
+  );
+}
+
 /* ─── Page map ─────────────────────────────────────────────────── */
 const PAGES = {
   // Getting started
@@ -1373,6 +1857,19 @@ const PAGES = {
   dialog:       PageDialog,
   toast:        PageToast,
   tabbar:       PageTabBar,
+  // v0.3
+  passwordn:    PagePasswordN,
+  numberinputn: PageNumberInputN,
+  pininputn:    PagePinInputN,
+  tabsn:        PageTabsN,
+  popovern:     PagePopoverN,
+  comboboxn:    PageComboboxN,
+  accordionn:   PageAccordionN,
+  navheader:    PageNavHeader,
+  actionsheet:  PageActionSheetN,
+  appshell:     PageAppShellN,
+  tooltipn:     PageTooltipN,
+  datepickern:  PageDatePickerN,
 };
 
 export default function NativeDocsContent({ page }) {

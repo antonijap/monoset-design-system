@@ -255,7 +255,7 @@ var Spinner = forwardRef6(function Spinner2({ size = 16, color = colors.fg1, lab
 import { useEffect as useEffect3, useRef as useRef3 } from "react";
 import { Animated as Animated3, Easing as Easing3 } from "react-native";
 import { jsx as jsx7 } from "react/jsx-runtime";
-function Skeleton({ width = "100%", height = 17, radius: radius2 = 4 }) {
+function Skeleton({ width = "100%", height = 17, radius: radius7 = 4 }) {
   const opacity = useRef3(new Animated3.Value(0.6)).current;
   useEffect3(() => {
     Animated3.loop(
@@ -280,7 +280,7 @@ function Skeleton({ width = "100%", height = 17, radius: radius2 = 4 }) {
     {
       accessibilityRole: "progressbar",
       accessibilityLabel: "Loading",
-      style: [styles.msSkeleton, { width, height, borderRadius: radius2, opacity }]
+      style: [styles.msSkeleton, { width, height, borderRadius: radius7, opacity }]
     }
   );
 }
@@ -819,14 +819,868 @@ var TabBar = forwardRef21(function TabBar2({ items, value, defaultValue, onValue
     );
   }) });
 });
+
+// src/PasswordInput.tsx
+import { forwardRef as forwardRef22, useState as useState9 } from "react";
+import { Pressable as Pressable12, Text as Text16, View as View19 } from "react-native";
+import { jsx as jsx24, jsxs as jsxs15 } from "react/jsx-runtime";
+var PasswordInput = forwardRef22(
+  function PasswordInput2({ hideToggle, style, ...rest }, ref) {
+    const [visible, setVisible] = useState9(false);
+    if (hideToggle) {
+      return /* @__PURE__ */ jsx24(Input, { ref, secureTextEntry: true, style, ...rest });
+    }
+    return /* @__PURE__ */ jsxs15(View19, { style: { position: "relative", justifyContent: "center" }, children: [
+      /* @__PURE__ */ jsx24(
+        Input,
+        {
+          ref,
+          secureTextEntry: !visible,
+          style: [{ paddingRight: 70 }, style],
+          ...rest
+        }
+      ),
+      /* @__PURE__ */ jsx24(
+        Pressable12,
+        {
+          onPress: () => setVisible((v) => !v),
+          style: ({ pressed }) => ({
+            position: "absolute",
+            right: 6,
+            height: 32,
+            paddingHorizontal: 10,
+            justifyContent: "center",
+            borderRadius: 6,
+            backgroundColor: pressed ? colors.bgMuted : "transparent"
+          }),
+          hitSlop: 8,
+          accessibilityLabel: visible ? "Hide password" : "Show password",
+          children: /* @__PURE__ */ jsx24(Text16, { style: { fontSize: fontSize.sm, fontWeight: fontWeight.semibold, color: colors.fg2 }, children: visible ? "Hide" : "Show" })
+        }
+      )
+    ] });
+  }
+);
+
+// src/NumberInput.tsx
+import { forwardRef as forwardRef23, useCallback as useCallback2 } from "react";
+import { Pressable as Pressable13, Text as Text17, View as View20 } from "react-native";
+import { jsx as jsx25, jsxs as jsxs16 } from "react/jsx-runtime";
+var NumberInput = forwardRef23(function NumberInput2({ value, defaultValue, onValueChange, min = -Infinity, max = Infinity, step = 1, disabled, placeholder, style }, ref) {
+  const isControlled = value !== void 0;
+  const current = isControlled ? value : defaultValue;
+  const clamp = useCallback2((n) => Math.max(min, Math.min(max, n)), [min, max]);
+  const change = (next) => {
+    if (disabled) return;
+    onValueChange?.(clamp(next));
+  };
+  return /* @__PURE__ */ jsxs16(
+    View20,
+    {
+      style: [
+        {
+          flexDirection: "row",
+          alignItems: "stretch",
+          alignSelf: "flex-start",
+          borderWidth: 1,
+          borderColor: colors.border,
+          borderRadius: 12,
+          backgroundColor: colors.bg,
+          overflow: "hidden",
+          opacity: disabled ? 0.6 : 1
+        },
+        style
+      ],
+      children: [
+        /* @__PURE__ */ jsx25(
+          StepperButton,
+          {
+            label: "\u2212",
+            onPress: () => change((current ?? 0) - step),
+            disabled: disabled || current !== void 0 && current <= min
+          }
+        ),
+        /* @__PURE__ */ jsx25(
+          Input,
+          {
+            ref,
+            keyboardType: "numeric",
+            value: current === void 0 ? "" : String(current),
+            onChangeText: (t) => {
+              if (t === "" || t === "-") return;
+              const n = Number(t);
+              if (Number.isFinite(n)) change(n);
+            },
+            editable: !disabled,
+            placeholder,
+            style: {
+              minWidth: 60,
+              textAlign: "center",
+              borderWidth: 0,
+              borderRadius: 0
+            }
+          }
+        ),
+        /* @__PURE__ */ jsx25(
+          StepperButton,
+          {
+            label: "+",
+            onPress: () => change((current ?? 0) + step),
+            disabled: disabled || current !== void 0 && current >= max
+          }
+        )
+      ]
+    }
+  );
+});
+function StepperButton({ label, onPress, disabled }) {
+  return /* @__PURE__ */ jsx25(
+    Pressable13,
+    {
+      onPress,
+      disabled,
+      style: ({ pressed }) => ({
+        backgroundColor: pressed ? colors.bgMuted : colors.bgSubtle,
+        paddingHorizontal: 16,
+        justifyContent: "center",
+        alignItems: "center",
+        minWidth: 44,
+        opacity: disabled ? 0.4 : 1
+      }),
+      accessibilityRole: "button",
+      accessibilityLabel: label === "+" ? "Increment" : "Decrement",
+      children: /* @__PURE__ */ jsx25(Text17, { style: { fontSize: fontSize.lg, fontWeight: fontWeight.medium, color: colors.fg1 }, children: label })
+    }
+  );
+}
+
+// src/PinInput.tsx
+import { forwardRef as forwardRef24, useEffect as useEffect8, useRef as useRef8, useState as useState10 } from "react";
+import {
+  TextInput as TextInput4,
+  View as View21
+} from "react-native";
+import { jsx as jsx26 } from "react/jsx-runtime";
+var DIGIT_RE = /^[0-9]$/;
+var PinInput = forwardRef24(function PinInput2({ length = 6, value, defaultValue = "", onValueChange, onComplete, mask, disabled, autoFocus, style, "aria-label": ariaLabel = "One-time code" }, ref) {
+  const isControlled = value !== void 0;
+  const [internal, setInternal] = useState10(defaultValue.slice(0, length));
+  const current = (isControlled ? value : internal).padEnd(length, "").slice(0, length);
+  const inputs = useRef8([]);
+  const [focused, setFocused] = useState10(-1);
+  useEffect8(() => {
+    if (autoFocus) inputs.current[0]?.focus();
+  }, [autoFocus]);
+  const set = (next) => {
+    if (!isControlled) setInternal(next);
+    onValueChange?.(next);
+    if (next.length === length) onComplete?.(next);
+  };
+  const onChange = (i, raw) => {
+    if (disabled) return;
+    if (raw.length > 1) {
+      const cleaned = raw.replace(/\s+/g, "").slice(0, length);
+      if ([...cleaned].every((c) => DIGIT_RE.test(c))) {
+        set(cleaned);
+        const focusIdx = Math.min(cleaned.length, length - 1);
+        inputs.current[focusIdx]?.focus();
+      }
+      return;
+    }
+    const ch = raw.slice(-1);
+    if (ch && !DIGIT_RE.test(ch)) return;
+    const arr = current.split("");
+    arr[i] = ch;
+    set(arr.join("").trimEnd());
+    if (ch && i < length - 1) inputs.current[i + 1]?.focus();
+  };
+  const onKey = (i, e) => {
+    if (e.nativeEvent.key === "Backspace" && !current[i] && i > 0) {
+      inputs.current[i - 1]?.focus();
+    }
+  };
+  return /* @__PURE__ */ jsx26(View21, { ref, accessibilityRole: "none", accessibilityLabel: ariaLabel, style: [{ flexDirection: "row", gap: 8 }, style], children: Array.from({ length }, (_, i) => /* @__PURE__ */ jsx26(
+    TextInput4,
+    {
+      ref: (el) => {
+        inputs.current[i] = el;
+      },
+      value: current[i] || "",
+      onChangeText: (t) => onChange(i, t),
+      onKeyPress: (e) => onKey(i, e),
+      onFocus: () => setFocused(i),
+      onBlur: () => setFocused(-1),
+      editable: !disabled,
+      keyboardType: "number-pad",
+      maxLength: 1,
+      secureTextEntry: mask,
+      textContentType: i === 0 ? "oneTimeCode" : "none",
+      autoComplete: i === 0 ? "one-time-code" : "off",
+      style: {
+        width: 44,
+        height: 52,
+        textAlign: "center",
+        fontSize: 20,
+        fontWeight: fontWeight.medium,
+        color: colors.fg1,
+        backgroundColor: disabled ? colors.bgMuted : colors.bg,
+        borderWidth: 1,
+        borderColor: focused === i ? colors.fg1 : colors.border,
+        borderRadius: 12
+      },
+      accessibilityLabel: `Digit ${i + 1} of ${length}`
+    },
+    i
+  )) });
+});
+
+// src/Tabs.tsx
+import { forwardRef as forwardRef25, useState as useState11 } from "react";
+import { Pressable as Pressable14, ScrollView, Text as Text18, View as View22 } from "react-native";
+import { jsx as jsx27 } from "react/jsx-runtime";
+var Tabs = forwardRef25(function Tabs2({ items, value, defaultValue, onValueChange, scrollable = true, style }, ref) {
+  const isControlled = value !== void 0;
+  const [internal, setInternal] = useState11(defaultValue ?? items[0]?.value);
+  const current = isControlled ? value : internal;
+  const Container = scrollable ? ScrollView : View22;
+  const containerProps = scrollable ? { horizontal: true, showsHorizontalScrollIndicator: false, contentContainerStyle: { paddingHorizontal: space[2] } } : { style: { flexDirection: "row" } };
+  return /* @__PURE__ */ jsx27(
+    View22,
+    {
+      ref,
+      accessibilityRole: "tablist",
+      style: [
+        { borderBottomWidth: 1, borderBottomColor: colors.borderSubtle, backgroundColor: colors.bg },
+        style
+      ],
+      children: /* @__PURE__ */ jsx27(Container, { ...containerProps, children: items.map((item) => {
+        const active = item.value === current;
+        return /* @__PURE__ */ jsx27(
+          Pressable14,
+          {
+            accessibilityRole: "tab",
+            accessibilityState: { selected: active, disabled: item.disabled },
+            disabled: item.disabled,
+            onPress: () => {
+              if (!isControlled) setInternal(item.value);
+              onValueChange?.(item.value);
+            },
+            style: ({ pressed }) => ({
+              paddingHorizontal: space[4],
+              paddingVertical: space[4],
+              opacity: item.disabled ? 0.4 : pressed ? 0.7 : 1,
+              borderBottomWidth: 2,
+              borderBottomColor: active ? colors.fg1 : "transparent",
+              marginBottom: -1
+            }),
+            children: typeof item.label === "string" ? /* @__PURE__ */ jsx27(Text18, { style: { fontSize: fontSize.base, fontWeight: active ? fontWeight.semibold : fontWeight.medium, color: active ? colors.fg1 : colors.fg3 }, children: item.label }) : item.label
+          },
+          item.value
+        );
+      }) })
+    }
+  );
+});
+
+// src/Popover.tsx
+import { forwardRef as forwardRef26, useEffect as useEffect9, useRef as useRef9, useState as useState12 } from "react";
+import {
+  Animated as Animated8,
+  Easing as Easing7,
+  Modal as Modal3,
+  Pressable as Pressable15
+} from "react-native";
+import { jsx as jsx28 } from "react/jsx-runtime";
+var Popover = forwardRef26(function Popover2({ open, onClose, anchorRef, side = "bottom", sideOffset = 6, width, children, contentStyle }, ref) {
+  const [anchor, setAnchor] = useState12(null);
+  const [size, setSize] = useState12({ w: 0, h: 0 });
+  const opacity = useRef9(new Animated8.Value(0)).current;
+  const ty = useRef9(new Animated8.Value(side === "top" ? 4 : -4)).current;
+  useEffect9(() => {
+    if (open && anchorRef.current) {
+      anchorRef.current.measureInWindow((x, y, w2, h) => setAnchor({ x, y, w: w2, h }));
+    } else {
+      setAnchor(null);
+    }
+  }, [open, anchorRef]);
+  useEffect9(() => {
+    if (open) {
+      Animated8.parallel([
+        Animated8.timing(opacity, { toValue: 1, duration: 140, easing: Easing7.bezier(0.3, 0, 0, 1), useNativeDriver: true }),
+        Animated8.timing(ty, { toValue: 0, duration: 180, easing: Easing7.bezier(0.3, 0, 0, 1), useNativeDriver: true })
+      ]).start();
+    } else {
+      opacity.setValue(0);
+      ty.setValue(side === "top" ? 4 : -4);
+    }
+  }, [open, opacity, ty, side]);
+  if (!open || !anchor) return null;
+  const w = width ?? anchor.w;
+  const top = side === "bottom" ? anchor.y + anchor.h + sideOffset : anchor.y - size.h - sideOffset;
+  const left = anchor.x;
+  const onContentLayout = (e) => {
+    setSize({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height });
+  };
+  return /* @__PURE__ */ jsx28(Modal3, { visible: true, transparent: true, animationType: "none", onRequestClose: onClose, statusBarTranslucent: true, children: /* @__PURE__ */ jsx28(Pressable15, { style: { flex: 1 }, onPress: onClose, children: /* @__PURE__ */ jsx28(
+    Animated8.View,
+    {
+      ref,
+      onStartShouldSetResponder: () => true,
+      onLayout: onContentLayout,
+      style: [
+        {
+          position: "absolute",
+          top,
+          left,
+          width: w,
+          backgroundColor: colors.bg,
+          borderColor: colors.border,
+          borderWidth: 1,
+          borderRadius: 12,
+          padding: 8,
+          opacity,
+          transform: [{ translateY: ty }]
+        },
+        shadow.lg,
+        contentStyle
+      ],
+      children
+    }
+  ) }) });
+});
+
+// src/Combobox.tsx
+import { forwardRef as forwardRef27, useState as useState13 } from "react";
+import {
+  Modal as Modal4,
+  Pressable as Pressable16,
+  ScrollView as ScrollView2,
+  Text as Text19,
+  TextInput as TextInput5,
+  View as View24
+} from "react-native";
+import { jsx as jsx29, jsxs as jsxs17 } from "react/jsx-runtime";
+function defaultFilter(q, o) {
+  const query = q.toLowerCase();
+  return o.label.toLowerCase().includes(query) || !!o.description?.toLowerCase().includes(query) || !!o.keywords?.some((k) => k.toLowerCase().includes(query));
+}
+var Combobox = forwardRef27(function Combobox2({ options, value, onValueChange, placeholder = "Select\u2026", searchPlaceholder = "Search\u2026", emptyMessage = "No results.", filter = defaultFilter, disabled, style }, ref) {
+  const [open, setOpen] = useState13(false);
+  const [query, setQuery] = useState13("");
+  const selected = options.find((o) => o.value === value) || null;
+  const filtered = query.trim() ? options.filter((o) => filter(query, o)) : options;
+  return /* @__PURE__ */ jsxs17(View24, { ref, style, children: [
+    /* @__PURE__ */ jsxs17(
+      Pressable16,
+      {
+        onPress: () => !disabled && setOpen(true),
+        accessibilityRole: "combobox",
+        accessibilityState: { expanded: open, disabled },
+        disabled,
+        style: ({ pressed }) => ({
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingHorizontal: 14,
+          paddingVertical: 12,
+          minHeight: 44,
+          borderWidth: 1,
+          borderColor: pressed ? colors.fg3 : colors.border,
+          borderRadius: 12,
+          backgroundColor: disabled ? colors.bgMuted : colors.bg,
+          opacity: disabled ? 0.6 : 1
+        }),
+        children: [
+          /* @__PURE__ */ jsx29(Text19, { style: { fontSize: fontSize.base, color: selected ? colors.fg1 : colors.fg4 }, children: selected ? selected.label : placeholder }),
+          /* @__PURE__ */ jsx29(Text19, { style: { fontSize: 12, color: colors.fg3 }, children: "\u25BE" })
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsx29(Modal4, { visible: open, animationType: "slide", transparent: true, onRequestClose: () => setOpen(false), children: /* @__PURE__ */ jsx29(Pressable16, { style: { flex: 1, backgroundColor: "rgba(0,0,0,0.4)" }, onPress: () => setOpen(false), children: /* @__PURE__ */ jsxs17(
+      Pressable16,
+      {
+        onPress: (e) => e.stopPropagation(),
+        style: {
+          marginTop: "auto",
+          maxHeight: "80%",
+          backgroundColor: colors.bg,
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+          paddingTop: 12,
+          paddingBottom: space[7]
+        },
+        children: [
+          /* @__PURE__ */ jsx29(View24, { style: { width: 36, height: 5, borderRadius: 999, backgroundColor: colors.border, alignSelf: "center", marginBottom: space[3] } }),
+          /* @__PURE__ */ jsx29(View24, { style: { paddingHorizontal: space[5], paddingBottom: space[3], borderBottomWidth: 1, borderBottomColor: colors.borderSubtle }, children: /* @__PURE__ */ jsx29(
+            TextInput5,
+            {
+              value: query,
+              onChangeText: setQuery,
+              placeholder: searchPlaceholder,
+              placeholderTextColor: colors.fg4,
+              autoFocus: true,
+              style: {
+                fontSize: fontSize.base,
+                color: colors.fg1,
+                paddingVertical: 10,
+                paddingHorizontal: 12,
+                borderWidth: 1,
+                borderColor: colors.border,
+                borderRadius: 10,
+                backgroundColor: colors.bgSubtle
+              }
+            }
+          ) }),
+          /* @__PURE__ */ jsx29(ScrollView2, { keyboardShouldPersistTaps: "handled", style: { maxHeight: 360 }, children: filtered.length === 0 ? /* @__PURE__ */ jsx29(View24, { style: { paddingVertical: space[7], alignItems: "center" }, children: /* @__PURE__ */ jsx29(Text19, { style: { fontSize: fontSize.sm, color: colors.fg3 }, children: emptyMessage }) }) : filtered.map((opt) => {
+            const isSel = opt.value === value;
+            return /* @__PURE__ */ jsx29(
+              Pressable16,
+              {
+                disabled: opt.disabled,
+                onPress: () => {
+                  onValueChange?.(opt.value);
+                  setOpen(false);
+                  setQuery("");
+                },
+                style: ({ pressed }) => ({
+                  paddingHorizontal: space[5],
+                  paddingVertical: space[4],
+                  backgroundColor: pressed ? colors.bgMuted : "transparent",
+                  opacity: opt.disabled ? 0.5 : 1
+                }),
+                children: /* @__PURE__ */ jsxs17(View24, { style: { flexDirection: "row", alignItems: "center", gap: 10 }, children: [
+                  /* @__PURE__ */ jsxs17(View24, { style: { flex: 1 }, children: [
+                    /* @__PURE__ */ jsx29(Text19, { style: { fontSize: fontSize.base, fontWeight: isSel ? fontWeight.semibold : fontWeight.regular, color: colors.fg1 }, children: opt.label }),
+                    opt.description && /* @__PURE__ */ jsx29(Text19, { style: { fontSize: fontSize.sm, color: colors.fg3, marginTop: 2 }, children: opt.description })
+                  ] }),
+                  isSel && /* @__PURE__ */ jsx29(Text19, { style: { color: colors.fg1, fontSize: 16 }, children: "\u2713" })
+                ] })
+              },
+              opt.value
+            );
+          }) })
+        ]
+      }
+    ) }) })
+  ] });
+});
+
+// src/Accordion.tsx
+import { createContext as createContext3, useContext as useContext3, useEffect as useEffect10, useRef as useRef10, useState as useState14 } from "react";
+import { Animated as Animated9, Easing as Easing8, Pressable as Pressable17, Text as Text20, View as View25 } from "react-native";
+import { jsx as jsx30, jsxs as jsxs18 } from "react/jsx-runtime";
+var Ctx3 = createContext3(null);
+function Accordion({ type = "single", defaultValue, value, onValueChange, children, style }) {
+  const isControlled = value !== void 0;
+  const initialSet = (() => {
+    const v = isControlled ? value : defaultValue;
+    if (v === void 0) return /* @__PURE__ */ new Set();
+    return new Set(Array.isArray(v) ? v : [v]);
+  })();
+  const [internal, setInternal] = useState14(initialSet);
+  const open = isControlled ? new Set(Array.isArray(value) ? value : value === void 0 ? [] : [value]) : internal;
+  const setOpen = (next) => {
+    if (!isControlled) setInternal(next);
+    if (type === "single") onValueChange?.([...next][0] ?? "");
+    else onValueChange?.([...next]);
+  };
+  const toggle = (id) => {
+    const next = new Set(open);
+    if (next.has(id)) next.delete(id);
+    else {
+      if (type === "single") next.clear();
+      next.add(id);
+    }
+    setOpen(next);
+  };
+  return /* @__PURE__ */ jsx30(Ctx3.Provider, { value: { open, toggle }, children: /* @__PURE__ */ jsx30(View25, { style, children }) });
+}
+function AccordionItem({ value, title, children, disabled }) {
+  const ctx = useContext3(Ctx3);
+  if (!ctx) throw new Error("AccordionItem must be used inside <Accordion>.");
+  const isOpen = ctx.open.has(value);
+  const rotate = useRef10(new Animated9.Value(isOpen ? 1 : 0)).current;
+  useEffect10(() => {
+    Animated9.timing(rotate, {
+      toValue: isOpen ? 1 : 0,
+      duration: 180,
+      easing: Easing8.bezier(0.3, 0, 0, 1),
+      useNativeDriver: true
+    }).start();
+  }, [isOpen, rotate]);
+  const angle = rotate.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "180deg"] });
+  return /* @__PURE__ */ jsxs18(View25, { style: { borderBottomWidth: 1, borderBottomColor: colors.borderSubtle }, children: [
+    /* @__PURE__ */ jsxs18(
+      Pressable17,
+      {
+        accessibilityRole: "button",
+        accessibilityState: { expanded: isOpen, disabled },
+        disabled,
+        onPress: () => ctx.toggle(value),
+        style: ({ pressed }) => ({
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingVertical: 14,
+          paddingHorizontal: 4,
+          opacity: disabled ? 0.5 : pressed ? 0.7 : 1
+        }),
+        children: [
+          typeof title === "string" ? /* @__PURE__ */ jsx30(Text20, { style: { fontSize: fontSize.base, fontWeight: fontWeight.semibold, color: colors.fg1, flex: 1 }, children: title }) : /* @__PURE__ */ jsx30(View25, { style: { flex: 1 }, children: title }),
+          /* @__PURE__ */ jsx30(Animated9.Text, { style: { color: colors.fg3, fontSize: 14, transform: [{ rotate: angle }] }, children: "\u25BE" })
+        ]
+      }
+    ),
+    isOpen && /* @__PURE__ */ jsx30(View25, { style: { paddingBottom: 14, paddingHorizontal: 4 }, children: typeof children === "string" ? /* @__PURE__ */ jsx30(Text20, { style: { fontSize: fontSize.sm, color: colors.fg2, lineHeight: fontSize.sm * 1.55 }, children }) : children })
+  ] });
+}
+
+// src/NavigationHeader.tsx
+import { forwardRef as forwardRef28 } from "react";
+import { Pressable as Pressable18, Text as Text21, View as View26 } from "react-native";
+import { jsx as jsx31, jsxs as jsxs19 } from "react/jsx-runtime";
+var NavigationHeader = forwardRef28(function NavigationHeader2({ title, leading, trailing, border = true, style }, ref) {
+  return /* @__PURE__ */ jsxs19(
+    View26,
+    {
+      ref,
+      accessibilityRole: "header",
+      style: [
+        {
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 12,
+          height: 56,
+          backgroundColor: colors.bg,
+          gap: 8,
+          borderBottomWidth: border ? 1 : 0,
+          borderBottomColor: colors.borderSubtle
+        },
+        style
+      ],
+      children: [
+        /* @__PURE__ */ jsx31(View26, { style: { minWidth: 44, alignItems: "flex-start" }, children: leading }),
+        /* @__PURE__ */ jsx31(View26, { style: { flex: 1, alignItems: "flex-start" }, children: typeof title === "string" ? /* @__PURE__ */ jsx31(Text21, { style: { fontSize: fontSize.lg, fontWeight: fontWeight.semibold, color: colors.fg1 }, numberOfLines: 1, children: title }) : title }),
+        /* @__PURE__ */ jsx31(View26, { style: { minWidth: 44, alignItems: "flex-end" }, children: trailing })
+      ]
+    }
+  );
+});
+function NavigationBack({ onPress, label = "Back" }) {
+  return /* @__PURE__ */ jsx31(
+    Pressable18,
+    {
+      onPress,
+      accessibilityRole: "button",
+      accessibilityLabel: label,
+      hitSlop: 8,
+      style: ({ pressed }) => ({
+        width: 40,
+        height: 40,
+        borderRadius: 999,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: pressed ? colors.bgMuted : "transparent"
+      }),
+      children: /* @__PURE__ */ jsx31(Text21, { style: { fontSize: 22, color: colors.fg1, lineHeight: 22 }, children: "\u2039" })
+    }
+  );
+}
+
+// src/ActionSheet.tsx
+import { forwardRef as forwardRef29 } from "react";
+import { Pressable as Pressable19, Text as Text22, View as View27 } from "react-native";
+import { jsx as jsx32, jsxs as jsxs20 } from "react/jsx-runtime";
+var ActionSheet = forwardRef29(function ActionSheet2({ title, description, actions, cancelLabel = "Cancel", onClose, ...rest }, ref) {
+  return /* @__PURE__ */ jsxs20(
+    Sheet,
+    {
+      ref,
+      onClose,
+      grabber: false,
+      ...rest,
+      children: [
+        (title || description) && /* @__PURE__ */ jsxs20(View27, { style: { paddingBottom: space[3], borderBottomWidth: 1, borderBottomColor: colors.borderSubtle, marginBottom: space[2] }, children: [
+          title && /* @__PURE__ */ jsx32(Text22, { style: { fontSize: fontSize.lg, fontWeight: fontWeight.semibold, color: colors.fg1 }, children: title }),
+          description && /* @__PURE__ */ jsx32(Text22, { style: { fontSize: fontSize.sm, color: colors.fg3, marginTop: 2 }, children: description })
+        ] }),
+        /* @__PURE__ */ jsx32(View27, { children: actions.map((a, i) => /* @__PURE__ */ jsx32(
+          Pressable19,
+          {
+            disabled: a.disabled,
+            onPress: () => {
+              a.onPress?.();
+              onClose();
+            },
+            style: ({ pressed }) => ({
+              paddingVertical: space[4],
+              paddingHorizontal: space[4],
+              backgroundColor: pressed ? colors.bgMuted : "transparent",
+              borderRadius: 8,
+              alignItems: "center",
+              opacity: a.disabled ? 0.5 : 1
+            }),
+            accessibilityRole: "button",
+            children: /* @__PURE__ */ jsx32(Text22, { style: {
+              fontSize: fontSize.base,
+              fontWeight: fontWeight.medium,
+              color: a.destructive ? colors.statusDanger : colors.fg1
+            }, children: a.label })
+          },
+          i
+        )) }),
+        /* @__PURE__ */ jsx32(View27, { style: { marginTop: space[3], borderTopWidth: 1, borderTopColor: colors.borderSubtle, paddingTop: space[3] }, children: /* @__PURE__ */ jsx32(
+          Pressable19,
+          {
+            onPress: onClose,
+            style: ({ pressed }) => ({
+              paddingVertical: space[4],
+              alignItems: "center",
+              borderRadius: 8,
+              backgroundColor: pressed ? colors.bgMuted : "transparent"
+            }),
+            accessibilityRole: "button",
+            children: /* @__PURE__ */ jsx32(Text22, { style: { fontSize: fontSize.base, fontWeight: fontWeight.semibold, color: colors.fg2 }, children: cancelLabel })
+          }
+        ) })
+      ]
+    }
+  );
+});
+
+// src/AppShell.tsx
+import { forwardRef as forwardRef30 } from "react";
+import { SafeAreaView, View as View28 } from "react-native";
+import { jsx as jsx33, jsxs as jsxs21 } from "react/jsx-runtime";
+var AppShell = forwardRef30(function AppShell2({ header, tabBar, children, backgroundColor = colors.bg, style }, ref) {
+  return /* @__PURE__ */ jsx33(SafeAreaView, { style: [{ flex: 1, backgroundColor }, style], children: /* @__PURE__ */ jsxs21(View28, { ref, style: { flex: 1 }, children: [
+    header,
+    /* @__PURE__ */ jsx33(View28, { style: { flex: 1, minHeight: 0 }, children }),
+    tabBar
+  ] }) });
+});
+
+// src/Tooltip.tsx
+import { useRef as useRef11, useState as useState15 } from "react";
+import { Pressable as Pressable20, Text as Text23 } from "react-native";
+import { Fragment, jsx as jsx34, jsxs as jsxs22 } from "react/jsx-runtime";
+function Tooltip({ content, children, side = "top", width, longPressDelay = 400 }) {
+  const triggerRef = useRef11(null);
+  const [open, setOpen] = useState15(false);
+  return /* @__PURE__ */ jsxs22(Fragment, { children: [
+    /* @__PURE__ */ jsx34(
+      Pressable20,
+      {
+        ref: triggerRef,
+        onLongPress: () => setOpen(true),
+        delayLongPress: longPressDelay,
+        children
+      }
+    ),
+    /* @__PURE__ */ jsx34(
+      Popover,
+      {
+        open,
+        onClose: () => setOpen(false),
+        anchorRef: triggerRef,
+        side,
+        width,
+        contentStyle: { padding: 10, maxWidth: 240 },
+        children: typeof content === "string" ? /* @__PURE__ */ jsx34(Text23, { style: { fontSize: fontSize.sm, color: colors.fg1 }, children: content }) : content
+      }
+    )
+  ] });
+}
+
+// src/DatePicker.tsx
+import { forwardRef as forwardRef31, useState as useState16 } from "react";
+import {
+  Modal as Modal5,
+  Pressable as Pressable21,
+  Text as Text24,
+  View as View30
+} from "react-native";
+import { jsx as jsx35, jsxs as jsxs23 } from "react/jsx-runtime";
+var WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+function startOfDay(d) {
+  const c = new Date(d);
+  c.setHours(0, 0, 0, 0);
+  return c;
+}
+function sameDay(a, b) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+function addMonths(d, n) {
+  const c = new Date(d);
+  c.setMonth(c.getMonth() + n);
+  return c;
+}
+function defaultFormat(d, locale) {
+  return d.toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric" });
+}
+var DatePicker = forwardRef31(function DatePicker2({ value, defaultValue, onValueChange, min, max, locale, placeholder = "Pick a date", disabled, format = (d) => defaultFormat(d, locale), style }, ref) {
+  const isControlled = value !== void 0;
+  const [internal, setInternal] = useState16(defaultValue ?? null);
+  const selected = isControlled ? value ?? null : internal;
+  const [open, setOpen] = useState16(false);
+  const [view, setView] = useState16(() => selected || /* @__PURE__ */ new Date());
+  const set = (d) => {
+    if (!isControlled) setInternal(d);
+    onValueChange?.(d);
+  };
+  const isDisabled = (d) => {
+    if (min && startOfDay(d) < startOfDay(min)) return true;
+    if (max && startOfDay(d) > startOfDay(max)) return true;
+    return false;
+  };
+  const firstOfMonth = new Date(view.getFullYear(), view.getMonth(), 1);
+  const startWeekday = (firstOfMonth.getDay() + 6) % 7;
+  const gridStart = new Date(firstOfMonth);
+  gridStart.setDate(firstOfMonth.getDate() - startWeekday);
+  const days = [];
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(gridStart);
+    d.setDate(gridStart.getDate() + i);
+    days.push(d);
+  }
+  const monthLabel = view.toLocaleDateString(locale, { month: "long", year: "numeric" });
+  const today = startOfDay(/* @__PURE__ */ new Date());
+  return /* @__PURE__ */ jsxs23(View30, { ref, style, children: [
+    /* @__PURE__ */ jsxs23(
+      Pressable21,
+      {
+        onPress: () => !disabled && setOpen(true),
+        disabled,
+        accessibilityRole: "button",
+        accessibilityState: { disabled },
+        style: ({ pressed }) => ({
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingHorizontal: 14,
+          paddingVertical: 12,
+          minHeight: 44,
+          borderWidth: 1,
+          borderColor: pressed ? colors.fg3 : colors.border,
+          borderRadius: 12,
+          backgroundColor: disabled ? colors.bgMuted : colors.bg,
+          opacity: disabled ? 0.6 : 1,
+          gap: 8
+        }),
+        children: [
+          /* @__PURE__ */ jsx35(Text24, { style: { fontSize: fontSize.base, color: selected ? colors.fg1 : colors.fg4, flex: 1 }, children: selected ? format(selected) : placeholder }),
+          /* @__PURE__ */ jsx35(Text24, { style: { fontSize: 14, color: colors.fg3 }, children: "\u{1F4C5}" })
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsx35(Modal5, { visible: open, animationType: "slide", transparent: true, onRequestClose: () => setOpen(false), statusBarTranslucent: true, children: /* @__PURE__ */ jsx35(Pressable21, { style: { flex: 1, backgroundColor: "rgba(0,0,0,0.4)" }, onPress: () => setOpen(false), children: /* @__PURE__ */ jsxs23(
+      Pressable21,
+      {
+        onPress: (e) => e.stopPropagation(),
+        style: {
+          marginTop: "auto",
+          backgroundColor: colors.bg,
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+          paddingTop: 12,
+          paddingHorizontal: space[5],
+          paddingBottom: space[7]
+        },
+        children: [
+          /* @__PURE__ */ jsx35(View30, { style: { width: 36, height: 5, borderRadius: 999, backgroundColor: colors.border, alignSelf: "center", marginBottom: space[4] } }),
+          /* @__PURE__ */ jsxs23(View30, { style: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: space[3] }, children: [
+            /* @__PURE__ */ jsx35(NavBtn, { label: "\u2039", onPress: () => setView((v) => addMonths(v, -1)) }),
+            /* @__PURE__ */ jsx35(Text24, { style: { fontSize: fontSize.lg, fontWeight: fontWeight.semibold, color: colors.fg1 }, children: monthLabel }),
+            /* @__PURE__ */ jsx35(NavBtn, { label: "\u203A", onPress: () => setView((v) => addMonths(v, 1)) })
+          ] }),
+          /* @__PURE__ */ jsx35(View30, { style: { flexDirection: "row", marginBottom: 4 }, children: WEEKDAYS.map((w) => /* @__PURE__ */ jsx35(Text24, { style: { flex: 1, textAlign: "center", fontSize: 10, color: colors.fg3, textTransform: "uppercase", letterSpacing: 0.5 }, children: w }, w)) }),
+          /* @__PURE__ */ jsx35(View30, { style: { flexDirection: "row", flexWrap: "wrap" }, children: days.map((d) => {
+            const inMonth = d.getMonth() === view.getMonth();
+            const isSelected = selected && sameDay(d, selected);
+            const isToday = sameDay(d, today);
+            const off = isDisabled(d);
+            return /* @__PURE__ */ jsx35(
+              Pressable21,
+              {
+                disabled: off,
+                onPress: () => {
+                  set(d);
+                  setOpen(false);
+                },
+                style: ({ pressed }) => ({
+                  width: `${100 / 7}%`,
+                  height: 40,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: isSelected ? colors.accent : pressed && !off ? colors.bgMuted : "transparent",
+                  borderRadius: 8
+                }),
+                accessibilityRole: "button",
+                accessibilityState: { selected: !!isSelected, disabled: off },
+                children: /* @__PURE__ */ jsx35(Text24, { style: {
+                  fontSize: fontSize.sm,
+                  color: off ? colors.fg4 : isSelected ? colors.accentFg : !inMonth ? colors.fg4 : colors.fg1,
+                  fontWeight: isToday && !isSelected ? fontWeight.semibold : fontWeight.regular,
+                  textDecorationLine: isToday && !isSelected ? "underline" : "none"
+                }, children: d.getDate() })
+              },
+              d.toISOString()
+            );
+          }) }),
+          selected && /* @__PURE__ */ jsx35(
+            Pressable21,
+            {
+              onPress: () => {
+                set(null);
+                setOpen(false);
+              },
+              style: ({ pressed }) => ({
+                marginTop: space[3],
+                paddingVertical: space[3],
+                alignItems: "center",
+                borderRadius: 8,
+                backgroundColor: pressed ? colors.bgMuted : "transparent"
+              }),
+              children: /* @__PURE__ */ jsx35(Text24, { style: { fontSize: fontSize.sm, color: colors.fg3 }, children: "Clear" })
+            }
+          )
+        ]
+      }
+    ) }) })
+  ] });
+});
+function NavBtn({ label, onPress }) {
+  return /* @__PURE__ */ jsx35(
+    Pressable21,
+    {
+      onPress,
+      hitSlop: 8,
+      style: ({ pressed }) => ({
+        width: 36,
+        height: 36,
+        borderRadius: 999,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: pressed ? colors.bgMuted : "transparent"
+      }),
+      children: /* @__PURE__ */ jsx35(Text24, { style: { fontSize: 18, color: colors.fg1, lineHeight: 18 }, children: label })
+    }
+  );
+}
 export {
+  Accordion,
+  AccordionItem,
+  ActionSheet,
   Alert,
+  AppShell,
   Avatar,
   Badge,
   Button,
   Card,
   Checkbox,
   Chip,
+  Combobox,
+  DatePicker,
   Dialog,
   Divider,
   EmptyState,
@@ -834,6 +1688,12 @@ export {
   Inline,
   Input,
   ListItem,
+  NavigationBack,
+  NavigationHeader,
+  NumberInput,
+  PasswordInput,
+  PinInput,
+  Popover,
   Progress,
   Radio,
   RadioGroup,
@@ -845,7 +1705,9 @@ export {
   Stack,
   Switch,
   TabBar,
+  Tabs,
   ToastProvider,
+  Tooltip,
   colors,
   fontSize,
   fontWeight,

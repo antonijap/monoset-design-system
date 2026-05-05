@@ -33,6 +33,20 @@ export { Slider, type SliderProps } from "./Slider";
 export { SegmentedControl, type SegmentedControlProps, type SegmentedItem } from "./SegmentedControl";
 export { TabBar, type TabBarProps, type TabBarItem } from "./TabBar";
 
+/* ─── v0.3 components ───────────────────────────────────────────── */
+export { PasswordInput, type PasswordInputProps } from "./PasswordInput";
+export { NumberInput, type NumberInputProps } from "./NumberInput";
+export { PinInput, type PinInputProps } from "./PinInput";
+export { Tabs, type TabsProps, type TabItem } from "./Tabs";
+export { Popover, type PopoverProps } from "./Popover";
+export { Combobox, type ComboboxProps, type ComboboxOption } from "./Combobox";
+export { Accordion, AccordionItem, type AccordionProps, type AccordionItemProps } from "./Accordion";
+export { NavigationHeader, NavigationBack, type NavigationHeaderProps } from "./NavigationHeader";
+export { ActionSheet, type ActionSheetProps, type ActionSheetAction } from "./ActionSheet";
+export { AppShell, type AppShellProps } from "./AppShell";
+export { Tooltip, type TooltipProps } from "./Tooltip";
+export { DatePicker, type DatePickerProps } from "./DatePicker";
+
 /* ─── Tokens + style recipes ────────────────────────────────────── */
 export { tokens, mono, colors, space, radius, fontSize, fontWeight, lineHeight, shadow } from "./tokens";
 export { styles } from "./styles";

@@ -1024,13 +1024,169 @@ function CheckIcon() {
   return /* @__PURE__ */ jsx18("svg", { width: "14", height: "14", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", className: "ms-combobox__check", children: /* @__PURE__ */ jsx18("path", { d: "M5 12l5 5L20 7" }) });
 }
 
+// src/MultiCombobox.tsx
+import * as RPopover2 from "@radix-ui/react-popover";
+import { forwardRef as forwardRef15, useEffect as useEffect4, useRef as useRef5, useState as useState5, useId as useId3 } from "react";
+import { jsx as jsx19, jsxs as jsxs16 } from "react/jsx-runtime";
+function defaultFilter3(query, option) {
+  const q = query.toLowerCase();
+  return option.label.toLowerCase().includes(q) || !!option.description?.toLowerCase().includes(q) || !!option.keywords?.some((k) => k.toLowerCase().includes(q));
+}
+var MultiCombobox = forwardRef15(
+  function MultiCombobox2({ options, value, defaultValue = [], onValueChange, placeholder = "Select\u2026", searchPlaceholder = "Search\u2026", emptyMessage = "No results.", filter = defaultFilter3, disabled, id, className, ...ariaProps }, ref) {
+    const isControlled = value !== void 0;
+    const [internal, setInternal] = useState5(defaultValue);
+    const selected = isControlled ? value : internal;
+    const [open, setOpen] = useState5(false);
+    const [query, setQuery] = useState5("");
+    const [cursor, setCursor] = useState5(0);
+    const inputRef = useRef5(null);
+    const listId = useId3();
+    const filtered = query.trim() ? options.filter((o) => filter(query, o)) : options;
+    useEffect4(() => {
+      if (open) {
+        setQuery("");
+        setCursor(0);
+        requestAnimationFrame(() => inputRef.current?.focus());
+      }
+    }, [open]);
+    useEffect4(() => {
+      setCursor((c) => Math.min(c, Math.max(0, filtered.length - 1)));
+    }, [filtered.length]);
+    const setSelected = (next) => {
+      if (!isControlled) setInternal(next);
+      onValueChange?.(next);
+    };
+    const toggle = (val) => {
+      const next = selected.includes(val) ? selected.filter((v) => v !== val) : [...selected, val];
+      setSelected(next);
+    };
+    const removeAt = (val) => setSelected(selected.filter((v) => v !== val));
+    const onKey = (e) => {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setCursor((c) => (c + 1) % Math.max(1, filtered.length));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setCursor((c) => (c - 1 + filtered.length) % Math.max(1, filtered.length));
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        const opt = filtered[cursor];
+        if (opt && !opt.disabled) toggle(opt.value);
+      }
+    };
+    const labelOf = (val) => options.find((o) => o.value === val)?.label || val;
+    return /* @__PURE__ */ jsxs16(RPopover2.Root, { open, onOpenChange: setOpen, children: [
+      /* @__PURE__ */ jsx19(RPopover2.Trigger, { asChild: true, disabled, children: /* @__PURE__ */ jsxs16(
+        "button",
+        {
+          ref,
+          id,
+          type: "button",
+          role: "combobox",
+          "aria-expanded": open,
+          "aria-haspopup": "listbox",
+          "aria-controls": listId,
+          disabled,
+          className: cx("ms-combobox__trigger", "ms-multicombobox__trigger", className),
+          ...ariaProps,
+          children: [
+            selected.length === 0 ? /* @__PURE__ */ jsx19("span", { className: "ms-combobox__value ms-combobox__value--placeholder", children: placeholder }) : /* @__PURE__ */ jsx19("span", { className: "ms-multicombobox__tags", children: selected.map((v) => /* @__PURE__ */ jsxs16("span", { className: "ms-multicombobox__tag", children: [
+              labelOf(v),
+              /* @__PURE__ */ jsx19(
+                "span",
+                {
+                  role: "button",
+                  "aria-label": `Remove ${labelOf(v)}`,
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    removeAt(v);
+                  },
+                  className: "ms-multicombobox__tag-remove",
+                  children: "\xD7"
+                }
+              )
+            ] }, v)) }),
+            /* @__PURE__ */ jsx19(ChevronDown2, {})
+          ]
+        }
+      ) }),
+      /* @__PURE__ */ jsx19(RPopover2.Portal, { children: /* @__PURE__ */ jsxs16(
+        RPopover2.Content,
+        {
+          sideOffset: 6,
+          align: "start",
+          className: "ms-combobox__panel",
+          onOpenAutoFocus: (e) => e.preventDefault(),
+          style: { width: "var(--radix-popover-trigger-width)" },
+          children: [
+            /* @__PURE__ */ jsxs16("div", { className: "ms-combobox__input-wrap", children: [
+              /* @__PURE__ */ jsx19(SearchIcon2, {}),
+              /* @__PURE__ */ jsx19(
+                "input",
+                {
+                  ref: inputRef,
+                  value: query,
+                  onChange: (e) => setQuery(e.target.value),
+                  onKeyDown: onKey,
+                  placeholder: searchPlaceholder,
+                  "aria-controls": listId,
+                  "aria-autocomplete": "list",
+                  autoComplete: "off",
+                  spellCheck: false,
+                  className: "ms-combobox__input"
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsx19("div", { id: listId, role: "listbox", "aria-multiselectable": true, className: "ms-combobox__list", children: filtered.length === 0 ? /* @__PURE__ */ jsx19("div", { className: "ms-combobox__empty", children: emptyMessage }) : filtered.map((opt, i) => {
+              const isSel = selected.includes(opt.value);
+              const isActive = i === cursor;
+              return /* @__PURE__ */ jsxs16(
+                "button",
+                {
+                  type: "button",
+                  role: "option",
+                  "aria-selected": isSel,
+                  "aria-disabled": opt.disabled || void 0,
+                  "data-active": isActive ? "" : void 0,
+                  onMouseEnter: () => setCursor(i),
+                  onClick: () => !opt.disabled && toggle(opt.value),
+                  className: cx("ms-combobox__option", isActive && "ms-combobox__option--active", isSel && "ms-combobox__option--selected"),
+                  tabIndex: -1,
+                  children: [
+                    /* @__PURE__ */ jsx19("span", { className: cx("ms-multicombobox__check", isSel && "ms-multicombobox__check--on"), children: isSel ? "\u2713" : "" }),
+                    /* @__PURE__ */ jsxs16("span", { className: "ms-combobox__option-text", children: [
+                      /* @__PURE__ */ jsx19("span", { className: "ms-combobox__option-label", children: opt.label }),
+                      opt.description && /* @__PURE__ */ jsx19("span", { className: "ms-combobox__option-desc", children: opt.description })
+                    ] })
+                  ]
+                },
+                opt.value
+              );
+            }) })
+          ]
+        }
+      ) })
+    ] });
+  }
+);
+function ChevronDown2() {
+  return /* @__PURE__ */ jsx19("svg", { width: "14", height: "14", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true, children: /* @__PURE__ */ jsx19("path", { d: "m6 9 6 6 6-6" }) });
+}
+function SearchIcon2() {
+  return /* @__PURE__ */ jsxs16("svg", { className: "ms-combobox__search-icon", width: "14", height: "14", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true, children: [
+    /* @__PURE__ */ jsx19("circle", { cx: "11", cy: "11", r: "7" }),
+    /* @__PURE__ */ jsx19("path", { d: "m21 21-4.3-4.3" })
+  ] });
+}
+
 // src/HoverCard.tsx
 import * as RHoverCard from "@radix-ui/react-hover-card";
-import { jsx as jsx19 } from "react/jsx-runtime";
+import { jsx as jsx20 } from "react/jsx-runtime";
 var HoverCard = RHoverCard.Root;
 var HoverCardTrigger = RHoverCard.Trigger;
 function HoverCardContent({ className, children, sideOffset = 6, ...rest }) {
-  return /* @__PURE__ */ jsx19(RHoverCard.Portal, { children: /* @__PURE__ */ jsx19(
+  return /* @__PURE__ */ jsx20(RHoverCard.Portal, { children: /* @__PURE__ */ jsx20(
     RHoverCard.Content,
     {
       sideOffset,
@@ -1041,72 +1197,593 @@ function HoverCardContent({ className, children, sideOffset = 6, ...rest }) {
   ) });
 }
 
+// src/PasswordInput.tsx
+import { forwardRef as forwardRef16, useState as useState6 } from "react";
+import { jsx as jsx21, jsxs as jsxs17 } from "react/jsx-runtime";
+var PasswordInput = forwardRef16(
+  function PasswordInput2({ showToggle = true, showLabel = "Show", hideLabel = "Hide", className, ...rest }, ref) {
+    const [visible, setVisible] = useState6(false);
+    if (!showToggle) {
+      return /* @__PURE__ */ jsx21(Input, { ref, type: "password", className, ...rest });
+    }
+    return /* @__PURE__ */ jsxs17("div", { className: cx("ms-password", className), children: [
+      /* @__PURE__ */ jsx21(
+        Input,
+        {
+          ref,
+          type: visible ? "text" : "password",
+          className: "ms-password__input",
+          autoComplete: "current-password",
+          ...rest
+        }
+      ),
+      /* @__PURE__ */ jsx21(
+        "button",
+        {
+          type: "button",
+          "aria-pressed": visible,
+          onClick: () => setVisible((v) => !v),
+          className: "ms-password__toggle",
+          children: visible ? hideLabel : showLabel
+        }
+      )
+    ] });
+  }
+);
+
+// src/NumberInput.tsx
+import { forwardRef as forwardRef17, useCallback as useCallback4 } from "react";
+import { jsx as jsx22, jsxs as jsxs18 } from "react/jsx-runtime";
+var NumberInput = forwardRef17(
+  function NumberInput2({ value, defaultValue, onValueChange, min = -Infinity, max = Infinity, step = 1, hideStepper, className, disabled, ...rest }, ref) {
+    const isControlled = value !== void 0;
+    const current = isControlled ? value : defaultValue;
+    const clamp = useCallback4((n) => Math.max(min, Math.min(max, n)), [min, max]);
+    const change = (next) => {
+      const c = clamp(next);
+      onValueChange?.(c);
+    };
+    const onChange = (e) => {
+      const raw = e.target.value;
+      if (raw === "" || raw === "-") return;
+      const n = Number(raw);
+      if (Number.isFinite(n)) change(n);
+    };
+    return /* @__PURE__ */ jsxs18("div", { className: cx("ms-numberinput", disabled && "ms-numberinput--disabled", className), children: [
+      !hideStepper && /* @__PURE__ */ jsx22(
+        "button",
+        {
+          type: "button",
+          "aria-label": "Decrement",
+          disabled: disabled || current !== void 0 && current <= min,
+          onClick: () => change((current ?? 0) - step),
+          className: "ms-numberinput__btn",
+          children: "\u2212"
+        }
+      ),
+      /* @__PURE__ */ jsx22(
+        Input,
+        {
+          ref,
+          type: "number",
+          inputMode: "numeric",
+          value: current === void 0 ? "" : String(current),
+          onChange,
+          min: Number.isFinite(min) ? min : void 0,
+          max: Number.isFinite(max) ? max : void 0,
+          step,
+          disabled,
+          className: "ms-numberinput__input",
+          ...rest
+        }
+      ),
+      !hideStepper && /* @__PURE__ */ jsx22(
+        "button",
+        {
+          type: "button",
+          "aria-label": "Increment",
+          disabled: disabled || current !== void 0 && current >= max,
+          onClick: () => change((current ?? 0) + step),
+          className: "ms-numberinput__btn",
+          children: "+"
+        }
+      )
+    ] });
+  }
+);
+
+// src/PinInput.tsx
+import { forwardRef as forwardRef18, useEffect as useEffect5, useRef as useRef6, useState as useState7 } from "react";
+import { jsx as jsx23 } from "react/jsx-runtime";
+var DIGIT_RE = /^[0-9]$/;
+var PinInput = forwardRef18(function PinInput2({
+  length = 6,
+  value,
+  defaultValue = "",
+  onValueChange,
+  onComplete,
+  mask,
+  pattern = DIGIT_RE,
+  disabled,
+  autoFocus,
+  className,
+  "aria-label": ariaLabel = "One-time code"
+}, ref) {
+  const isControlled = value !== void 0;
+  const [internal, setInternal] = useState7(defaultValue.slice(0, length));
+  const current = (isControlled ? value : internal).padEnd(length, "").slice(0, length);
+  const inputs = useRef6([]);
+  useEffect5(() => {
+    if (autoFocus) inputs.current[0]?.focus();
+  }, [autoFocus]);
+  const set = (next) => {
+    const trimmed = next.replace(/\s+/g, "");
+    if (!isControlled) setInternal(trimmed);
+    onValueChange?.(trimmed);
+    if (trimmed.length === length) onComplete?.(trimmed);
+  };
+  const onChange = (i, raw) => {
+    if (disabled) return;
+    const ch = raw.slice(-1);
+    if (ch && !pattern.test(ch)) return;
+    const arr = current.split("");
+    arr[i] = ch;
+    const joined = arr.join("").trimEnd();
+    set(joined);
+    if (ch && i < length - 1) inputs.current[i + 1]?.focus();
+  };
+  const onKey = (i, e) => {
+    if (e.key === "Backspace" && !current[i] && i > 0) {
+      inputs.current[i - 1]?.focus();
+    } else if (e.key === "ArrowLeft" && i > 0) {
+      e.preventDefault();
+      inputs.current[i - 1]?.focus();
+    } else if (e.key === "ArrowRight" && i < length - 1) {
+      e.preventDefault();
+      inputs.current[i + 1]?.focus();
+    }
+  };
+  const onPaste = (e) => {
+    const text = e.clipboardData.getData("text").replace(/\s+/g, "").slice(0, length);
+    if (!text) return;
+    e.preventDefault();
+    if ([...text].every((c) => pattern.test(c))) {
+      set(text);
+      const focusIdx = Math.min(text.length, length - 1);
+      inputs.current[focusIdx]?.focus();
+    }
+  };
+  return /* @__PURE__ */ jsx23("div", { ref, role: "group", "aria-label": ariaLabel, className: cx("ms-pininput", className), children: Array.from({ length }, (_, i) => {
+    const v = current[i] || "";
+    return /* @__PURE__ */ jsx23(
+      "input",
+      {
+        ref: (el) => {
+          inputs.current[i] = el;
+        },
+        type: mask ? "password" : "text",
+        inputMode: "numeric",
+        autoComplete: i === 0 ? "one-time-code" : "off",
+        maxLength: 1,
+        value: v,
+        onChange: (e) => onChange(i, e.target.value),
+        onKeyDown: (e) => onKey(i, e),
+        onPaste,
+        disabled,
+        "aria-label": `Digit ${i + 1} of ${length}`,
+        className: "ms-pininput__cell"
+      },
+      i
+    );
+  }) });
+});
+
+// src/FileUpload.tsx
+import { forwardRef as forwardRef19, useRef as useRef7, useState as useState8 } from "react";
+import { jsx as jsx24, jsxs as jsxs19 } from "react/jsx-runtime";
+var FileUpload = forwardRef19(function FileUpload2({ files, onFilesChange, accept, multiple, disabled, children, className, "aria-label": ariaLabel = "Upload files" }, ref) {
+  const inputRef = useRef7(null);
+  const [over, setOver] = useState8(false);
+  const update = (fl) => {
+    if (!fl || disabled) return;
+    const arr = multiple ? Array.from(fl) : [fl[0]].filter(Boolean);
+    onFilesChange?.(arr);
+  };
+  const onDrop = (e) => {
+    e.preventDefault();
+    setOver(false);
+    update(e.dataTransfer.files);
+  };
+  return /* @__PURE__ */ jsxs19(
+    "div",
+    {
+      ref,
+      role: "button",
+      tabIndex: disabled ? -1 : 0,
+      "aria-disabled": disabled || void 0,
+      onClick: () => !disabled && inputRef.current?.click(),
+      onKeyDown: (e) => {
+        if (disabled) return;
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          inputRef.current?.click();
+        }
+      },
+      onDragOver: (e) => {
+        e.preventDefault();
+        setOver(true);
+      },
+      onDragLeave: () => setOver(false),
+      onDrop,
+      className: cx("ms-fileupload", over && "ms-fileupload--over", disabled && "ms-fileupload--disabled", className),
+      children: [
+        /* @__PURE__ */ jsx24(
+          "input",
+          {
+            ref: inputRef,
+            type: "file",
+            accept,
+            multiple,
+            disabled,
+            "aria-label": ariaLabel,
+            onChange: (e) => update(e.target.files),
+            className: "ms-fileupload__input",
+            tabIndex: -1
+          }
+        ),
+        children ?? /* @__PURE__ */ jsxs19("div", { className: "ms-fileupload__hint", children: [
+          /* @__PURE__ */ jsx24("span", { className: "ms-fileupload__title", children: files && files.length > 0 ? files.length === 1 ? files[0].name : `${files.length} files selected` : "Drop a file or click to upload" }),
+          (!files || files.length === 0) && /* @__PURE__ */ jsx24("span", { className: "ms-fileupload__sub", children: accept ? accept : "Any file type" })
+        ] })
+      ]
+    }
+  );
+});
+
+// src/Stepper.tsx
+import { forwardRef as forwardRef20 } from "react";
+import { jsx as jsx25, jsxs as jsxs20 } from "react/jsx-runtime";
+var Stepper = forwardRef20(function Stepper2({ steps, current, className, "aria-label": ariaLabel = "Progress" }, ref) {
+  return /* @__PURE__ */ jsx25("ol", { ref, "aria-label": ariaLabel, className: cx("ms-stepper", className), children: steps.map((step, i) => {
+    const state = i < current ? "done" : i === current ? "current" : "pending";
+    return /* @__PURE__ */ jsxs20("li", { className: cx("ms-stepper__step", `ms-stepper__step--${state}`), children: [
+      /* @__PURE__ */ jsx25("div", { className: "ms-stepper__dot", "aria-current": state === "current" ? "step" : void 0, children: state === "done" ? "\u2713" : i + 1 }),
+      /* @__PURE__ */ jsxs20("div", { className: "ms-stepper__body", children: [
+        /* @__PURE__ */ jsx25("div", { className: "ms-stepper__label", children: step.label }),
+        step.description && /* @__PURE__ */ jsx25("div", { className: "ms-stepper__desc", children: step.description })
+      ] }),
+      i < steps.length - 1 && /* @__PURE__ */ jsx25("div", { className: "ms-stepper__connector", "aria-hidden": true })
+    ] }, i);
+  }) });
+});
+
+// src/NavigationMenu.tsx
+import * as RNav from "@radix-ui/react-navigation-menu";
+import { forwardRef as forwardRef21 } from "react";
+import { jsx as jsx26, jsxs as jsxs21 } from "react/jsx-runtime";
+var NavigationMenu = RNav.Root;
+var NavigationMenuList = RNav.List;
+var NavigationMenuItem = forwardRef21(
+  function NavigationMenuItem2({ className, ...rest }, ref) {
+    return /* @__PURE__ */ jsx26(RNav.Item, { ref, className: cx("ms-nav-item", className), ...rest });
+  }
+);
+var NavigationMenuTrigger = forwardRef21(
+  function NavigationMenuTrigger2({ className, children, ...rest }, ref) {
+    return /* @__PURE__ */ jsxs21(RNav.Trigger, { ref, className: cx("ms-nav-trigger", className), ...rest, children: [
+      children,
+      /* @__PURE__ */ jsx26("span", { className: "ms-nav-caret", "aria-hidden": true, children: "\u25BE" })
+    ] });
+  }
+);
+var NavigationMenuContent = forwardRef21(
+  function NavigationMenuContent2({ className, children, ...rest }, ref) {
+    return /* @__PURE__ */ jsx26(RNav.Content, { ref, className: cx("ms-nav-content", className), ...rest, children });
+  }
+);
+var NavigationMenuLink = forwardRef21(
+  function NavigationMenuLink2({ className, children, ...rest }, ref) {
+    return /* @__PURE__ */ jsx26(RNav.Link, { ref, className: cx("ms-nav-link", className), ...rest, children });
+  }
+);
+
+// src/ContextMenu.tsx
+import * as RCtx from "@radix-ui/react-context-menu";
+import { forwardRef as forwardRef22 } from "react";
+import { jsx as jsx27 } from "react/jsx-runtime";
+var ContextMenu = RCtx.Root;
+var ContextMenuTrigger = RCtx.Trigger;
+var ContextMenuContent = forwardRef22(
+  function ContextMenuContent2({ className, children, ...rest }, ref) {
+    return /* @__PURE__ */ jsx27(RCtx.Portal, { children: /* @__PURE__ */ jsx27(RCtx.Content, { ref, className: cx("ms-menu", className), ...rest, children }) });
+  }
+);
+var ContextMenuItem = forwardRef22(
+  function ContextMenuItem2({ className, ...rest }, ref) {
+    return /* @__PURE__ */ jsx27(RCtx.Item, { ref, className: cx("ms-menu__item", className), ...rest });
+  }
+);
+var ContextMenuLabel = forwardRef22(
+  function ContextMenuLabel2({ className, ...rest }, ref) {
+    return /* @__PURE__ */ jsx27(RCtx.Label, { ref, className: cx("ms-menu__label", className), ...rest });
+  }
+);
+var ContextMenuSeparator = forwardRef22(
+  function ContextMenuSeparator2({ className, ...rest }, ref) {
+    return /* @__PURE__ */ jsx27(RCtx.Separator, { ref, className: cx("ms-menu__separator", className), ...rest });
+  }
+);
+
+// src/Carousel.tsx
+import { forwardRef as forwardRef23, useEffect as useEffect6, useRef as useRef8, useState as useState9 } from "react";
+import { Fragment as Fragment2, jsx as jsx28, jsxs as jsxs22 } from "react/jsx-runtime";
+var Carousel = forwardRef23(function Carousel2({ children, index, defaultIndex = 0, onIndexChange, showArrows = true, showDots = true, autoplay, className, "aria-label": ariaLabel = "Carousel" }, ref) {
+  const isControlled = index !== void 0;
+  const [internal, setInternal] = useState9(defaultIndex);
+  const current = isControlled ? index : internal;
+  const trackRef = useRef8(null);
+  const slides = Array.isArray(children) ? children : [children];
+  const goTo = (next) => {
+    const clamped = Math.max(0, Math.min(slides.length - 1, next));
+    if (!isControlled) setInternal(clamped);
+    onIndexChange?.(clamped);
+  };
+  useEffect6(() => {
+    const t = trackRef.current;
+    if (!t) return;
+    const slide = t.children[current];
+    slide?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+  }, [current]);
+  useEffect6(() => {
+    if (!autoplay) return;
+    const id = setInterval(() => {
+      goTo((current + 1) % slides.length);
+    }, autoplay);
+    return () => clearInterval(id);
+  }, [current, autoplay, slides.length]);
+  return /* @__PURE__ */ jsxs22("div", { ref, "aria-roledescription": "carousel", "aria-label": ariaLabel, className: cx("ms-carousel", className), children: [
+    /* @__PURE__ */ jsx28("div", { ref: trackRef, className: "ms-carousel__track", children: slides.map((child, i) => /* @__PURE__ */ jsx28(
+      "div",
+      {
+        role: "group",
+        "aria-roledescription": "slide",
+        "aria-label": `${i + 1} of ${slides.length}`,
+        "aria-current": i === current,
+        className: "ms-carousel__slide",
+        children: child
+      },
+      i
+    )) }),
+    showArrows && slides.length > 1 && /* @__PURE__ */ jsxs22(Fragment2, { children: [
+      /* @__PURE__ */ jsx28(
+        "button",
+        {
+          type: "button",
+          "aria-label": "Previous slide",
+          disabled: current === 0,
+          onClick: () => goTo(current - 1),
+          className: "ms-carousel__arrow ms-carousel__arrow--prev",
+          children: "\u2039"
+        }
+      ),
+      /* @__PURE__ */ jsx28(
+        "button",
+        {
+          type: "button",
+          "aria-label": "Next slide",
+          disabled: current === slides.length - 1,
+          onClick: () => goTo(current + 1),
+          className: "ms-carousel__arrow ms-carousel__arrow--next",
+          children: "\u203A"
+        }
+      )
+    ] }),
+    showDots && slides.length > 1 && /* @__PURE__ */ jsx28("div", { className: "ms-carousel__dots", role: "tablist", children: slides.map((_, i) => /* @__PURE__ */ jsx28(
+      "button",
+      {
+        role: "tab",
+        "aria-selected": i === current,
+        "aria-label": `Go to slide ${i + 1}`,
+        onClick: () => goTo(i),
+        className: cx("ms-carousel__dot", i === current && "ms-carousel__dot--active")
+      },
+      i
+    )) })
+  ] });
+});
+
+// src/DatePicker.tsx
+import * as RPopover3 from "@radix-ui/react-popover";
+import { forwardRef as forwardRef24, useState as useState10, useId as useId4 } from "react";
+import { jsx as jsx29, jsxs as jsxs23 } from "react/jsx-runtime";
+var WEEKDAYS_FALLBACK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+function startOfDay(d) {
+  const c = new Date(d);
+  c.setHours(0, 0, 0, 0);
+  return c;
+}
+function sameDay(a, b) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+function addMonths(d, n) {
+  const c = new Date(d);
+  c.setMonth(c.getMonth() + n);
+  return c;
+}
+function defaultFormat(d, locale) {
+  return d.toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric" });
+}
+var DatePicker = forwardRef24(
+  function DatePicker2({ value, defaultValue, onValueChange, min, max, locale, placeholder = "Pick a date", disabled, id, className, format = (d) => defaultFormat(d, locale), ...ariaProps }, ref) {
+    const isControlled = value !== void 0;
+    const [internal, setInternal] = useState10(defaultValue ?? null);
+    const selected = isControlled ? value ?? null : internal;
+    const [open, setOpen] = useState10(false);
+    const [view, setView] = useState10(() => selected || /* @__PURE__ */ new Date());
+    const popId = useId4();
+    const set = (d) => {
+      if (!isControlled) setInternal(d);
+      onValueChange?.(d);
+    };
+    const isDisabled = (d) => {
+      if (min && startOfDay(d) < startOfDay(min)) return true;
+      if (max && startOfDay(d) > startOfDay(max)) return true;
+      return false;
+    };
+    const firstOfMonth = new Date(view.getFullYear(), view.getMonth(), 1);
+    const startWeekday = (firstOfMonth.getDay() + 6) % 7;
+    const gridStart = new Date(firstOfMonth);
+    gridStart.setDate(firstOfMonth.getDate() - startWeekday);
+    const days = [];
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(gridStart);
+      d.setDate(gridStart.getDate() + i);
+      days.push(d);
+    }
+    const monthLabel = view.toLocaleDateString(locale, { month: "long", year: "numeric" });
+    const today = startOfDay(/* @__PURE__ */ new Date());
+    return /* @__PURE__ */ jsxs23(RPopover3.Root, { open, onOpenChange: setOpen, children: [
+      /* @__PURE__ */ jsx29(RPopover3.Trigger, { asChild: true, disabled, children: /* @__PURE__ */ jsxs23(
+        "button",
+        {
+          ref,
+          id,
+          type: "button",
+          disabled,
+          className: cx("ms-combobox__trigger", "ms-datepicker__trigger", className),
+          ...ariaProps,
+          children: [
+            /* @__PURE__ */ jsx29("span", { className: cx("ms-combobox__value", !selected && "ms-combobox__value--placeholder"), children: selected ? format(selected) : placeholder }),
+            /* @__PURE__ */ jsx29(CalendarIcon, {})
+          ]
+        }
+      ) }),
+      /* @__PURE__ */ jsx29(RPopover3.Portal, { children: /* @__PURE__ */ jsxs23(
+        RPopover3.Content,
+        {
+          id: popId,
+          sideOffset: 6,
+          align: "start",
+          className: "ms-datepicker__panel",
+          onOpenAutoFocus: (e) => e.preventDefault(),
+          children: [
+            /* @__PURE__ */ jsxs23("div", { className: "ms-datepicker__header", children: [
+              /* @__PURE__ */ jsx29("button", { type: "button", "aria-label": "Previous month", onClick: () => setView((v) => addMonths(v, -1)), className: "ms-datepicker__nav", children: "\u2039" }),
+              /* @__PURE__ */ jsx29("span", { className: "ms-datepicker__month", children: monthLabel }),
+              /* @__PURE__ */ jsx29("button", { type: "button", "aria-label": "Next month", onClick: () => setView((v) => addMonths(v, 1)), className: "ms-datepicker__nav", children: "\u203A" })
+            ] }),
+            /* @__PURE__ */ jsx29("div", { className: "ms-datepicker__weekdays", "aria-hidden": true, children: WEEKDAYS_FALLBACK.map((w) => /* @__PURE__ */ jsx29("span", { children: w }, w)) }),
+            /* @__PURE__ */ jsx29("div", { role: "grid", "aria-label": monthLabel, className: "ms-datepicker__grid", children: days.map((d) => {
+              const inMonth = d.getMonth() === view.getMonth();
+              const isSelected = selected && sameDay(d, selected);
+              const isToday = sameDay(d, today);
+              const off = isDisabled(d);
+              return /* @__PURE__ */ jsx29(
+                "button",
+                {
+                  type: "button",
+                  role: "gridcell",
+                  "aria-selected": !!isSelected,
+                  "aria-current": isToday ? "date" : void 0,
+                  disabled: off,
+                  onClick: () => {
+                    set(d);
+                    setOpen(false);
+                  },
+                  className: cx(
+                    "ms-datepicker__cell",
+                    !inMonth && "ms-datepicker__cell--outside",
+                    isSelected && "ms-datepicker__cell--selected",
+                    isToday && "ms-datepicker__cell--today"
+                  ),
+                  children: d.getDate()
+                },
+                d.toISOString()
+              );
+            }) }),
+            selected && /* @__PURE__ */ jsx29("div", { className: "ms-datepicker__footer", children: /* @__PURE__ */ jsx29("button", { type: "button", onClick: () => {
+              set(null);
+              setOpen(false);
+            }, className: "ms-datepicker__clear", children: "Clear" }) })
+          ]
+        }
+      ) })
+    ] });
+  }
+);
+function CalendarIcon() {
+  return /* @__PURE__ */ jsxs23("svg", { width: "14", height: "14", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true, children: [
+    /* @__PURE__ */ jsx29("rect", { x: "3", y: "4", width: "18", height: "18", rx: "2" }),
+    /* @__PURE__ */ jsx29("path", { d: "M16 2v4M8 2v4M3 10h18" })
+  ] });
+}
+
 // src/Tooltip.tsx
 import * as RTooltip from "@radix-ui/react-tooltip";
-import { jsx as jsx20, jsxs as jsxs16 } from "react/jsx-runtime";
+import { jsx as jsx30, jsxs as jsxs24 } from "react/jsx-runtime";
 function TooltipProvider({ children, delayDuration = 300 }) {
-  return /* @__PURE__ */ jsx20(RTooltip.Provider, { delayDuration, children });
+  return /* @__PURE__ */ jsx30(RTooltip.Provider, { delayDuration, children });
 }
 function Tooltip({ content, side = "top", children }) {
-  return /* @__PURE__ */ jsxs16(RTooltip.Root, { children: [
-    /* @__PURE__ */ jsx20(RTooltip.Trigger, { asChild: true, children }),
-    /* @__PURE__ */ jsx20(RTooltip.Portal, { children: /* @__PURE__ */ jsx20(RTooltip.Content, { side, sideOffset: 6, className: cx("ms-tooltip"), children: content }) })
+  return /* @__PURE__ */ jsxs24(RTooltip.Root, { children: [
+    /* @__PURE__ */ jsx30(RTooltip.Trigger, { asChild: true, children }),
+    /* @__PURE__ */ jsx30(RTooltip.Portal, { children: /* @__PURE__ */ jsx30(RTooltip.Content, { side, sideOffset: 6, className: cx("ms-tooltip"), children: content }) })
   ] });
 }
 
 // src/Popover.tsx
-import * as RPopover2 from "@radix-ui/react-popover";
-import { jsx as jsx21 } from "react/jsx-runtime";
-var Popover = RPopover2.Root;
-var PopoverTrigger = RPopover2.Trigger;
-var PopoverClose = RPopover2.Close;
+import * as RPopover4 from "@radix-ui/react-popover";
+import { jsx as jsx31 } from "react/jsx-runtime";
+var Popover = RPopover4.Root;
+var PopoverTrigger = RPopover4.Trigger;
+var PopoverClose = RPopover4.Close;
 function PopoverContent({ className, children, sideOffset = 6, ...rest }) {
-  return /* @__PURE__ */ jsx21(RPopover2.Portal, { children: /* @__PURE__ */ jsx21(RPopover2.Content, { sideOffset, className: cx("ms-popover", className), ...rest, children }) });
+  return /* @__PURE__ */ jsx31(RPopover4.Portal, { children: /* @__PURE__ */ jsx31(RPopover4.Content, { sideOffset, className: cx("ms-popover", className), ...rest, children }) });
 }
 
 // src/DropdownMenu.tsx
 import * as RDropdown from "@radix-ui/react-dropdown-menu";
-import { jsx as jsx22 } from "react/jsx-runtime";
+import { jsx as jsx32 } from "react/jsx-runtime";
 var DropdownMenu = RDropdown.Root;
 var DropdownMenuTrigger = RDropdown.Trigger;
 function DropdownMenuContent({ children, className, sideOffset = 6, ...rest }) {
-  return /* @__PURE__ */ jsx22(RDropdown.Portal, { children: /* @__PURE__ */ jsx22(RDropdown.Content, { sideOffset, className: cx("ms-menu", className), ...rest, children }) });
+  return /* @__PURE__ */ jsx32(RDropdown.Portal, { children: /* @__PURE__ */ jsx32(RDropdown.Content, { sideOffset, className: cx("ms-menu", className), ...rest, children }) });
 }
 function DropdownMenuItem({ className, children, ...rest }) {
-  return /* @__PURE__ */ jsx22(RDropdown.Item, { className: cx("ms-menu__item", className), ...rest, children });
+  return /* @__PURE__ */ jsx32(RDropdown.Item, { className: cx("ms-menu__item", className), ...rest, children });
 }
 function DropdownMenuLabel({ className, children }) {
-  return /* @__PURE__ */ jsx22(RDropdown.Label, { className: cx("ms-menu__label", className), children });
+  return /* @__PURE__ */ jsx32(RDropdown.Label, { className: cx("ms-menu__label", className), children });
 }
 function DropdownMenuSeparator() {
-  return /* @__PURE__ */ jsx22(RDropdown.Separator, { className: "ms-menu__separator" });
+  return /* @__PURE__ */ jsx32(RDropdown.Separator, { className: "ms-menu__separator" });
 }
 
 // src/Select.tsx
 import * as RSelect from "@radix-ui/react-select";
-import { forwardRef as forwardRef15 } from "react";
-import { jsx as jsx23, jsxs as jsxs17 } from "react/jsx-runtime";
+import { forwardRef as forwardRef25 } from "react";
+import { jsx as jsx33, jsxs as jsxs25 } from "react/jsx-runtime";
 var Select = RSelect.Root;
-var SelectTrigger = forwardRef15(function SelectTrigger2({ className, placeholder, children, ...rest }, ref) {
-  return /* @__PURE__ */ jsxs17(RSelect.Trigger, { ref, className: cx("ms-select", className), ...rest, children: [
-    children ?? /* @__PURE__ */ jsx23(RSelect.Value, { placeholder }),
-    /* @__PURE__ */ jsx23(RSelect.Icon, { "aria-hidden": true, children: /* @__PURE__ */ jsx23("svg", { width: "12", height: "12", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx23("path", { d: "m6 9 6 6 6-6" }) }) })
+var SelectTrigger = forwardRef25(function SelectTrigger2({ className, placeholder, children, ...rest }, ref) {
+  return /* @__PURE__ */ jsxs25(RSelect.Trigger, { ref, className: cx("ms-select", className), ...rest, children: [
+    children ?? /* @__PURE__ */ jsx33(RSelect.Value, { placeholder }),
+    /* @__PURE__ */ jsx33(RSelect.Icon, { "aria-hidden": true, children: /* @__PURE__ */ jsx33("svg", { width: "12", height: "12", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx33("path", { d: "m6 9 6 6 6-6" }) }) })
   ] });
 });
 function SelectContent({ children, className, ...rest }) {
-  return /* @__PURE__ */ jsx23(RSelect.Portal, { children: /* @__PURE__ */ jsx23(RSelect.Content, { className: cx("ms-menu", className), position: "popper", sideOffset: 6, ...rest, children: /* @__PURE__ */ jsx23(RSelect.Viewport, { children }) }) });
+  return /* @__PURE__ */ jsx33(RSelect.Portal, { children: /* @__PURE__ */ jsx33(RSelect.Content, { className: cx("ms-menu", className), position: "popper", sideOffset: 6, ...rest, children: /* @__PURE__ */ jsx33(RSelect.Viewport, { children }) }) });
 }
-var SelectItem = forwardRef15(
+var SelectItem = forwardRef25(
   function SelectItem2({ className, children, ...rest }, ref) {
-    return /* @__PURE__ */ jsx23(RSelect.Item, { ref, className: cx("ms-menu__item", className), ...rest, children: /* @__PURE__ */ jsx23(RSelect.ItemText, { children }) });
+    return /* @__PURE__ */ jsx33(RSelect.Item, { ref, className: cx("ms-menu__item", className), ...rest, children: /* @__PURE__ */ jsx33(RSelect.ItemText, { children }) });
   }
 );
 
 // src/Skeleton.tsx
-import { forwardRef as forwardRef16 } from "react";
-import { jsx as jsx24 } from "react/jsx-runtime";
-var Skeleton = forwardRef16(function Skeleton2({ width = "100%", height = 12, circle, style, className, ...rest }, ref) {
-  return /* @__PURE__ */ jsx24(
+import { forwardRef as forwardRef26 } from "react";
+import { jsx as jsx34 } from "react/jsx-runtime";
+var Skeleton = forwardRef26(function Skeleton2({ width = "100%", height = 12, circle, style, className, ...rest }, ref) {
+  return /* @__PURE__ */ jsx34(
     "div",
     {
       ref,
@@ -1124,18 +1801,18 @@ var Skeleton = forwardRef16(function Skeleton2({ width = "100%", height = 12, ci
 });
 
 // src/EmptyState.tsx
-import { jsx as jsx25, jsxs as jsxs18 } from "react/jsx-runtime";
+import { jsx as jsx35, jsxs as jsxs26 } from "react/jsx-runtime";
 function EmptyState({ icon, title, body, action, className }) {
-  return /* @__PURE__ */ jsxs18("div", { className: cx("ms-empty", className), children: [
-    icon && /* @__PURE__ */ jsx25("div", { className: "ms-empty__icon", "aria-hidden": true, children: icon }),
-    /* @__PURE__ */ jsx25("div", { className: "ms-empty__title", children: title }),
-    body && /* @__PURE__ */ jsx25("div", { className: "ms-empty__body", children: body }),
+  return /* @__PURE__ */ jsxs26("div", { className: cx("ms-empty", className), children: [
+    icon && /* @__PURE__ */ jsx35("div", { className: "ms-empty__icon", "aria-hidden": true, children: icon }),
+    /* @__PURE__ */ jsx35("div", { className: "ms-empty__title", children: title }),
+    body && /* @__PURE__ */ jsx35("div", { className: "ms-empty__body", children: body }),
     action
   ] });
 }
 
 // src/Pagination.tsx
-import { jsx as jsx26, jsxs as jsxs19 } from "react/jsx-runtime";
+import { jsx as jsx36, jsxs as jsxs27 } from "react/jsx-runtime";
 function range(start, end) {
   const out = [];
   for (let i = start; i <= end; i++) out.push(i);
@@ -1160,8 +1837,8 @@ function Pagination({
   pages.push(...range(start, end));
   if (end < last - 1) pages.push("\u2026");
   if (last > first) pages.push(last);
-  return /* @__PURE__ */ jsxs19("nav", { "aria-label": "Pagination", className: cx("ms-pagination", className), children: [
-    /* @__PURE__ */ jsx26(
+  return /* @__PURE__ */ jsxs27("nav", { "aria-label": "Pagination", className: cx("ms-pagination", className), children: [
+    /* @__PURE__ */ jsx36(
       "button",
       {
         type: "button",
@@ -1173,7 +1850,7 @@ function Pagination({
       }
     ),
     pages.map(
-      (p, i) => p === "\u2026" ? /* @__PURE__ */ jsx26("span", { className: "ms-pagination__btn", "aria-hidden": true, children: "\u2026" }, `e-${i}`) : /* @__PURE__ */ jsx26(
+      (p, i) => p === "\u2026" ? /* @__PURE__ */ jsx36("span", { className: "ms-pagination__btn", "aria-hidden": true, children: "\u2026" }, `e-${i}`) : /* @__PURE__ */ jsx36(
         "button",
         {
           type: "button",
@@ -1186,7 +1863,7 @@ function Pagination({
         p
       )
     ),
-    /* @__PURE__ */ jsx26(
+    /* @__PURE__ */ jsx36(
       "button",
       {
         type: "button",
@@ -1201,18 +1878,18 @@ function Pagination({
 }
 
 // src/Breadcrumb.tsx
-import { Fragment as Fragment2 } from "react";
-import { jsx as jsx27, jsxs as jsxs20 } from "react/jsx-runtime";
+import { Fragment as Fragment3 } from "react";
+import { jsx as jsx37, jsxs as jsxs28 } from "react/jsx-runtime";
 function Breadcrumb({ items, separator = "/", className }) {
-  return /* @__PURE__ */ jsx27("nav", { "aria-label": "Breadcrumb", className: cx("ms-breadcrumb", className), children: items.map((it, i) => /* @__PURE__ */ jsxs20(Fragment2, { children: [
-    i > 0 && /* @__PURE__ */ jsx27("span", { className: "ms-breadcrumb__sep", "aria-hidden": true, children: separator }),
-    it.href && !it.current ? /* @__PURE__ */ jsx27("a", { href: it.href, className: "ms-breadcrumb__item", children: it.label }) : /* @__PURE__ */ jsx27("span", { className: "ms-breadcrumb__item", "aria-current": it.current ? "page" : void 0, children: it.label })
+  return /* @__PURE__ */ jsx37("nav", { "aria-label": "Breadcrumb", className: cx("ms-breadcrumb", className), children: items.map((it, i) => /* @__PURE__ */ jsxs28(Fragment3, { children: [
+    i > 0 && /* @__PURE__ */ jsx37("span", { className: "ms-breadcrumb__sep", "aria-hidden": true, children: separator }),
+    it.href && !it.current ? /* @__PURE__ */ jsx37("a", { href: it.href, className: "ms-breadcrumb__item", children: it.label }) : /* @__PURE__ */ jsx37("span", { className: "ms-breadcrumb__item", "aria-current": it.current ? "page" : void 0, children: it.label })
   ] }, i)) });
 }
 
 // src/Progress.tsx
 import * as RProgress from "@radix-ui/react-progress";
-import { jsx as jsx28 } from "react/jsx-runtime";
+import { jsx as jsx38 } from "react/jsx-runtime";
 function Progress({
   value,
   max = 100,
@@ -1221,7 +1898,7 @@ function Progress({
   "aria-label": ariaLabel = "Progress"
 }) {
   const pct = indeterminate ? void 0 : Math.min(100, Math.max(0, (value ?? 0) / max * 100));
-  return /* @__PURE__ */ jsx28(RProgress.Root, { value: indeterminate ? null : value ?? 0, max, "aria-label": ariaLabel, className: cx("ms-progress", className), children: /* @__PURE__ */ jsx28(
+  return /* @__PURE__ */ jsx38(RProgress.Root, { value: indeterminate ? null : value ?? 0, max, "aria-label": ariaLabel, className: cx("ms-progress", className), children: /* @__PURE__ */ jsx38(
     RProgress.Indicator,
     {
       className: "ms-progress__indicator",
@@ -1232,16 +1909,16 @@ function Progress({
 
 // src/Separator.tsx
 import * as RSeparator from "@radix-ui/react-separator";
-import { jsx as jsx29 } from "react/jsx-runtime";
-function Separator2({ className, ...rest }) {
-  return /* @__PURE__ */ jsx29(RSeparator.Root, { className: cx("ms-separator", className), ...rest });
+import { jsx as jsx39 } from "react/jsx-runtime";
+function Separator3({ className, ...rest }) {
+  return /* @__PURE__ */ jsx39(RSeparator.Root, { className: cx("ms-separator", className), ...rest });
 }
 
 // src/Layout.tsx
-import { forwardRef as forwardRef17 } from "react";
-import { jsx as jsx30 } from "react/jsx-runtime";
-var Stack = forwardRef17(function Stack2({ gap = 4, align, style, className, ...rest }, ref) {
-  return /* @__PURE__ */ jsx30(
+import { forwardRef as forwardRef27 } from "react";
+import { jsx as jsx40 } from "react/jsx-runtime";
+var Stack = forwardRef27(function Stack2({ gap = 4, align, style, className, ...rest }, ref) {
+  return /* @__PURE__ */ jsx40(
     "div",
     {
       ref,
@@ -1255,8 +1932,8 @@ var Stack = forwardRef17(function Stack2({ gap = 4, align, style, className, ...
     }
   );
 });
-var Inline = forwardRef17(function Inline2({ gap = 4, align, wrap = true, style, className, ...rest }, ref) {
-  return /* @__PURE__ */ jsx30(
+var Inline = forwardRef27(function Inline2({ gap = 4, align, wrap = true, style, className, ...rest }, ref) {
+  return /* @__PURE__ */ jsx40(
     "div",
     {
       ref,
@@ -1270,10 +1947,10 @@ var Inline = forwardRef17(function Inline2({ gap = 4, align, wrap = true, style,
     }
   );
 });
-var Grid = forwardRef17(function Grid2({ columns, minWidth = 240, gap = 4, style, className, ...rest }, ref) {
+var Grid = forwardRef27(function Grid2({ columns, minWidth = 240, gap = 4, style, className, ...rest }, ref) {
   const min = typeof minWidth === "number" ? `${minWidth}px` : minWidth;
   const template = columns ? `repeat(${columns}, 1fr)` : `repeat(auto-fit, minmax(${min}, 1fr))`;
-  return /* @__PURE__ */ jsx30(
+  return /* @__PURE__ */ jsx40(
     "div",
     {
       ref,
@@ -1287,8 +1964,8 @@ var Grid = forwardRef17(function Grid2({ columns, minWidth = 240, gap = 4, style
     }
   );
 });
-var Container = forwardRef17(function Container2({ size = "lg", padding = true, style, className, ...rest }, ref) {
-  return /* @__PURE__ */ jsx30(
+var Container = forwardRef27(function Container2({ size = "lg", padding = true, style, className, ...rest }, ref) {
+  return /* @__PURE__ */ jsx40(
     "div",
     {
       ref,
@@ -1303,17 +1980,17 @@ var Container = forwardRef17(function Container2({ size = "lg", padding = true, 
 });
 
 // src/Kbd.tsx
-import { forwardRef as forwardRef18 } from "react";
-import { jsx as jsx31 } from "react/jsx-runtime";
-var Kbd = forwardRef18(function Kbd2({ size = "md", className, ...rest }, ref) {
-  return /* @__PURE__ */ jsx31("kbd", { ref, className: cx("ms-kbd", `ms-kbd--${size}`, className), ...rest });
+import { forwardRef as forwardRef28 } from "react";
+import { jsx as jsx41 } from "react/jsx-runtime";
+var Kbd = forwardRef28(function Kbd2({ size = "md", className, ...rest }, ref) {
+  return /* @__PURE__ */ jsx41("kbd", { ref, className: cx("ms-kbd", `ms-kbd--${size}`, className), ...rest });
 });
 
 // src/Spinner.tsx
-import { forwardRef as forwardRef19 } from "react";
-import { jsx as jsx32 } from "react/jsx-runtime";
-var Spinner = forwardRef19(function Spinner2({ size = 16, label = "Loading", className, style, ...rest }, ref) {
-  return /* @__PURE__ */ jsx32(
+import { forwardRef as forwardRef29 } from "react";
+import { jsx as jsx42 } from "react/jsx-runtime";
+var Spinner = forwardRef29(function Spinner2({ size = 16, label = "Loading", className, style, ...rest }, ref) {
+  return /* @__PURE__ */ jsx42(
     "span",
     {
       ref,
@@ -1328,16 +2005,16 @@ var Spinner = forwardRef19(function Spinner2({ size = 16, label = "Loading", cla
 
 // src/Accordion.tsx
 import * as RAccordion from "@radix-ui/react-accordion";
-import { forwardRef as forwardRef20 } from "react";
-import { jsx as jsx33, jsxs as jsxs21 } from "react/jsx-runtime";
+import { forwardRef as forwardRef30 } from "react";
+import { jsx as jsx43, jsxs as jsxs29 } from "react/jsx-runtime";
 var Accordion = RAccordion.Root;
-var AccordionItem = forwardRef20(function AccordionItem2({ className, ...rest }, ref) {
-  return /* @__PURE__ */ jsx33(RAccordion.Item, { ref, className: cx("ms-accordion__item", className), ...rest });
+var AccordionItem = forwardRef30(function AccordionItem2({ className, ...rest }, ref) {
+  return /* @__PURE__ */ jsx43(RAccordion.Item, { ref, className: cx("ms-accordion__item", className), ...rest });
 });
-var AccordionTrigger = forwardRef20(function AccordionTrigger2({ className, children, ...rest }, ref) {
-  return /* @__PURE__ */ jsx33(RAccordion.Header, { className: "ms-accordion__header", children: /* @__PURE__ */ jsxs21(RAccordion.Trigger, { ref, className: cx("ms-accordion__trigger", className), ...rest, children: [
-    /* @__PURE__ */ jsx33("span", { children }),
-    /* @__PURE__ */ jsx33(
+var AccordionTrigger = forwardRef30(function AccordionTrigger2({ className, children, ...rest }, ref) {
+  return /* @__PURE__ */ jsx43(RAccordion.Header, { className: "ms-accordion__header", children: /* @__PURE__ */ jsxs29(RAccordion.Trigger, { ref, className: cx("ms-accordion__trigger", className), ...rest, children: [
+    /* @__PURE__ */ jsx43("span", { children }),
+    /* @__PURE__ */ jsx43(
       "svg",
       {
         className: "ms-accordion__chevron",
@@ -1350,22 +2027,22 @@ var AccordionTrigger = forwardRef20(function AccordionTrigger2({ className, chil
         strokeLinecap: "round",
         strokeLinejoin: "round",
         "aria-hidden": true,
-        children: /* @__PURE__ */ jsx33("polyline", { points: "6 9 12 15 18 9" })
+        children: /* @__PURE__ */ jsx43("polyline", { points: "6 9 12 15 18 9" })
       }
     )
   ] }) });
 });
-var AccordionContent = forwardRef20(function AccordionContent2({ className, children, ...rest }, ref) {
-  return /* @__PURE__ */ jsx33(RAccordion.Content, { ref, className: cx("ms-accordion__content", className), ...rest, children: /* @__PURE__ */ jsx33("div", { className: "ms-accordion__content-inner", children }) });
+var AccordionContent = forwardRef30(function AccordionContent2({ className, children, ...rest }, ref) {
+  return /* @__PURE__ */ jsx43(RAccordion.Content, { ref, className: cx("ms-accordion__content", className), ...rest, children: /* @__PURE__ */ jsx43("div", { className: "ms-accordion__content-inner", children }) });
 });
 
 // src/Slider.tsx
 import * as RSlider from "@radix-ui/react-slider";
-import { forwardRef as forwardRef21 } from "react";
-import { jsx as jsx34, jsxs as jsxs22 } from "react/jsx-runtime";
-var Slider = forwardRef21(function Slider2({ className, defaultValue = [50], value, ...rest }, ref) {
+import { forwardRef as forwardRef31 } from "react";
+import { jsx as jsx44, jsxs as jsxs30 } from "react/jsx-runtime";
+var Slider = forwardRef31(function Slider2({ className, defaultValue = [50], value, ...rest }, ref) {
   const thumbs = value ?? defaultValue;
-  return /* @__PURE__ */ jsxs22(
+  return /* @__PURE__ */ jsxs30(
     RSlider.Root,
     {
       ref,
@@ -1374,8 +2051,8 @@ var Slider = forwardRef21(function Slider2({ className, defaultValue = [50], val
       value,
       ...rest,
       children: [
-        /* @__PURE__ */ jsx34(RSlider.Track, { className: "ms-slider__track", children: /* @__PURE__ */ jsx34(RSlider.Range, { className: "ms-slider__range" }) }),
-        thumbs.map((_, i) => /* @__PURE__ */ jsx34(RSlider.Thumb, { className: "ms-slider__thumb", "aria-label": `Value ${i + 1}` }, i))
+        /* @__PURE__ */ jsx44(RSlider.Track, { className: "ms-slider__track", children: /* @__PURE__ */ jsx44(RSlider.Range, { className: "ms-slider__range" }) }),
+        thumbs.map((_, i) => /* @__PURE__ */ jsx44(RSlider.Thumb, { className: "ms-slider__thumb", "aria-label": `Value ${i + 1}` }, i))
       ]
     }
   );
@@ -1384,16 +2061,16 @@ var Slider = forwardRef21(function Slider2({ className, defaultValue = [50], val
 // src/ToggleGroup.tsx
 import * as RToggleGroup from "@radix-ui/react-toggle-group";
 import * as RToggle from "@radix-ui/react-toggle";
-import { forwardRef as forwardRef22 } from "react";
-import { jsx as jsx35 } from "react/jsx-runtime";
-var Toggle = forwardRef22(function Toggle2({ className, ...rest }, ref) {
-  return /* @__PURE__ */ jsx35(RToggle.Root, { ref, className: cx("ms-toggle", className), ...rest });
+import { forwardRef as forwardRef32 } from "react";
+import { jsx as jsx45 } from "react/jsx-runtime";
+var Toggle = forwardRef32(function Toggle2({ className, ...rest }, ref) {
+  return /* @__PURE__ */ jsx45(RToggle.Root, { ref, className: cx("ms-toggle", className), ...rest });
 });
-var ToggleGroup = forwardRef22(function ToggleGroup2({ className, ...rest }, ref) {
-  return /* @__PURE__ */ jsx35(RToggleGroup.Root, { ref, className: cx("ms-toggle-group", className), ...rest });
+var ToggleGroup = forwardRef32(function ToggleGroup2({ className, ...rest }, ref) {
+  return /* @__PURE__ */ jsx45(RToggleGroup.Root, { ref, className: cx("ms-toggle-group", className), ...rest });
 });
-var ToggleGroupItem = forwardRef22(function ToggleGroupItem2({ className, ...rest }, ref) {
-  return /* @__PURE__ */ jsx35(RToggleGroup.Item, { ref, className: cx("ms-toggle", className), ...rest });
+var ToggleGroupItem = forwardRef32(function ToggleGroupItem2({ className, ...rest }, ref) {
+  return /* @__PURE__ */ jsx45(RToggleGroup.Item, { ref, className: cx("ms-toggle", className), ...rest });
 });
 
 // src/MonosetProvider.tsx
@@ -1402,14 +2079,14 @@ import { MotionConfig } from "framer-motion";
 // src/Theme.tsx
 import {
   createContext as createContext2,
-  forwardRef as forwardRef23,
-  useCallback as useCallback4,
+  forwardRef as forwardRef33,
+  useCallback as useCallback5,
   useContext as useContext2,
-  useEffect as useEffect4,
+  useEffect as useEffect7,
   useMemo,
-  useState as useState5
+  useState as useState11
 } from "react";
-import { jsx as jsx36, jsxs as jsxs23 } from "react/jsx-runtime";
+import { jsx as jsx46, jsxs as jsxs31 } from "react/jsx-runtime";
 var ThemeCtx = createContext2(null);
 function getSystemTheme() {
   if (typeof window === "undefined") return "light";
@@ -1420,7 +2097,7 @@ function ThemeProvider({
   defaultTheme = "system",
   storageKey = "monoset-theme"
 }) {
-  const [theme, setThemeState] = useState5(() => {
+  const [theme, setThemeState] = useState11(() => {
     if (typeof window === "undefined") return defaultTheme;
     const stored = localStorage.getItem(storageKey);
     if (stored === "light" || stored === "dark" || stored === "system") {
@@ -1428,9 +2105,9 @@ function ThemeProvider({
     }
     return defaultTheme;
   });
-  const [systemTheme, setSystemTheme] = useState5(getSystemTheme);
+  const [systemTheme, setSystemTheme] = useState11(getSystemTheme);
   const resolvedTheme = theme === "system" ? systemTheme : theme;
-  const setTheme = useCallback4(
+  const setTheme = useCallback5(
     (next) => {
       setThemeState(next);
       try {
@@ -1440,7 +2117,7 @@ function ThemeProvider({
     },
     [storageKey]
   );
-  useEffect4(() => {
+  useEffect7(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const handler = (e) => {
       setSystemTheme(e.matches ? "dark" : "light");
@@ -1448,7 +2125,7 @@ function ThemeProvider({
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
-  useEffect4(() => {
+  useEffect7(() => {
     const root = document.documentElement;
     root.setAttribute("data-monoset-theme", resolvedTheme);
     root.classList.toggle("monoset-dark", resolvedTheme === "dark");
@@ -1457,7 +2134,7 @@ function ThemeProvider({
     () => ({ theme, resolvedTheme, setTheme }),
     [theme, resolvedTheme, setTheme]
   );
-  return /* @__PURE__ */ jsx36(ThemeCtx.Provider, { value, children });
+  return /* @__PURE__ */ jsx46(ThemeCtx.Provider, { value, children });
 }
 function useTheme() {
   const ctx = useContext2(ThemeCtx);
@@ -1477,9 +2154,9 @@ var LABEL = {
   system: "Switch to light mode"
 };
 function SunIcon() {
-  return /* @__PURE__ */ jsxs23("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", "aria-hidden": "true", children: [
-    /* @__PURE__ */ jsx36("circle", { cx: "8", cy: "8", r: "3", stroke: "currentColor", strokeWidth: "1.5" }),
-    /* @__PURE__ */ jsx36(
+  return /* @__PURE__ */ jsxs31("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", "aria-hidden": "true", children: [
+    /* @__PURE__ */ jsx46("circle", { cx: "8", cy: "8", r: "3", stroke: "currentColor", strokeWidth: "1.5" }),
+    /* @__PURE__ */ jsx46(
       "path",
       {
         d: "M8 1.5v1M8 13.5v1M1.5 8h1M13.5 8h1M3.4 3.4l.7.7M11.9 11.9l.7.7M3.4 12.6l.7-.7M11.9 4.1l.7-.7",
@@ -1491,7 +2168,7 @@ function SunIcon() {
   ] });
 }
 function MoonIcon() {
-  return /* @__PURE__ */ jsx36("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ jsx36(
+  return /* @__PURE__ */ jsx46("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ jsx46(
     "path",
     {
       d: "M13.5 9.2A5.5 5.5 0 0 1 6.8 2.5 5.5 5.5 0 1 0 13.5 9.2Z",
@@ -1502,9 +2179,9 @@ function MoonIcon() {
   ) });
 }
 function MonitorIcon() {
-  return /* @__PURE__ */ jsxs23("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", "aria-hidden": "true", children: [
-    /* @__PURE__ */ jsx36("rect", { x: "2", y: "2.5", width: "12", height: "8", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" }),
-    /* @__PURE__ */ jsx36("path", { d: "M5.5 13.5h5M8 10.5v3", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round" })
+  return /* @__PURE__ */ jsxs31("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", "aria-hidden": "true", children: [
+    /* @__PURE__ */ jsx46("rect", { x: "2", y: "2.5", width: "12", height: "8", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" }),
+    /* @__PURE__ */ jsx46("path", { d: "M5.5 13.5h5M8 10.5v3", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round" })
   ] });
 }
 var ICON = {
@@ -1512,11 +2189,11 @@ var ICON = {
   dark: MoonIcon,
   system: MonitorIcon
 };
-var ThemeToggle = forwardRef23(
+var ThemeToggle = forwardRef33(
   function ThemeToggle2({ className, ...rest }, ref) {
     const { theme, setTheme } = useTheme();
     const Icon2 = ICON[theme];
-    return /* @__PURE__ */ jsx36(
+    return /* @__PURE__ */ jsx46(
       "button",
       {
         ref,
@@ -1525,23 +2202,23 @@ var ThemeToggle = forwardRef23(
         className: cx("ms-btn", "ms-btn--ghost", "ms-btn--sm", className),
         onClick: () => setTheme(NEXT[theme]),
         ...rest,
-        children: /* @__PURE__ */ jsx36(Icon2, {})
+        children: /* @__PURE__ */ jsx46(Icon2, {})
       }
     );
   }
 );
 
 // src/MonosetProvider.tsx
-import { jsx as jsx37 } from "react/jsx-runtime";
+import { jsx as jsx47 } from "react/jsx-runtime";
 function MonosetProvider({
   children,
   reducedMotion = "user",
   tooltipDelay = 300,
   defaultTheme
 }) {
-  const inner = /* @__PURE__ */ jsx37(MotionConfig, { reducedMotion, children: /* @__PURE__ */ jsx37(TooltipProvider, { delayDuration: tooltipDelay, children: /* @__PURE__ */ jsx37(ToastProvider, { children }) }) });
+  const inner = /* @__PURE__ */ jsx47(MotionConfig, { reducedMotion, children: /* @__PURE__ */ jsx47(TooltipProvider, { delayDuration: tooltipDelay, children: /* @__PURE__ */ jsx47(ToastProvider, { children }) }) });
   if (defaultTheme) {
-    return /* @__PURE__ */ jsx37(ThemeProvider, { defaultTheme, children: inner });
+    return /* @__PURE__ */ jsx47(ThemeProvider, { defaultTheme, children: inner });
   }
   return inner;
 }
@@ -1551,14 +2228,14 @@ import { EASE_STANDARD, EASE_EMPHASIS as EASE_EMPHASIS3, EASE_EXIT as EASE_EXIT2
 
 // src/Motion.tsx
 import {
-  forwardRef as forwardRef24,
-  useRef as useRef5,
+  forwardRef as forwardRef34,
+  useRef as useRef9,
   Children
 } from "react";
 import { motion as motion3, useInView } from "framer-motion";
 import { fadeUp } from "@monoset/motion";
-import { jsx as jsx38 } from "react/jsx-runtime";
-var Reveal = forwardRef24(
+import { jsx as jsx48 } from "react/jsx-runtime";
+var Reveal = forwardRef34(
   ({
     children,
     variant = fadeUp,
@@ -1568,7 +2245,7 @@ var Reveal = forwardRef24(
     className,
     style
   }, forwardedRef) => {
-    const localRef = useRef5(null);
+    const localRef = useRef9(null);
     const ref = forwardedRef ?? localRef;
     const inView = useInView(ref, { once, margin });
     const resolvedVariant = delay ? {
@@ -1581,7 +2258,7 @@ var Reveal = forwardRef24(
         }
       }
     } : variant;
-    return /* @__PURE__ */ jsx38(
+    return /* @__PURE__ */ jsx48(
       motion3.div,
       {
         ref,
@@ -1600,7 +2277,7 @@ var childVariants = {
   hidden: fadeUp.hidden,
   visible: fadeUp.visible
 };
-var StaggerList = forwardRef24(
+var StaggerList = forwardRef34(
   ({
     children,
     stagger = 0.04,
@@ -1609,7 +2286,7 @@ var StaggerList = forwardRef24(
     className,
     style
   }, forwardedRef) => {
-    const localRef = useRef5(null);
+    const localRef = useRef9(null);
     const ref = forwardedRef ?? localRef;
     const inView = useInView(ref, { once, margin });
     const containerVariants = {
@@ -1618,7 +2295,7 @@ var StaggerList = forwardRef24(
         transition: { staggerChildren: stagger }
       }
     };
-    return /* @__PURE__ */ jsx38(
+    return /* @__PURE__ */ jsx48(
       motion3.div,
       {
         ref,
@@ -1627,7 +2304,7 @@ var StaggerList = forwardRef24(
         variants: containerVariants,
         className,
         style,
-        children: Children.map(children, (child) => /* @__PURE__ */ jsx38(motion3.div, { variants: childVariants, children: child }))
+        children: Children.map(children, (child) => /* @__PURE__ */ jsx48(motion3.div, { variants: childVariants, children: child }))
       }
     );
   }
@@ -1645,11 +2322,19 @@ export {
   Breadcrumb,
   Button,
   Card,
+  Carousel,
   Checkbox,
   Combobox,
   CommandPalette,
   Container,
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
   DUR3 as DUR,
+  DatePicker,
   Dialog,
   DialogClose,
   DialogContent,
@@ -1665,6 +2350,7 @@ export {
   EASE_STANDARD,
   EmptyState,
   Field,
+  FileUpload,
   Form,
   Grid,
   HoverCard,
@@ -1674,7 +2360,17 @@ export {
   Input,
   Kbd,
   MonosetProvider,
+  MultiCombobox,
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NumberInput,
   Pagination,
+  PasswordInput,
+  PinInput,
   Popover,
   PopoverClose,
   PopoverContent,
@@ -1687,7 +2383,7 @@ export {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  Separator2 as Separator,
+  Separator3 as Separator,
   Sheet,
   SheetClose,
   SheetContent,
@@ -1697,6 +2393,7 @@ export {
   Spinner,
   Stack,
   StaggerList,
+  Stepper,
   Switch,
   Table,
   TableHeader,
