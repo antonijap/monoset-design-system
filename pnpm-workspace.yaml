@@ -3,6 +3,11 @@ packages:
   - "website"
   - "examples/*"
 
+# pnpm 11 build-script approvals; onlyBuiltDependencies kept for pnpm 10.
+allowBuilds:
+  core-js: true
+  esbuild: true
+
 onlyBuiltDependencies:
   - esbuild
   - core-js
