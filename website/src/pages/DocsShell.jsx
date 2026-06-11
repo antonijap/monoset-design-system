@@ -8,6 +8,7 @@ import { PAGE_META } from './docs-meta.js';
 import { NATIVE_PAGE_META } from './native-meta.js';
 import ThemeToggle from '../components/ThemeToggle.jsx';
 import { usePlatform } from '../lib/platform.jsx';
+import { VERSION } from '../version.js';
 
 const DocsContent = lazy(() => import('./docs.jsx'));
 const NativeDocsContent = lazy(() => import('./native-docs.jsx'));
@@ -327,7 +328,7 @@ export default function DocsLayout({ page, setPage, onHome }) {
                    transition:"color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard)" }}
           onMouseEnter={e => { e.currentTarget.style.color="var(--fg1)"; e.currentTarget.style.background="var(--bg-muted)"; }}
           onMouseLeave={e => { e.currentTarget.style.color="var(--fg3)"; e.currentTarget.style.background="var(--bg-subtle)"; }}>
-          v0.5
+          {VERSION}
         </a>
         <div style={{ marginLeft:"auto", display:"flex", gap:8, alignItems:"center" }}>
           <PlatformToggle/>

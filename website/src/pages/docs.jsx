@@ -297,7 +297,7 @@ function PageUsage() {
         <div className="monoset-dark" style={{ display:"flex", gap:8 }}>
           <DemoButton variant="primary">Save</DemoButton>
           <DemoButton variant="secondary">Cancel</DemoButton>
-          <DemoBadge variant="outline">v0.5</DemoBadge>
+          <DemoBadge variant="outline">v1.0</DemoBadge>
         </div>
       </Preview>
     </div>
@@ -881,7 +881,7 @@ function PageBadges() {
       <H2 id="tags">Tags</H2>
       <P>Dismissible tags for filters, categories, or multi-select inputs.</P>
       <Preview>
-        {["design","monotone","v0.5"].map(t => (
+        {["design","monotone","v1.0"].map(t => (
           <span key={t} style={{ fontSize:12, color:"var(--fg2)", background:"var(--bg-muted)", borderRadius:4,
                                   padding:"3px 8px", display:"inline-flex", alignItems:"center", gap:6 }}>
             {t}<span style={{ color:"var(--fg3)", cursor:"pointer" }}>×</span>
@@ -1957,7 +1957,7 @@ function PageLayout() {
       <P>Horizontal with wrap. Good for tag lists, button rows, or any set of items that should flow left to right and wrap naturally.</P>
       <Preview bg="var(--bg)">
         <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
-          {["design","monotone","v0.5","react","tokens","motion","layout"].map(t => (
+          {["design","monotone","v1.0","react","tokens","motion","layout"].map(t => (
             <span key={t} style={{ fontSize:12, color:"var(--fg2)", background:"var(--bg-muted)", borderRadius:4, padding:"3px 8px" }}>{t}</span>
           ))}
         </div>
@@ -1965,7 +1965,7 @@ function PageLayout() {
       <Code language="jsx">{`<Inline gap={2}>
   <Badge>design</Badge>
   <Badge>monotone</Badge>
-  <Badge>v0.5</Badge>
+  <Badge>v1.0</Badge>
 </Inline>`}</Code>
 
       <H2 id="grid">Grid</H2>
