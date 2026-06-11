@@ -1,7 +1,6 @@
 import { forwardRef, useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 import { Input, type InputProps } from "./Input";
-import { styles } from "./styles";
 import { colors, fontSize, fontWeight } from "./tokens";
 
 export interface PasswordInputProps extends Omit<InputProps, "secureTextEntry"> {

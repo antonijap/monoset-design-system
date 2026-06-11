@@ -1,5 +1,6 @@
 import * as RToast from "@radix-ui/react-toast";
 import { type ReactNode } from "react";
+import { AlertCircle, Check } from "lucide-react";
 import { cx } from "./cx";
 
 /** Wrap your app in <ToastProvider>…</ToastProvider> to enable toasts. */
@@ -26,7 +27,7 @@ export function Toast({ title, kind = "info", action, children, className, ...re
         color: kind === "error" ? "var(--status-danger)" : "var(--mono-1000)",
         display: "inline-flex", alignItems: "center", justifyContent: "center",
         fontSize: 10, fontWeight: 700, flexShrink: 0 }}>
-        {kind === "error" ? "!" : "✓"}
+        {kind === "error" ? <AlertCircle size={12} strokeWidth={2} /> : <Check size={12} strokeWidth={2} />}
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         {title && <RToast.Title style={{ fontWeight: 600 }}>{title}</RToast.Title>}

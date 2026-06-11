@@ -30,6 +30,22 @@ import {
   Sheet,
   AppShell,
   Combobox,
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+  AspectRatio,
+  Toggle,
+  ToggleGroup,
+  ToggleGroupItem,
+  Slider,
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+  Stepper,
+  MultiCombobox,
+  PinInput,
+  Calendar,
 } from "../index";
 
 // Each test renders the component in a minimal-but-complete accessible
@@ -222,6 +238,94 @@ describe("a11y", () => {
           </AppShell.Content>
         </AppShell.Main>
       </AppShell>,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("Collapsible has no violations", async () => {
+    const { container } = render(
+      <Collapsible defaultOpen>
+        <CollapsibleTrigger>Advanced settings</CollapsibleTrigger>
+        <CollapsibleContent>Cache and retry options.</CollapsibleContent>
+      </Collapsible>,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("AspectRatio has no violations", async () => {
+    const { container } = render(
+      <AspectRatio ratio={16 / 9}>
+        <img src="cover.jpg" alt="Cover image" />
+      </AspectRatio>,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("ToggleGroup has no violations", async () => {
+    const { container } = render(
+      <ToggleGroup type="single" defaultValue="left" aria-label="Text alignment">
+        <ToggleGroupItem value="left" aria-label="Align left">L</ToggleGroupItem>
+        <ToggleGroupItem value="center" aria-label="Align center">C</ToggleGroupItem>
+        <ToggleGroupItem value="right" aria-label="Align right">R</ToggleGroupItem>
+      </ToggleGroup>,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("Toggle has no violations", async () => {
+    const { container } = render(<Toggle aria-label="Bold">B</Toggle>);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("Slider has no violations", async () => {
+    const { container } = render(<Slider defaultValue={[50]} aria-label="Volume" />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("Accordion has no violations", async () => {
+    const { container } = render(
+      <Accordion type="single" collapsible defaultValue="a">
+        <AccordionItem value="a">
+          <AccordionTrigger>What is Monoset?</AccordionTrigger>
+          <AccordionContent>A minimal design system.</AccordionContent>
+        </AccordionItem>
+      </Accordion>,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("Stepper has no violations", async () => {
+    const { container } = render(
+      <Stepper
+        aria-label="Checkout progress"
+        current={1}
+        steps={[{ label: "Cart" }, { label: "Shipping" }, { label: "Payment" }]}
+      />,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("MultiCombobox has no violations", async () => {
+    const { container } = render(
+      <MultiCombobox
+        aria-label="Tags"
+        options={[
+          { value: "a", label: "Alpha" },
+          { value: "b", label: "Beta" },
+        ]}
+      />,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("PinInput has no violations", async () => {
+    const { container } = render(<PinInput aria-label="One-time code" />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("Calendar has no violations", async () => {
+    const { container } = render(
+      <Calendar defaultValue={new Date(2026, 5, 10)} aria-label="Choose a date" />,
     );
     expect(await axe(container)).toHaveNoViolations();
   });

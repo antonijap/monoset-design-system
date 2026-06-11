@@ -1,4 +1,17 @@
 import { useState, useRef } from 'react';
+
+// Cancels the 16px container padding so ListItem rows run edge to edge,
+// the way they sit in a real screen. The row's own 16px inset takes over.
+function FullBleed({ children, top = false }) {
+  return <View style={{ marginHorizontal: -16, marginTop: top ? -16 : 0 }}>{children}</View>;
+}
+
+// Full app frame: cancels the content area's padding on every side so shells
+// with headers and tab bars fill the phone screen like a real app.
+function AppFrame({ children }) {
+  return <View style={{ flex: 1, marginHorizontal: -16, marginTop: -16, marginBottom: -28 }}>{children}</View>;
+}
+import { MoreHorizontal, Home, Inbox, Search, User, ChevronDown, Check, Share2, Pencil, FolderInput, Trash2 } from 'lucide-react-native';
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import {
   Code, InlineCode, H1, H2, H3, P, Lead, PhonePreview, PropsTable,
@@ -11,9 +24,10 @@ import {
   Slider, SegmentedControl, TabBar,
   PasswordInput, NumberInput, PinInput,
   Tabs, Combobox, Accordion, AccordionItem,
+  Popover, Tooltip,
   NavigationHeader, NavigationBack, ActionSheet, AppShell,
-  DatePicker,
-  colors, mono, fontSize, space,
+  DatePicker, Calendar, BottomSheet,
+  colors, fontSize, space,
 } from '@monoset/native';
 
 /* ─── Tiny RN-flavored text helpers (rendered via react-native-web) ───── */
@@ -367,9 +381,9 @@ function PageCards() {
           ].map((c) => (
             <Card key={c.title}>
               <Stack gap={2}>
-                <T.Body>{c.title}</T.Body>
+                <Text style={{ fontSize: fontSize.base, fontWeight: '600', color: colors.fg1 }}>{c.title}</Text>
                 <T.Body dim>{c.body}</T.Body>
-                <T.Body dim>{c.meta}</T.Body>
+                <Text style={{ fontSize: fontSize.xs, color: colors.fg4, marginTop: 2 }}>{c.meta}</Text>
               </Stack>
             </Card>
           ))}
@@ -662,16 +676,18 @@ function PageAvatar() {
 
       <H2 id="screen">In a list</H2>
       <PhonePreview title="Activity">
-        <Stack gap={3}>
-          {[
-            { name: "Ada Turing",     body: "Pushed 4 commits to feat/onboarding" },
-            { name: "Grace Hopper",   body: "Opened a draft PR on the docs repo" },
-            { name: "Linus Bell",     body: "Replied to your comment" },
-            { name: "Margaret Clarke",body: "Joined your team" },
-          ].map((p) => (
-            <ListItem key={p.name} leading={<Avatar name={p.name}/>} title={p.name} subtitle={p.body}/>
-          ))}
-        </Stack>
+        <FullBleed>
+          <Stack gap={0}>
+            {[
+              { name: "Ada Turing",     body: "Pushed 4 commits to feat/onboarding" },
+              { name: "Grace Hopper",   body: "Opened a draft PR on the docs repo" },
+              { name: "Linus Bell",     body: "Replied to your comment" },
+              { name: "Margaret Clarke",body: "Joined your team" },
+            ].map((p) => (
+              <ListItem key={p.name} leading={<Avatar name={p.name}/>} title={p.name} subtitle={p.body}/>
+            ))}
+          </Stack>
+        </FullBleed>
       </PhonePreview>
 
       <H2 id="sizes">Sizes</H2>
@@ -706,25 +722,27 @@ function PageBadge() {
 
       <H2 id="screen">Status indicators</H2>
       <PhonePreview title="Issues">
-        <Stack gap={2}>
+        <FullBleed>
+        <Stack gap={0}>
           <ListItem
-            title="Email digest is missing the unsubscribe link"
+            title="Email digest missing link"
             subtitle="reported 2h ago"
-            trailing={<Badge variant="danger">Open</Badge>}
+            trailing={<Badge variant="outline">Open</Badge>}
           />
-          <Divider/>
+          <Divider style={{ marginLeft: 16 }}/>
           <ListItem
-            title="Account avatar fails to load on slow networks"
+            title="Avatar fails on slow networks"
             subtitle="in review"
             trailing={<Badge>Triage</Badge>}
           />
-          <Divider/>
+          <Divider style={{ marginLeft: 16 }}/>
           <ListItem
-            title="Onboarding checklist completion event"
+            title="Onboarding completion event"
             subtitle="closed 3d ago"
             trailing={<Badge variant="success">Done</Badge>}
           />
         </Stack>
+        </FullBleed>
       </PhonePreview>
 
       <H2 id="variants">Variants</H2>
@@ -797,15 +815,17 @@ function PageDivider() {
 
       <H2 id="screen">In a list</H2>
       <PhonePreview title="Account">
+        <FullBleed>
         <Stack gap={0}>
           <ListItem title="Profile" subtitle="Display name, avatar"/>
-          <Divider/>
+          <Divider style={{ marginLeft: 16 }}/>
           <ListItem title="Notifications" subtitle="Email and push"/>
-          <Divider/>
+          <Divider style={{ marginLeft: 16 }}/>
           <ListItem title="Security" subtitle="Password, 2FA"/>
-          <Divider/>
+          <Divider style={{ marginLeft: 16 }}/>
           <ListItem title="Billing" subtitle="Plan, payment methods"/>
         </Stack>
+        </FullBleed>
       </PhonePreview>
 
       <H2 id="api">API</H2>
@@ -856,15 +876,17 @@ function PageList() {
 
       <H2 id="screen">A settings list</H2>
       <PhonePreview title="Settings">
+        <FullBleed>
         <Stack gap={0}>
           <ListItem title="Profile" subtitle="Ada Turing" leading={<Avatar name="Ada Turing"/>} chevron onPress={() => {}}/>
-          <Divider/>
+          <Divider style={{ marginLeft: 16 }}/>
           <ListItem title="Notifications" subtitle="3 channels enabled" trailing={<Badge>3</Badge>} onPress={() => {}}/>
-          <Divider/>
+          <Divider style={{ marginLeft: 16 }}/>
           <ListItem title="Two-factor auth" trailing={<Switch defaultChecked/>}/>
-          <Divider/>
+          <Divider style={{ marginLeft: 16 }}/>
           <ListItem title="Sign out" subtitle="ada@monoset.dev" chevron onPress={() => {}}/>
         </Stack>
+        </FullBleed>
       </PhonePreview>
       <Code language="tsx">{`<ListItem
   title="Notifications"
@@ -900,7 +922,7 @@ function PageCheckbox() {
       <H2 id="screen">Sign-up consent</H2>
       <PhonePreview title="Create account">
         <Stack gap={5}>
-          <Stack gap={3}>
+          <Stack gap={0}>
             <Checkbox
               label="I agree to the Terms of Service and Privacy Policy"
               checked={terms} onCheckedChange={setTerms}
@@ -943,7 +965,7 @@ function PageRadio() {
       <PhonePreview title="Choose a plan">
         <Stack gap={4}>
           <RadioGroup value={plan} onValueChange={setPlan}>
-            <Stack gap={2}>
+            <Stack gap={0}>
               <Radio value="free" label="Free — 1 project, 100 MB"/>
               <Radio value="pro"  label="Pro — 10 projects, 10 GB"/>
               <Radio value="team" label="Team — Unlimited"/>
@@ -1004,11 +1026,13 @@ function PageChip() {
               </Chip>
             ))}
           </Inline>
-          <Stack gap={2}>
-            <ListItem title="Email digest missing unsubscribe" subtitle="2h ago" trailing={<Badge variant="danger">Open</Badge>}/>
-            <Divider/>
-            <ListItem title="Avatar fails on slow networks" subtitle="in review" trailing={<Badge>Triage</Badge>}/>
-          </Stack>
+          <FullBleed>
+            <Stack gap={0}>
+              <ListItem title="Email digest missing unsubscribe" subtitle="2h ago" trailing={<Badge variant="outline">Open</Badge>}/>
+              <Divider style={{ marginLeft: 16 }}/>
+              <ListItem title="Avatar fails on slow networks" subtitle="in review" trailing={<Badge>Triage</Badge>}/>
+            </Stack>
+          </FullBleed>
         </Stack>
       </PhonePreview>
 
@@ -1297,6 +1321,7 @@ function PageTabBar() {
 
       <H2 id="screen">App shell</H2>
       <PhonePreview>
+        <AppFrame>
         <View style={{ flex: 1, justifyContent: 'space-between', minHeight: 600 }}>
           <View style={{ padding: 16 }}>
             <Text style={{ fontSize: fontSize["2xl"], fontWeight: '700', color: colors.fg1, marginBottom: 12 }}>
@@ -1310,13 +1335,14 @@ function PageTabBar() {
             value={route}
             onValueChange={setRoute}
             items={[
-              { value: 'home',   label: 'Home' },
-              { value: 'inbox',  label: 'Inbox' },
-              { value: 'search', label: 'Search' },
-              { value: 'me',     label: 'Profile' },
+              { value: 'home',   label: 'Home',    icon: ({ active }) => <Home size={22} color={active ? colors.fg1 : colors.fg3} strokeWidth={2}/> },
+              { value: 'inbox',  label: 'Inbox',   icon: ({ active }) => <Inbox size={22} color={active ? colors.fg1 : colors.fg3} strokeWidth={2}/> },
+              { value: 'search', label: 'Search',  icon: ({ active }) => <Search size={22} color={active ? colors.fg1 : colors.fg3} strokeWidth={2}/> },
+              { value: 'me',     label: 'Profile', icon: ({ active }) => <User size={22} color={active ? colors.fg1 : colors.fg3} strokeWidth={2}/> },
             ]}
           />
         </View>
+        </AppFrame>
       </PhonePreview>
       <Code language="tsx">{`<TabBar
   value={route}
@@ -1386,11 +1412,13 @@ function PageNumberInputN() {
         <Stack gap={4}>
           <Card>
             <Inline gap={3} align="center" justify="between">
-              <View style={{ flex: 1 }}>
+              <View style={{ flex: 1, minWidth: 0 }}>
                 <T.Body>Monoset hoodie</T.Body>
                 <View style={{ marginTop: 2 }}><T.Body dim>Black, M</T.Body></View>
               </View>
-              <NumberInput value={qty} onValueChange={setQty} min={1} max={9}/>
+              <View style={{ flexShrink: 0 }}>
+                <NumberInput value={qty} onValueChange={setQty} min={1} max={9}/>
+              </View>
             </Inline>
           </Card>
         </Stack>
@@ -1487,20 +1515,38 @@ function PageTabsN() {
 function PagePopoverDemoTrigger() {
   const ref = useRef(null);
   const [open, setOpen] = useState(false);
+  const [sort, setSort] = useState("Newest");
   return (
     <>
       <Pressable
         ref={ref}
         onPress={() => setOpen(true)}
-        style={({ pressed }) => ({ paddingHorizontal: 14, paddingVertical: 10, backgroundColor: pressed ? colors.bgMuted : colors.bgSubtle, borderRadius: 12, borderWidth: 1, borderColor: colors.border })}
+        accessibilityRole="button"
+        style={({ pressed }) => ({
+          flexDirection: "row", alignItems: "center", gap: 6,
+          paddingHorizontal: 14, paddingVertical: 10,
+          backgroundColor: pressed ? colors.bgMuted : colors.bg,
+          borderRadius: 12, borderWidth: 1, borderColor: colors.border,
+        })}
       >
-        <T.Body>Sort by ▾</T.Body>
+        <Text style={{ fontSize: fontSize.sm, fontWeight: '500', color: colors.fg1 }}>{sort}</Text>
+        <ChevronDown size={15} color={colors.fg3} strokeWidth={2}/>
       </Pressable>
-      <Popover open={open} onClose={() => setOpen(false)} anchorRef={ref}>
-        <Stack gap={1}>
+      <Popover open={open} onClose={() => setOpen(false)} anchorRef={ref} width={210}>
+        <Stack gap={0}>
           {["Newest", "Oldest", "Most replies", "Most likes"].map((label) => (
-            <Pressable key={label} onPress={() => setOpen(false)} style={({ pressed }) => ({ paddingVertical: 10, paddingHorizontal: 10, borderRadius: 8, backgroundColor: pressed ? colors.bgMuted : "transparent" })}>
-              <T.Body>{label}</T.Body>
+            <Pressable
+              key={label}
+              accessibilityRole="menuitem"
+              onPress={() => { setSort(label); setOpen(false); }}
+              style={({ pressed }) => ({
+                flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+                paddingVertical: 11, paddingHorizontal: 10, borderRadius: 8,
+                backgroundColor: pressed ? colors.bgMuted : "transparent",
+              })}
+            >
+              <Text style={{ fontSize: fontSize.sm, color: colors.fg1, fontWeight: sort === label ? '600' : '400' }}>{label}</Text>
+              {sort === label && <Check size={16} color={colors.fg1} strokeWidth={2}/>}
             </Pressable>
           ))}
         </Stack>
@@ -1553,7 +1599,7 @@ function PageComboboxN() {
 
       <H2 id="screen">Country</H2>
       <PhonePreview title="Profile">
-        <Stack gap={4}>
+        <Stack gap={7}>
           <Field label="Country" help="Used for billing and localization.">
             <Combobox
               value={country}
@@ -1638,12 +1684,14 @@ function PageNavHeader() {
       <H2 id="screen">Detail screen</H2>
       <PhonePreview>
         <View>
+          <FullBleed top>
           <NavigationHeader
             leading={<NavigationBack/>}
             title="Issue #218"
-            trailing={<Pressable hitSlop={8} style={({ pressed }) => ({ width: 40, height: 40, borderRadius: 999, alignItems: "center", justifyContent: "center", backgroundColor: pressed ? colors.bgMuted : "transparent" })}><T.Body>•••</T.Body></Pressable>}
+            trailing={<Pressable accessibilityRole="button" accessibilityLabel="More actions" hitSlop={8} style={({ pressed }) => ({ width: 40, height: 40, borderRadius: 999, alignItems: "center", justifyContent: "center", backgroundColor: pressed ? colors.bgMuted : "transparent" })}><MoreHorizontal size={22} color={colors.fg1}/></Pressable>}
           />
-          <View style={{ padding: space[5] }}>
+          </FullBleed>
+          <View style={{ paddingVertical: space[5] }}>
             <Stack gap={3}>
               <T.H2>Email digest is missing the unsubscribe link</T.H2>
               <T.Body dim>Reported by ada@monoset.dev · 2h ago</T.Body>
@@ -1675,21 +1723,23 @@ function PageActionSheetN() {
       <H2 id="screen">Long-press menu</H2>
       <PhonePreview title="Files">
         <Stack gap={3}>
+          <FullBleed>
           <ListItem
             title="report-q4.pdf"
             subtitle="Tap the dots to open"
-            trailing={<Pressable onPress={() => setOpen(true)} hitSlop={8}><T.Body>•••</T.Body></Pressable>}
+            trailing={<Pressable accessibilityRole="button" accessibilityLabel="More actions" onPress={() => setOpen(true)} hitSlop={11}><MoreHorizontal size={22} color={colors.fg1}/></Pressable>}
           />
+          </FullBleed>
           <ActionSheet
             open={open}
             onClose={() => setOpen(false)}
             title="report-q4.pdf"
             description="Choose an action"
             actions={[
-              { label: "Share",    onPress: () => {} },
-              { label: "Rename",   onPress: () => {} },
-              { label: "Move…",    onPress: () => {} },
-              { label: "Delete",   onPress: () => {}, destructive: true },
+              { label: "Share",  icon: <Share2 size={19} color={colors.fg2} strokeWidth={2}/>,      onPress: () => {} },
+              { label: "Rename", icon: <Pencil size={19} color={colors.fg2} strokeWidth={2}/>,      onPress: () => {} },
+              { label: "Move…",  icon: <FolderInput size={19} color={colors.fg2} strokeWidth={2}/>, onPress: () => {} },
+              { label: "Delete", icon: <Trash2 size={19} color={colors.statusDanger} strokeWidth={2}/>, onPress: () => {}, destructive: true },
             ]}
           />
         </Stack>
@@ -1719,6 +1769,7 @@ function PageAppShellN() {
 
       <H2 id="screen">App frame</H2>
       <PhonePreview>
+        <AppFrame>
         <AppShell
           header={<NavigationHeader title="Home"/>}
           tabBar={
@@ -1726,10 +1777,10 @@ function PageAppShellN() {
               value={tab}
               onValueChange={setTab}
               items={[
-                { value: "home",   label: "Home" },
-                { value: "search", label: "Search" },
-                { value: "inbox",  label: "Inbox" },
-                { value: "me",     label: "Profile" },
+                { value: "home",   label: "Home",    icon: ({ active }) => <Home size={22} color={active ? colors.fg1 : colors.fg3} strokeWidth={2}/> },
+                { value: "search", label: "Search",  icon: ({ active }) => <Search size={22} color={active ? colors.fg1 : colors.fg3} strokeWidth={2}/> },
+                { value: "inbox",  label: "Inbox",   icon: ({ active }) => <Inbox size={22} color={active ? colors.fg1 : colors.fg3} strokeWidth={2}/> },
+                { value: "me",     label: "Profile", icon: ({ active }) => <User size={22} color={active ? colors.fg1 : colors.fg3} strokeWidth={2}/> },
               ]}
             />
           }
@@ -1741,6 +1792,7 @@ function PageAppShellN() {
             </Stack>
           </View>
         </AppShell>
+        </AppFrame>
       </PhonePreview>
 
       <H2 id="api">API</H2>
@@ -1800,7 +1852,7 @@ function PageDatePickerN() {
 
       <H2 id="screen">Booking</H2>
       <PhonePreview title="Reserve">
-        <Stack gap={4}>
+        <Stack gap={7}>
           <Field label="Date" help="Tap to open the calendar.">
             <DatePicker value={d} onValueChange={setD} placeholder="Pick a date" min={new Date()}/>
           </Field>
@@ -1816,6 +1868,92 @@ function PageDatePickerN() {
         { name:"max",           type:"Date",        default:"—", desc:"Latest selectable date." },
         { name:"locale",        type:"string",      default:"device", desc:"Locale for labels." },
         { name:"format",        type:"(d: Date) => string", default:"locale-aware short", desc:"Trigger label formatter." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Calendar ─────────────────────────────────────────────────── */
+function PageCalendarN() {
+  const [d, setD] = useState(null);
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>Calendar</H1>
+      <Lead>A standalone month grid. Always visible, no sheet. Selected day fills with the accent; today gets a hairline ring. DatePicker is built on it. Weekday labels follow the locale.</Lead>
+
+      <H2 id="screen">Schedule</H2>
+      <PhonePreview title="Schedule">
+        <Calendar value={d} onValueChange={setD}/>
+      </PhonePreview>
+      <Code language="tsx">{`const [d, setD] = useState(null);
+
+<Calendar value={d} onValueChange={setD}/>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"value",         type:"Date | null", default:"—", desc:"Selected date (controlled)." },
+        { name:"defaultValue",  type:"Date | null", default:"—", desc:"Uncontrolled initial value." },
+        { name:"onValueChange", type:"(d: Date) => void", default:"—", desc:"Called when a day is tapped." },
+        { name:"month",         type:"Date", default:"—", desc:"Visible month (controlled)." },
+        { name:"min",           type:"Date", default:"—", desc:"Earliest selectable date." },
+        { name:"max",           type:"Date", default:"—", desc:"Latest selectable date." },
+        { name:"weekStartsOn",  type:"0 | 1", default:"1", desc:"0 = Sunday, 1 = Monday." },
+        { name:"locale",        type:"string", default:"device", desc:"Locale for labels." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── BottomSheet ──────────────────────────────────────────────── */
+function PageBottomSheetN() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div>
+      <div className="eyebrow">Components</div>
+      <H1>Bottom sheet</H1>
+      <Lead>Slides up over a scrim. Drag the handle down to dismiss, tap the scrim, or call onClose. The grabber, rounded top, and drag-to-dismiss match the iOS sheet pattern. Honors reduce motion.</Lead>
+
+      <H2 id="screen">Share</H2>
+      <PhonePreview title="Project">
+        <Stack gap={4}>
+          <Button variant="secondary" onPress={() => setOpen(true)}>Share</Button>
+          <BottomSheet
+            open={open}
+            onClose={() => setOpen(false)}
+            title="Share to"
+            description="Pick a destination."
+          >
+            <FullBleed>
+              <Stack gap={0}>
+                <ListItem title="Copy link" onPress={() => setOpen(false)}/>
+                <Divider style={{ marginLeft: 16 }}/>
+                <ListItem title="Messages" onPress={() => setOpen(false)}/>
+                <Divider style={{ marginLeft: 16 }}/>
+                <ListItem title="Mail" onPress={() => setOpen(false)}/>
+              </Stack>
+            </FullBleed>
+          </BottomSheet>
+        </Stack>
+      </PhonePreview>
+      <Code language="tsx">{`const [open, setOpen] = useState(false);
+
+<Button onPress={() => setOpen(true)}>Share</Button>
+<BottomSheet open={open} onClose={() => setOpen(false)} title="Share to">
+  <Stack gap={3}>
+    <ListItem title="Copy link" onPress={() => setOpen(false)}/>
+    <ListItem title="Messages" onPress={() => setOpen(false)}/>
+  </Stack>
+</BottomSheet>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"open",          type:"boolean", default:"—", desc:"Controlled visibility." },
+        { name:"onClose",       type:"() => void", default:"—", desc:"Called on scrim tap, drag-down, or hardware back." },
+        { name:"title",         type:"ReactNode", default:"—", desc:"Optional title at the top." },
+        { name:"description",   type:"ReactNode", default:"—", desc:"Optional description below the title." },
+        { name:"grabber",       type:"boolean", default:"true", desc:"Show the grabber handle." },
+        { name:"dragToDismiss", type:"boolean", default:"true", desc:"Drag the handle down to dismiss." },
       ]}/>
     </div>
   );
@@ -1870,6 +2008,8 @@ const PAGES = {
   appshell:     PageAppShellN,
   tooltipn:     PageTooltipN,
   datepickern:  PageDatePickerN,
+  calendarn:    PageCalendarN,
+  bottomsheet:  PageBottomSheetN,
 };
 
 export default function NativeDocsContent({ page }) {

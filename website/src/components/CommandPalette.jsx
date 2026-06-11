@@ -89,6 +89,7 @@ export default function CommandPalette() {
   }, [open]);
 
   // Run search whenever query or index changes
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (!idx) {
       setResults([]);
@@ -115,6 +116,7 @@ export default function CommandPalette() {
     };
     doSearch();
   }, [q, idx]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const close = () => {
     setOpen(false);

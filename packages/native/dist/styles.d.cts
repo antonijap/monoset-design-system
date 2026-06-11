@@ -85,13 +85,13 @@ declare const styles: {
         backgroundColor: "#ffffff";
         borderColor: "#e8e8ea";
         borderWidth: number;
-        borderRadius: number;
+        borderRadius: 14;
         padding: 20;
     };
     msCardElevated: {
         shadowColor: "#000";
-        shadowOpacity: 0.06;
-        shadowRadius: 2;
+        shadowOpacity: 0.05;
+        shadowRadius: 3;
         shadowOffset: {
             readonly width: 0;
             readonly height: 1;
@@ -163,6 +163,14 @@ declare const styles: {
         height: number;
         borderRadius: number;
         backgroundColor: string;
+        shadowColor: string;
+        shadowOpacity: number;
+        shadowRadius: number;
+        shadowOffset: {
+            width: number;
+            height: number;
+        };
+        elevation: number;
     };
     msSpinner: {
         width: number;
@@ -249,16 +257,16 @@ declare const styles: {
         color: "#3f3f45";
     };
     msBadgeTextSuccess: {
-        color: "#2e4a33";
+        color: "#09090b";
     };
     msBadgeTextDanger: {
-        color: "#a83232";
+        color: "#09090b";
     };
     msAlert: {
         flexDirection: "row";
-        gap: number;
-        padding: number;
-        borderRadius: 6;
+        gap: 12;
+        padding: 16;
+        borderRadius: 8;
         borderWidth: number;
     };
     msAlertInfo: {
@@ -284,7 +292,7 @@ declare const styles: {
         alignItems: "center";
         justifyContent: "center";
         flexShrink: number;
-        marginTop: number;
+        marginTop: 2;
         borderWidth: number;
         borderColor: "#09090b";
     };
@@ -292,14 +300,14 @@ declare const styles: {
         borderColor: "#09090b";
     };
     msAlertIconWrapSuccess: {
-        borderColor: "#2e4a33";
+        borderColor: "#09090b";
         backgroundColor: string;
     };
     msAlertIconWrapWarning: {
-        borderColor: "#7a5a1a";
+        borderColor: "#09090b";
     };
     msAlertIconWrapDanger: {
-        borderColor: "#a83232";
+        borderColor: "#09090b";
     };
     msAlertIcon: {
         fontSize: number;
@@ -308,26 +316,26 @@ declare const styles: {
         lineHeight: number;
     };
     msAlertIconSuccess: {
-        color: "#2e4a33";
+        color: "#09090b";
     };
     msAlertIconWarning: {
-        color: "#7a5a1a";
+        color: "#09090b";
     };
     msAlertIconDanger: {
-        color: "#a83232";
+        color: "#09090b";
     };
     msAlertBody: {
         flex: number;
     };
     msAlertTitle: {
-        fontSize: 17;
+        fontSize: 15;
         fontWeight: "600";
         color: "#09090b";
     };
     msAlertMessage: {
         fontSize: 13;
         color: "#3f3f45";
-        marginTop: number;
+        marginTop: 4;
         lineHeight: number;
     };
     msDivider: {
@@ -403,7 +411,7 @@ declare const styles: {
     };
     msCheckRow: {
         flexDirection: "row";
-        alignItems: "center";
+        alignItems: "flex-start";
         gap: number;
         paddingVertical: number;
     };
@@ -425,6 +433,7 @@ declare const styles: {
         fontSize: 17;
         color: "#09090b";
         flex: number;
+        lineHeight: number;
     };
     msCheckCheckmark: {
         color: string;
@@ -434,7 +443,7 @@ declare const styles: {
     };
     msRadioRow: {
         flexDirection: "row";
-        alignItems: "center";
+        alignItems: "flex-start";
         gap: number;
         paddingVertical: number;
     };
@@ -461,6 +470,7 @@ declare const styles: {
         fontSize: 17;
         color: "#09090b";
         flex: number;
+        lineHeight: number;
     };
     msChip: {
         paddingHorizontal: number;
@@ -494,7 +504,7 @@ declare const styles: {
         width: "100%";
         height: number;
         borderRadius: number;
-        backgroundColor: "#f4f4f5";
+        backgroundColor: "#e8e8ea";
         overflow: "hidden";
     };
     msProgressFill: {
@@ -547,13 +557,13 @@ declare const styles: {
     };
     msDialog: {
         shadowColor: "#000";
-        shadowOpacity: 0.12;
-        shadowRadius: 16;
+        shadowOpacity: 0.1;
+        shadowRadius: 28;
         shadowOffset: {
             readonly width: 0;
-            readonly height: 6;
+            readonly height: 10;
         };
-        elevation: 6;
+        elevation: 8;
         width: "100%";
         maxWidth: number;
         backgroundColor: "#ffffff";
@@ -583,17 +593,17 @@ declare const styles: {
     };
     msToast: {
         shadowColor: "#000";
-        shadowOpacity: 0.12;
-        shadowRadius: 16;
+        shadowOpacity: 0.1;
+        shadowRadius: 28;
         shadowOffset: {
             readonly width: 0;
-            readonly height: 6;
+            readonly height: 10;
         };
-        elevation: 6;
+        elevation: 8;
         width: "100%";
         maxWidth: number;
         backgroundColor: "#09090b";
-        borderRadius: 6;
+        borderRadius: 8;
         paddingHorizontal: 16;
         paddingVertical: 12;
         flexDirection: "row";
@@ -625,15 +635,16 @@ declare const styles: {
     };
     msSliderThumb: {
         shadowColor: "#000";
-        shadowOpacity: 0.06;
-        shadowRadius: 2;
+        shadowOpacity: 0.05;
+        shadowRadius: 3;
         shadowOffset: {
             readonly width: 0;
             readonly height: 1;
         };
         elevation: 1;
         position: "absolute";
-        top: number;
+        top: "50%";
+        marginTop: number;
         width: number;
         height: number;
         borderRadius: number;
@@ -643,23 +654,24 @@ declare const styles: {
     };
     msSegmented: {
         flexDirection: "row";
+        alignItems: "center";
         backgroundColor: "#f4f4f5";
-        borderRadius: 6;
+        borderRadius: number;
         padding: number;
-        alignSelf: "flex-start";
     };
     msSegmentedItem: {
+        flex: number;
         paddingHorizontal: number;
         paddingVertical: number;
         minHeight: number;
         alignItems: "center";
         justifyContent: "center";
-        borderRadius: 4;
+        borderRadius: number;
     };
     msSegmentedItemActive: {
         shadowColor: "#000";
-        shadowOpacity: 0.06;
-        shadowRadius: 2;
+        shadowOpacity: 0.05;
+        shadowRadius: 3;
         shadowOffset: {
             readonly width: 0;
             readonly height: 1;
@@ -669,11 +681,18 @@ declare const styles: {
     };
     msSegmentedText: {
         fontSize: 13;
-        fontWeight: "500";
-        color: "#71717a";
+        fontWeight: "400";
+        color: "#09090b";
     };
     msSegmentedTextActive: {
+        fontWeight: "600";
         color: "#09090b";
+    };
+    msSegmentedSeparator: {
+        width: number;
+        height: number;
+        borderRadius: number;
+        backgroundColor: "#d4d4d7";
     };
     msTabBar: {
         flexDirection: "row";
@@ -689,6 +708,7 @@ declare const styles: {
         justifyContent: "center";
         gap: number;
         paddingVertical: number;
+        minHeight: number;
     };
     msTabBarLabel: {
         fontSize: number;

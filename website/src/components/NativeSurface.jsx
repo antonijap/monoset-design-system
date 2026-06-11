@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, Text } from 'react-native';
 import {
   Button, Card, Input, Field, Stack, Inline, Switch, Spinner, Skeleton,
-  colors, fontSize, fontWeight,
+  colors, fontSize,
 } from '@monoset/native';
 
 /**

@@ -58,7 +58,10 @@ function TweaksPanel({ visible, tweaks, setTweaks }) {
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
-  const slug = location.pathname.slice(1);
+  // Old routes for pages that were folded into another page.
+  const ALIASES = { textarea: "inputs", framer: "motion" };
+  const raw = location.pathname.slice(1);
+  const slug = ALIASES[raw] ?? raw;
   const screen = slug ? "docs" : "home";
   // A slug is valid if it exists in EITHER platform's meta. DocsLayout falls
   // back to "introduction" when the active platform doesn't have a page for it.
@@ -77,7 +80,7 @@ function App() {
     if (window.parent !== window) {
       try {
         window.parent.postMessage({ type: "__edit_mode_available" }, "*");
-      } catch {}
+      } catch { /* ignore */ }
     }
     return () => window.removeEventListener("message", handler);
   }, []);

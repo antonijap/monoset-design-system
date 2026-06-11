@@ -8,6 +8,7 @@ import {
   useCallback,
   forwardRef,
 } from "react";
+import { Search } from "lucide-react";
 import { cx } from "./cx";
 
 /* ─── Types ─────────────────────────────────────────────────────── */
@@ -207,20 +208,12 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
           >
             <RDialog.Title className="ms-sr-only">Command palette</RDialog.Title>
             <div className="ms-cmd__input-wrap">
-              <svg
+              <Search
                 className="ms-cmd__search-icon"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="11" cy="11" r="7" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
+                size={16}
+                strokeWidth={2}
+                aria-hidden
+              />
               <input
                 ref={inputRef}
                 className="ms-cmd__input"

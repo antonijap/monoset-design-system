@@ -44,7 +44,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.bg,
     borderColor: colors.borderSubtle,
     borderWidth: 1,
-    borderRadius: 14,
+    borderRadius: radius["2xl"],
     padding: space[6],
   },
   msCardElevated: {
@@ -97,6 +97,11 @@ export const styles = StyleSheet.create({
     height: 27,
     borderRadius: 999,
     backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOpacity: 0.12,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
 
   /* ─── Spinner ─────────────────────────────────────────────────── */
@@ -151,15 +156,15 @@ export const styles = StyleSheet.create({
   msBadgeTextNeutral: { color: colors.fg2 },
   msBadgeTextSolid:   { color: colors.accentFg },
   msBadgeTextOutline: { color: colors.fg2 },
-  msBadgeTextSuccess: { color: colors.statusSuccess },
-  msBadgeTextDanger:  { color: colors.statusDanger },
+  msBadgeTextSuccess: { color: colors.fg1 },
+  msBadgeTextDanger:  { color: colors.fg1 },
 
   /* ─── Alert ───────────────────────────────────────────────────── */
   msAlert: {
     flexDirection: "row",
-    gap: 12,
-    padding: 14,
-    borderRadius: radius.md,
+    gap: space[4],
+    padding: space[5],
+    borderRadius: radius.lg,
     borderWidth: 1,
   },
   msAlertInfo:    { backgroundColor: colors.bgSubtle, borderColor: colors.borderSubtle },
@@ -168,20 +173,20 @@ export const styles = StyleSheet.create({
   msAlertDanger:  { backgroundColor: colors.bgSubtle, borderColor: colors.borderSubtle },
   msAlertIconWrap: {
     width: 22, height: 22, borderRadius: 999,
-    alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1,
+    alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: space[1],
     borderWidth: 1, borderColor: colors.fg1,
   },
   msAlertIconWrapInfo:    { borderColor: colors.fg1 },
-  msAlertIconWrapSuccess: { borderColor: colors.statusSuccess, backgroundColor: "transparent" },
-  msAlertIconWrapWarning: { borderColor: colors.statusWarning },
-  msAlertIconWrapDanger:  { borderColor: colors.statusDanger },
+  msAlertIconWrapSuccess: { borderColor: colors.fg1, backgroundColor: "transparent" },
+  msAlertIconWrapWarning: { borderColor: colors.fg1 },
+  msAlertIconWrapDanger:  { borderColor: colors.fg1 },
   msAlertIcon:       { fontSize: 12, fontWeight: fontWeight.bold, color: colors.fg1, lineHeight: 14 },
-  msAlertIconSuccess:{ color: colors.statusSuccess },
-  msAlertIconWarning:{ color: colors.statusWarning },
-  msAlertIconDanger: { color: colors.statusDanger },
+  msAlertIconSuccess:{ color: colors.fg1 },
+  msAlertIconWarning:{ color: colors.fg1 },
+  msAlertIconDanger: { color: colors.fg1 },
   msAlertBody:    { flex: 1 },
-  msAlertTitle:   { fontSize: fontSize.base, fontWeight: fontWeight.semibold, color: colors.fg1 },
-  msAlertMessage: { fontSize: fontSize.sm,   color: colors.fg2, marginTop: 2, lineHeight: fontSize.sm * 1.5 },
+  msAlertTitle:   { fontSize: fontSize.md, fontWeight: fontWeight.semibold, color: colors.fg1 },
+  msAlertMessage: { fontSize: fontSize.sm,   color: colors.fg2, marginTop: space[2], lineHeight: fontSize.sm * 1.5 },
 
   /* ─── Divider ─────────────────────────────────────────────────── */
   msDivider:           { backgroundColor: colors.borderSubtle },
@@ -212,7 +217,7 @@ export const styles = StyleSheet.create({
   msListItemChevron: { fontSize: fontSize.lg, color: colors.fg4 },
 
   /* ─── Checkbox ────────────────────────────────────────────────── */
-  msCheckRow: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 4 },
+  msCheckRow: { flexDirection: "row", alignItems: "flex-start", gap: 10, paddingVertical: 12 },
   msCheck: {
     width: 22, height: 22, borderRadius: radius.sm,
     borderWidth: 1.5, borderColor: colors.border,
@@ -220,11 +225,11 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.bg,
   },
   msCheckChecked: { backgroundColor: colors.accent, borderColor: colors.accent },
-  msCheckLabel:   { fontSize: fontSize.base, color: colors.fg1, flex: 1 },
+  msCheckLabel:   { fontSize: fontSize.base, color: colors.fg1, flex: 1, lineHeight: 22 },
   msCheckCheckmark: { color: "#fff", fontSize: 14, fontWeight: fontWeight.bold, lineHeight: 14 },
 
   /* ─── Radio ───────────────────────────────────────────────────── */
-  msRadioRow: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 4 },
+  msRadioRow: { flexDirection: "row", alignItems: "flex-start", gap: 10, paddingVertical: 12 },
   msRadio: {
     width: 22, height: 22, borderRadius: 999,
     borderWidth: 1.5, borderColor: colors.border,
@@ -233,7 +238,7 @@ export const styles = StyleSheet.create({
   },
   msRadioChecked: { borderColor: colors.accent },
   msRadioDot:     { width: 10, height: 10, borderRadius: 999, backgroundColor: colors.accent },
-  msRadioLabel:   { fontSize: fontSize.base, color: colors.fg1, flex: 1 },
+  msRadioLabel:   { fontSize: fontSize.base, color: colors.fg1, flex: 1, lineHeight: 22 },
 
   /* ─── Chip ────────────────────────────────────────────────────── */
   msChip: {
@@ -252,7 +257,7 @@ export const styles = StyleSheet.create({
   msProgressTrack: {
     width: "100%", height: 6,
     borderRadius: 999,
-    backgroundColor: colors.bgMuted,
+    backgroundColor: mono[200],
     overflow: "hidden",
   },
   msProgressFill: { height: "100%", backgroundColor: colors.accent, borderRadius: 999 },
@@ -292,7 +297,7 @@ export const styles = StyleSheet.create({
   msToast: {
     width: "100%", maxWidth: 380,
     backgroundColor: colors.fg1,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     paddingHorizontal: space[5], paddingVertical: space[4],
     flexDirection: "row", alignItems: "center", gap: 12,
     ...shadow.lg,
@@ -303,27 +308,31 @@ export const styles = StyleSheet.create({
   /* ─── Slider ──────────────────────────────────────────────────── */
   msSliderTrack: { width: "100%", height: 4, borderRadius: 999, backgroundColor: colors.bgMuted },
   msSliderFill:  { height: "100%", backgroundColor: colors.accent, borderRadius: 999 },
-  msSliderThumb: { position: "absolute", top: -10, width: 24, height: 24, borderRadius: 999, backgroundColor: "#fff", borderWidth: 1, borderColor: colors.border, ...shadow.sm },
+  msSliderThumb: { position: "absolute", top: "50%", marginTop: -12, width: 24, height: 24, borderRadius: 999, backgroundColor: "#fff", borderWidth: 1, borderColor: colors.border, ...shadow.sm },
 
   /* ─── SegmentedControl ────────────────────────────────────────── */
+  /* iOS UISegmentedControl proportions: 32pt control, 2pt inset, concentric
+     thumb (9 - 2 = 7), equal-width segments, weight change only on the label. */
   msSegmented: {
     flexDirection: "row",
+    alignItems: "center",
     backgroundColor: colors.bgMuted,
-    borderRadius: radius.md,
+    borderRadius: 9,
     padding: 2,
-    alignSelf: "flex-start",
   },
   msSegmentedItem: {
-    paddingHorizontal: 14, paddingVertical: 6, minHeight: 32,
+    flex: 1,
+    paddingHorizontal: 10, paddingVertical: 5, minHeight: 28,
     alignItems: "center", justifyContent: "center",
-    borderRadius: radius.sm,
+    borderRadius: 7,
   },
   msSegmentedItemActive: {
     backgroundColor: colors.bg,
     ...shadow.sm,
   },
-  msSegmentedText:        { fontSize: fontSize.sm, fontWeight: fontWeight.medium, color: colors.fg3 },
-  msSegmentedTextActive:  { color: colors.fg1 },
+  msSegmentedText:        { fontSize: fontSize.sm, fontWeight: fontWeight.regular,  color: colors.fg1 },
+  msSegmentedTextActive:  { fontWeight: fontWeight.semibold, color: colors.fg1 },
+  msSegmentedSeparator:   { width: 1, height: 14, borderRadius: 1, backgroundColor: colors.border },
 
   /* ─── TabBar (bottom navigation) ──────────────────────────────── */
   msTabBar: {
@@ -331,9 +340,9 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.bg,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.borderSubtle,
-    paddingTop: 8, paddingBottom: 8,
+    paddingTop: 2, paddingBottom: 2,
   },
-  msTabBarItem: { flex: 1, alignItems: "center", justifyContent: "center", gap: 4, paddingVertical: 4 },
+  msTabBarItem: { flex: 1, alignItems: "center", justifyContent: "center", gap: 4, paddingVertical: 6, minHeight: 48 },
   msTabBarLabel:        { fontSize: 11, fontWeight: fontWeight.medium, color: colors.fg3 },
   msTabBarLabelActive:  { color: colors.fg1 },
 });

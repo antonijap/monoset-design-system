@@ -1,4 +1,5 @@
 import { forwardRef, type ReactNode } from "react";
+import { Check } from "lucide-react";
 import { cx } from "./cx";
 
 export interface StepperStep {
@@ -30,7 +31,7 @@ export const Stepper = forwardRef<HTMLOListElement, StepperProps>(function Stepp
         return (
           <li key={i} className={cx("ms-stepper__step", `ms-stepper__step--${state}`)}>
             <div className="ms-stepper__dot" aria-current={state === "current" ? "step" : undefined}>
-              {state === "done" ? "✓" : i + 1}
+              {state === "done" ? <Check size={16} strokeWidth={2} aria-hidden /> : i + 1}
             </div>
             <div className="ms-stepper__body">
               <div className="ms-stepper__label">{step.label}</div>

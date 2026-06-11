@@ -1,4 +1,5 @@
 import { type ReactNode } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cx } from "./cx";
 
 export interface PaginationProps {
@@ -20,7 +21,9 @@ function range(start: number, end: number): number[] {
 
 export function Pagination({
   page, pageCount, onPageChange, siblings = 1,
-  prevLabel = "‹", nextLabel = "›", className,
+  prevLabel = <ChevronLeft size={16} strokeWidth={2} aria-hidden />,
+  nextLabel = <ChevronRight size={16} strokeWidth={2} aria-hidden />,
+  className,
 }: PaginationProps) {
   if (pageCount <= 1) return null;
 

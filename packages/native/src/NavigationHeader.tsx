@@ -1,5 +1,6 @@
 import { forwardRef, type ReactNode } from "react";
-import { Pressable, Text, View, type StyleProp, type ViewStyle } from "react-native";
+import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
+import { ChevronLeft } from "lucide-react-native";
 import { colors, fontSize, fontWeight } from "./tokens";
 
 export interface NavigationHeaderProps {
@@ -29,17 +30,17 @@ export const NavigationHeader = forwardRef<View, NavigationHeaderProps>(function
       accessibilityRole="header"
       style={[
         {
-          flexDirection: "row", alignItems: "center", paddingHorizontal: 12,
+          flexDirection: "row", alignItems: "center", paddingHorizontal: 8,
           height: 56, backgroundColor: colors.bg, gap: 8,
-          borderBottomWidth: border ? 1 : 0, borderBottomColor: colors.borderSubtle,
+          borderBottomWidth: border ? StyleSheet.hairlineWidth : 0, borderBottomColor: colors.borderSubtle,
         },
         style,
       ]}
     >
       <View style={{ minWidth: 44, alignItems: "flex-start" }}>{leading}</View>
-      <View style={{ flex: 1, alignItems: "flex-start" }}>
+      <View style={{ flex: 1, alignItems: "center" }}>
         {typeof title === "string"
-          ? <Text style={{ fontSize: fontSize.lg, fontWeight: fontWeight.semibold, color: colors.fg1 }} numberOfLines={1}>{title}</Text>
+          ? <Text style={{ fontSize: fontSize.base, fontWeight: fontWeight.semibold, color: colors.fg1, textAlign: "center" }} numberOfLines={1}>{title}</Text>
           : title}
       </View>
       <View style={{ minWidth: 44, alignItems: "flex-end" }}>{trailing}</View>
@@ -61,7 +62,7 @@ export function NavigationBack({ onPress, label = "Back" }: { onPress?: () => vo
         backgroundColor: pressed ? colors.bgMuted : "transparent",
       })}
     >
-      <Text style={{ fontSize: 22, color: colors.fg1, lineHeight: 22 }}>‹</Text>
+      <ChevronLeft size={26} color={colors.fg1} strokeWidth={2} />
     </Pressable>
   );
 }

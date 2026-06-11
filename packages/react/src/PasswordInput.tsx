@@ -1,4 +1,5 @@
 import { forwardRef, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { Input, type InputProps } from "./Input";
 import { cx } from "./cx";
 
@@ -28,10 +29,11 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         <button
           type="button"
           aria-pressed={visible}
+          aria-label={visible ? hideLabel : showLabel}
           onClick={() => setVisible((v) => !v)}
           className="ms-password__toggle"
         >
-          {visible ? hideLabel : showLabel}
+          {visible ? <EyeOff size={16} strokeWidth={2} aria-hidden /> : <Eye size={16} strokeWidth={2} aria-hidden />}
         </button>
       </div>
     );

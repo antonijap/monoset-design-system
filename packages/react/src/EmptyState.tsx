@@ -15,7 +15,7 @@ export function EmptyState({ icon, title, body, action, className }: EmptyStateP
       {icon && <div className="ms-empty__icon" aria-hidden>{icon}</div>}
       <div className="ms-empty__title">{title}</div>
       {body && <div className="ms-empty__body">{body}</div>}
-      {action}
+      {action && <div className="ms-empty__action">{action}</div>}
     </div>
   );
 }

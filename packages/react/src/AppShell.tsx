@@ -3,10 +3,10 @@ import {
   createContext,
   useContext,
   useState,
-  useCallback,
   forwardRef,
 } from "react";
 import * as RDialog from "@radix-ui/react-dialog";
+import { Menu } from "lucide-react";
 import { cx } from "./cx";
 
 /* ─── Context ───────────────────────────────────────────────────── */
@@ -171,19 +171,18 @@ export interface AppShellMobileTriggerProps
 
 const AppShellMobileTrigger = forwardRef<HTMLButtonElement, AppShellMobileTriggerProps>(
   function AppShellMobileTrigger({ label = "Open navigation", className, ...rest }, ref) {
-    const { setMobileOpen } = useAppShell();
+    const { mobileOpen, setMobileOpen } = useAppShell();
     return (
       <button
         ref={ref}
         type="button"
         aria-label={label}
+        aria-expanded={mobileOpen}
         className={cx("ms-app-shell__mobile-trigger", className)}
         onClick={() => setMobileOpen(true)}
         {...rest}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 6h18M3 12h18M3 18h18" />
-        </svg>
+        <Menu size={20} strokeWidth={2} aria-hidden />
       </button>
     );
   },

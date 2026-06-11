@@ -1,4 +1,5 @@
 import * as RAccordion from "@radix-ui/react-accordion";
+import { ChevronDown } from "lucide-react";
 import { forwardRef, type ReactNode } from "react";
 import { cx } from "./cx";
 
@@ -27,20 +28,12 @@ export const AccordionTrigger = forwardRef<
     <RAccordion.Header className="ms-accordion__header">
       <RAccordion.Trigger ref={ref} className={cx("ms-accordion__trigger", className)} {...rest}>
         <span>{children}</span>
-        <svg
+        <ChevronDown
           className="ms-accordion__chevron"
-          width={14}
-          height={14}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={1.8}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
+          size={14}
+          strokeWidth={2}
+          aria-hidden={true}
+        />
       </RAccordion.Trigger>
     </RAccordion.Header>
   );

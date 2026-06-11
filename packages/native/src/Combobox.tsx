@@ -1,9 +1,11 @@
-import { forwardRef, useState, type ReactNode } from "react";
+import { forwardRef, useMemo, useState } from "react";
 import {
   Modal, Pressable, ScrollView, Text, TextInput, View,
   type StyleProp, type ViewStyle,
 } from "react-native";
+import { Check, ChevronDown } from "lucide-react-native";
 import { colors, fontSize, fontWeight, space, radius } from "./tokens";
+import { useReducedMotion } from "./useReducedMotion";
 
 export interface ComboboxOption {
   value: string;
@@ -42,10 +44,20 @@ export const Combobox = forwardRef<View, ComboboxProps>(function Combobox(
   { options, value, onValueChange, placeholder = "Select…", searchPlaceholder = "Search…", emptyMessage = "No results.", filter = defaultFilter, disabled, style },
   ref,
 ) {
+  const reduceMotion = useReducedMotion();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const selected = options.find((o) => o.value === value) || null;
-  const filtered = query.trim() ? options.filter((o) => filter(query, o)) : options;
+  const filtered = useMemo(
+    () => (query.trim() ? options.filter((o) => filter(query, o)) : options),
+    [query, options, filter],
+  );
+
+  // Reset the search on every dismissal so a stale query never carries into the next open.
+  const close = () => {
+    setOpen(false);
+    setQuery("");
+  };
 
   return (
     <View ref={ref} style={style}>
@@ -58,7 +70,7 @@ export const Combobox = forwardRef<View, ComboboxProps>(function Combobox(
           flexDirection: "row", alignItems: "center", justifyContent: "space-between",
           paddingHorizontal: 14, paddingVertical: 12, minHeight: 44,
           borderWidth: 1, borderColor: pressed ? colors.fg3 : colors.border,
-          borderRadius: 12,
+          borderRadius: radius.xl,
           backgroundColor: disabled ? colors.bgMuted : colors.bg,
           opacity: disabled ? 0.6 : 1,
         })}
@@ -66,17 +78,17 @@ export const Combobox = forwardRef<View, ComboboxProps>(function Combobox(
         <Text style={{ fontSize: fontSize.base, color: selected ? colors.fg1 : colors.fg4 }}>
           {selected ? selected.label : placeholder}
         </Text>
-        <Text style={{ fontSize: 12, color: colors.fg3 }}>▾</Text>
+        <ChevronDown size={18} color={colors.fg3} strokeWidth={2} />
       </Pressable>
 
-      <Modal visible={open} animationType="slide" transparent onRequestClose={() => setOpen(false)}>
-        <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.4)" }} onPress={() => setOpen(false)}>
+      <Modal visible={open} animationType={reduceMotion ? "none" : "slide"} transparent onRequestClose={close}>
+        <Pressable style={{ flex: 1, backgroundColor: colors.scrim }} onPress={close}>
           <Pressable
             onPress={(e) => e.stopPropagation()}
             style={{
               marginTop: "auto", maxHeight: "80%",
               backgroundColor: colors.bg,
-              borderTopLeftRadius: 16, borderTopRightRadius: 16,
+              borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl,
               paddingTop: 12, paddingBottom: space[7],
             }}
           >
@@ -110,8 +122,7 @@ export const Combobox = forwardRef<View, ComboboxProps>(function Combobox(
                       disabled={opt.disabled}
                       onPress={() => {
                         onValueChange?.(opt.value);
-                        setOpen(false);
-                        setQuery("");
+                        close();
                       }}
                       style={({ pressed }) => ({
                         paddingHorizontal: space[5], paddingVertical: space[4],
@@ -124,7 +135,7 @@ export const Combobox = forwardRef<View, ComboboxProps>(function Combobox(
                           <Text style={{ fontSize: fontSize.base, fontWeight: isSel ? fontWeight.semibold : fontWeight.regular, color: colors.fg1 }}>{opt.label}</Text>
                           {opt.description && <Text style={{ fontSize: fontSize.sm, color: colors.fg3, marginTop: 2 }}>{opt.description}</Text>}
                         </View>
-                        {isSel && <Text style={{ color: colors.fg1, fontSize: 16 }}>✓</Text>}
+                        {isSel && <Check size={16} color={colors.fg1} strokeWidth={2} />}
                       </View>
                     </Pressable>
                   );

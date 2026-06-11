@@ -193,3 +193,21 @@ img { max-width: 100%; display: block; }
   [data-ms="bento-analytics"] [data-ms="analytics-value"] { font-size: 28px !important; }
   [data-ms="bento-typography-aa"] { font-size: 60px !important; }
 }
+
+/* Shiki code blocks: our container owns the chrome (bg, padding, radius); the
+   highlighter only colors tokens. */
+.ms-docs-code pre {
+  margin: 0;
+  background: transparent !important;
+  overflow-x: auto;
+  line-height: 1.7;
+  font-size: 13px;
+  font-family: var(--font-mono);
+}
+.ms-docs-code code {
+  font-family: inherit;
+  font-size: inherit;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}

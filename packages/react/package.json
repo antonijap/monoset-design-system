@@ -1,6 +1,6 @@
 {
   "name": "@monoset/react",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Monoset React component library. Monotone, minimal, unopinionated.",
   "keywords": [
     "design-system",
@@ -30,15 +30,16 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "test:watch": "vitest"
   },
   "peerDependencies": {
     "@radix-ui/react-accordion": ">=1",
+    "@radix-ui/react-aspect-ratio": ">=1",
     "@radix-ui/react-avatar": ">=1",
     "@radix-ui/react-checkbox": ">=1",
+    "@radix-ui/react-collapsible": ">=1",
     "@radix-ui/react-context-menu": ">=2",
     "@radix-ui/react-dialog": ">=1",
     "@radix-ui/react-dropdown-menu": ">=2",
@@ -67,8 +68,10 @@
   },
   "devDependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
+    "@radix-ui/react-aspect-ratio": "^1.1.1",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-checkbox": "^1.1.2",
+    "@radix-ui/react-collapsible": "^1.1.2",
     "@radix-ui/react-context-menu": "^2.2.2",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-dropdown-menu": "^2.1.2",
@@ -86,12 +89,15 @@
     "@radix-ui/react-toggle": "^1.1.10",
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.1.4",
+    "@eslint/js": "^9.39.4",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitest/coverage-v8": "^2.1.5",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "framer-motion": "^12.0.0",
     "happy-dom": "^20.9.0",
     "lucide-react": "^0.462.0",
@@ -99,6 +105,7 @@
     "react-dom": "^18.3.1",
     "tsup": "^8.3.5",
     "typescript": "^5.6.3",
+    "typescript-eslint": "^8.20.0",
     "vitest": "^2.1.9",
     "vitest-axe": "^0.1.0"
   }

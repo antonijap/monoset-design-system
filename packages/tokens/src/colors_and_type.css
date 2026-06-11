@@ -122,18 +122,24 @@
   /* ---- Hairline border (token) --------------------------------------- */
   --hairline: 1px solid var(--border-subtle);
 
-  /* ---- Shadows (subtle, monotone) ------------------------------------ */
+  /* ---- Shadows (subtle, monotone, layered) --------------------------- */
+  /* Each level pairs a tight contact shadow with a soft ambient one so
+     elevated surfaces read as gently lifted rather than hard-edged. */
   --shadow-xs: 0 1px 0 0 rgb(0 0 0 / 0.04);
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.06);
-  --shadow-md: 0 2px 6px -1px rgb(0 0 0 / 0.08),
-               0 1px 2px 0 rgb(0 0 0 / 0.04);
-  --shadow-lg: 0 10px 24px -6px rgb(0 0 0 / 0.10),
-               0 2px 6px -2px rgb(0 0 0 / 0.06);
-  --shadow-xl: 0 24px 48px -12px rgb(0 0 0 / 0.18);
+  --shadow-sm: 0 1px 1px -0.5px rgb(0 0 0 / 0.04),
+               0 1px 3px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 1px 2px -1px rgb(0 0 0 / 0.06),
+               0 4px 10px -2px rgb(0 0 0 / 0.07);
+  --shadow-lg: 0 2px 4px -2px rgb(0 0 0 / 0.06),
+               0 12px 28px -6px rgb(0 0 0 / 0.10);
+  --shadow-xl: 0 4px 8px -3px rgb(0 0 0 / 0.07),
+               0 28px 56px -12px rgb(0 0 0 / 0.16);
   --shadow-inset: inset 0 0 0 1px rgb(0 0 0 / 0.04);
 
-  /* Focus ring — single monotone ring */
-  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--mono-900);
+  /* Focus ring — single monotone ring. --ring follows --fg1 so it stays
+     high-contrast in both light and dark themes (the --mono-* ramp is not swapped). */
+  --ring: var(--fg1);
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--ring);
 
   /* ---- Motion --------------------------------------------------------- */
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
@@ -157,6 +163,7 @@
   --z-overlay: 1000;
   --z-modal:   1100;
   --z-popover: 1200;
+  --z-dropdown: 1200;
   --z-toast:   1300;
 }
 
@@ -285,6 +292,16 @@ code, .code, kbd, samp {
   padding: 1px 5px;
   border-radius: var(--radius-xs);
   color: var(--fg1);
+}
+
+/* Code inside a pre block: the block owns the chrome, not each code element. */
+pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  color: inherit;
 }
 
 kbd {

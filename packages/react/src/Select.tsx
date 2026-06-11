@@ -1,4 +1,5 @@
 import * as RSelect from "@radix-ui/react-select";
+import { ChevronDown } from "lucide-react";
 import { forwardRef, type ReactNode } from "react";
 import { cx } from "./cx";
 
@@ -15,10 +16,8 @@ export const SelectTrigger = forwardRef<
   return (
     <RSelect.Trigger ref={ref} className={cx("ms-select", className)} {...rest}>
       {children ?? <RSelect.Value placeholder={placeholder} />}
-      <RSelect.Icon aria-hidden>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="m6 9 6 6 6-6" />
-        </svg>
+      <RSelect.Icon className="ms-select__chevron" aria-hidden>
+        <ChevronDown size={12} strokeWidth={2} aria-hidden />
       </RSelect.Icon>
     </RSelect.Trigger>
   );

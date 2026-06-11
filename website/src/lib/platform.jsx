@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from 'react';
 
 /**
@@ -19,7 +20,7 @@ export function PlatformProvider({ children }) {
   });
 
   useEffect(() => {
-    try { localStorage.setItem('monoset-platform', platform); } catch {}
+    try { localStorage.setItem('monoset-platform', platform); } catch { /* ignore */ }
   }, [platform]);
 
   return (

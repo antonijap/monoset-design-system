@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useRef, useState, type ReactNode } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cx } from "./cx";
 
 export interface CarouselProps {
@@ -55,38 +56,40 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
 
   return (
     <div ref={ref} aria-roledescription="carousel" aria-label={ariaLabel} className={cx("ms-carousel", className)}>
-      <div ref={trackRef} className="ms-carousel__track">
-        {slides.map((child, i) => (
-          <div
-            key={i}
-            role="group"
-            aria-roledescription="slide"
-            aria-label={`${i + 1} of ${slides.length}`}
-            aria-current={i === current}
-            className="ms-carousel__slide"
-          >
-            {child}
-          </div>
-        ))}
+      <div className="ms-carousel__viewport">
+        <div ref={trackRef} className="ms-carousel__track">
+          {slides.map((child, i) => (
+            <div
+              key={i}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} of ${slides.length}`}
+              aria-current={i === current}
+              className="ms-carousel__slide"
+            >
+              {child}
+            </div>
+          ))}
+        </div>
+        {showArrows && slides.length > 1 && (
+          <>
+            <button
+              type="button"
+              aria-label="Previous slide"
+              disabled={current === 0}
+              onClick={() => goTo(current - 1)}
+              className="ms-carousel__arrow ms-carousel__arrow--prev"
+            ><ChevronLeft size={16} strokeWidth={2} aria-hidden /></button>
+            <button
+              type="button"
+              aria-label="Next slide"
+              disabled={current === slides.length - 1}
+              onClick={() => goTo(current + 1)}
+              className="ms-carousel__arrow ms-carousel__arrow--next"
+            ><ChevronRight size={16} strokeWidth={2} aria-hidden /></button>
+          </>
+        )}
       </div>
-      {showArrows && slides.length > 1 && (
-        <>
-          <button
-            type="button"
-            aria-label="Previous slide"
-            disabled={current === 0}
-            onClick={() => goTo(current - 1)}
-            className="ms-carousel__arrow ms-carousel__arrow--prev"
-          >‹</button>
-          <button
-            type="button"
-            aria-label="Next slide"
-            disabled={current === slides.length - 1}
-            onClick={() => goTo(current + 1)}
-            className="ms-carousel__arrow ms-carousel__arrow--next"
-          >›</button>
-        </>
-      )}
       {showDots && slides.length > 1 && (
         <div className="ms-carousel__dots" role="tablist">
           {slides.map((_, i) => (

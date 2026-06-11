@@ -41,6 +41,8 @@ export const NATIVE_PAGE_META = {
 
   // v0.3
   datepickern:  { title: "DatePicker", desc: "Calendar bottom sheet for picking a single date." },
+  calendarn:    { title: "Calendar", desc: "Standalone month grid. Always visible. DatePicker is built on it." },
+  bottomsheet:  { title: "Bottom sheet", desc: "Slide-up sheet with grabber and drag-to-dismiss." },
   numberinputn: { title: "Number input", desc: "Stepper-flanked numeric input for cart quantities and settings." },
   pininputn:    { title: "Pin input", desc: "OTP-style cells with auto-advance and paste support." },
   passwordn:    { title: "Password input", desc: "TextInput with a Show / Hide toggle." },

@@ -1,5 +1,6 @@
 import * as RPopover from "@radix-ui/react-popover";
-import { forwardRef, useEffect, useRef, useState, useId, type KeyboardEvent } from "react";
+import { forwardRef, useRef, useState, useId, type KeyboardEvent } from "react";
+import { Check, X } from "lucide-react";
 import { cx } from "./cx";
 
 export interface MultiComboboxOption {
@@ -49,18 +50,21 @@ export const MultiCombobox = forwardRef<HTMLButtonElement, MultiComboboxProps>(
     const listId = useId();
 
     const filtered = query.trim() ? options.filter((o) => filter(query, o)) : options;
+    // Clamp the highlighted index during render so the visible highlight and the
+    // Enter target always agree, even on the keystroke where `filtered` shrinks
+    // before the bounds effect runs.
+    const activeIndex = Math.min(cursor, Math.max(0, filtered.length - 1));
 
-    useEffect(() => {
-      if (open) {
+    // Reset search + cursor when the popover opens (handled in the event, not an
+    // effect). activeIndex above keeps the cursor in bounds during render.
+    const handleOpenChange = (next: boolean) => {
+      setOpen(next);
+      if (next) {
         setQuery("");
         setCursor(0);
         requestAnimationFrame(() => inputRef.current?.focus());
       }
-    }, [open]);
-
-    useEffect(() => {
-      setCursor((c) => Math.min(c, Math.max(0, filtered.length - 1)));
-    }, [filtered.length]);
+    };
 
     const setSelected = (next: string[]) => {
       if (!isControlled) setInternal(next);
@@ -79,7 +83,7 @@ export const MultiCombobox = forwardRef<HTMLButtonElement, MultiComboboxProps>(
       else if (e.key === "ArrowUp") { e.preventDefault(); setCursor((c) => (c - 1 + filtered.length) % Math.max(1, filtered.length)); }
       else if (e.key === "Enter") {
         e.preventDefault();
-        const opt = filtered[cursor];
+        const opt = filtered[activeIndex];
         if (opt && !opt.disabled) toggle(opt.value);
       }
     };
@@ -87,7 +91,7 @@ export const MultiCombobox = forwardRef<HTMLButtonElement, MultiComboboxProps>(
     const labelOf = (val: string) => options.find((o) => o.value === val)?.label || val;
 
     return (
-      <RPopover.Root open={open} onOpenChange={setOpen}>
+      <RPopover.Root open={open} onOpenChange={handleOpenChange}>
         <RPopover.Trigger asChild disabled={disabled}>
           <button
             ref={ref}
@@ -108,12 +112,14 @@ export const MultiCombobox = forwardRef<HTMLButtonElement, MultiComboboxProps>(
                 {selected.map((v) => (
                   <span key={v} className="ms-multicombobox__tag">
                     {labelOf(v)}
-                    <span
-                      role="button"
+                    <button
+                      type="button"
                       aria-label={`Remove ${labelOf(v)}`}
                       onClick={(e) => { e.stopPropagation(); removeAt(v); }}
                       className="ms-multicombobox__tag-remove"
-                    >×</span>
+                    >
+                      <X size={12} strokeWidth={2} aria-hidden />
+                    </button>
                   </span>
                 ))}
               </span>
@@ -149,7 +155,7 @@ export const MultiCombobox = forwardRef<HTMLButtonElement, MultiComboboxProps>(
                 <div className="ms-combobox__empty">{emptyMessage}</div>
               ) : filtered.map((opt, i) => {
                 const isSel = selected.includes(opt.value);
-                const isActive = i === cursor;
+                const isActive = i === activeIndex;
                 return (
                   <button
                     key={opt.value}
@@ -164,7 +170,7 @@ export const MultiCombobox = forwardRef<HTMLButtonElement, MultiComboboxProps>(
                     tabIndex={-1}
                   >
                     <span className={cx("ms-multicombobox__check", isSel && "ms-multicombobox__check--on")}>
-                      {isSel ? "✓" : ""}
+                      {isSel ? <Check size={14} strokeWidth={2} aria-hidden /> : null}
                     </span>
                     <span className="ms-combobox__option-text">
                       <span className="ms-combobox__option-label">{opt.label}</span>

@@ -1,6 +1,5 @@
 import * as RPopover from "@radix-ui/react-popover";
 import {
-  type ReactNode,
   type KeyboardEvent,
   useState,
   useRef,
@@ -8,6 +7,7 @@ import {
   useId,
   forwardRef,
 } from "react";
+import { Check, ChevronDown, Search } from "lucide-react";
 import { cx } from "./cx";
 
 /* ─── Types ─────────────────────────────────────────────────────── */
@@ -92,7 +92,9 @@ export const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
     useEffect(() => {
       if (open) {
         setQuery("");
-        setCursor(Math.max(0, filtered.findIndex((opt) => opt.value === value)));
+        // Query resets to "" on open, so the visible list is the full options
+        // array; index into that, not the stale filtered list from the last query.
+        setCursor(Math.max(0, options.findIndex((opt) => opt.value === value)));
         requestAnimationFrame(() => inputRef.current?.focus());
       }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -147,7 +149,7 @@ export const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
             <span className={cx("ms-combobox__value", !selected && "ms-combobox__value--placeholder")}>
               {selected ? selected.label : placeholder}
             </span>
-            <ChevronDown />
+            <ChevronDown size={14} strokeWidth={2} aria-hidden="true" />
           </button>
         </RPopover.Trigger>
 
@@ -160,7 +162,7 @@ export const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
             style={{ width: "var(--radix-popover-trigger-width)" }}
           >
             <div className="ms-combobox__input-wrap">
-              <SearchIcon />
+              <Search className="ms-combobox__search-icon" size={14} strokeWidth={2} aria-hidden="true" />
               <input
                 ref={inputRef}
                 className="ms-combobox__input"
@@ -204,7 +206,7 @@ export const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
                           <span className="ms-combobox__option-desc">{opt.description}</span>
                         )}
                       </span>
-                      {isSelected && <CheckIcon />}
+                      {isSelected && <Check className="ms-combobox__check" size={14} strokeWidth={2} aria-hidden="true" />}
                     </button>
                   );
                 })
@@ -216,30 +218,3 @@ export const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
     );
   },
 );
-
-/* ─── Icons (inline so consumers don't need lucide) ─────────────── */
-
-function ChevronDown() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg className="ms-combobox__search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="11" cy="11" r="7" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="ms-combobox__check">
-      <path d="M5 12l5 5L20 7" />
-    </svg>
-  );
-}

@@ -12,14 +12,17 @@ import {
   Popover, PopoverTrigger, PopoverContent,
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
   RadioGroup, Radio,
-  Skeleton, EmptyState, Pagination, Breadcrumb, Progress, Separator,
+  Skeleton, EmptyState, Pagination, Breadcrumb, Progress, Separator, Slider,
+  Tabs, TabsList, TabsTrigger, TabsContent,
   Stack,
-  DatePicker, NumberInput, PinInput, PasswordInput, FileUpload,
+  DatePicker, Calendar, NumberInput, PinInput, PasswordInput, FileUpload,
   Stepper, MultiCombobox, Carousel,
   NavigationMenu, NavigationMenuList, NavigationMenuItem,
   NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink,
   ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
+  Collapsible, CollapsibleTrigger, CollapsibleContent, AspectRatio,
 } from '@monoset/react';
+import { AlignLeft, AlignCenter, AlignRight, ChevronDown, SlidersHorizontal, User, CreditCard, Settings, LogOut } from 'lucide-react';
 import {
   EASE_STANDARD, EASE_EMPHASIS, EASE_EXIT, DUR,
   fadeUp, hoverLift, pressDown,
@@ -254,12 +257,12 @@ function PageUsage() {
             <div style={{ fontSize:12, color:"var(--fg3)", marginTop:4 }}>Use your workspace email.</div>
           </div>
           <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-            <label style={{ fontSize:12, fontWeight:500 }}>Email</label>
+            <label style={{ fontSize:12, fontWeight:500, color:"var(--fg2)" }}>Email</label>
             <input readOnly value="ada@monoset.dev" style={{ fontFamily:"inherit", fontSize:13, padding:"9px 12px",
               border:"1px solid var(--border)", borderRadius:6, background:"var(--bg)", color:"var(--fg1)", outline:"none" }}/>
           </div>
           <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-            <label style={{ fontSize:12, fontWeight:500 }}>Password</label>
+            <label style={{ fontSize:12, fontWeight:500, color:"var(--fg2)" }}>Password</label>
             <input readOnly type="password" value="monoset" style={{ fontFamily:"inherit", fontSize:13, padding:"9px 12px",
               border:"1px solid var(--border)", borderRadius:6, background:"var(--bg)", color:"var(--fg1)", outline:"none" }}/>
           </div>
@@ -356,15 +359,15 @@ var(--mono-1000) /* #09090b */`}</Code>
           <tbody>
             {semantic.map((r,i) => (
               <tr key={r.token} style={{ borderBottom: i<semantic.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{r.token}</InlineCode></td>
-                <td style={{ padding:"9px 14px" }}>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{r.token}</InlineCode></td>
+                <td style={{ padding:"11px 14px" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                     <div style={{ width:14, height:14, borderRadius:3, background:r.val,
                                   border:"1px solid var(--border-subtle)", flexShrink:0 }}/>
                     <span style={{ fontFamily:"var(--font-mono)", fontSize:12, color:"var(--fg3)" }}>{r.val}</span>
                   </div>
                 </td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{r.role}</td>
+                <td style={{ padding:"11px 14px", color:"var(--fg3)" }}>{r.role}</td>
               </tr>
             ))}
           </tbody>
@@ -458,7 +461,7 @@ function PageSpacing() {
 
       <H2 id="radii">Radii</H2>
       <div data-ms="radii-grid" style={{ display:"grid", gridTemplateColumns:"repeat(6, 1fr)", gap:12, marginBottom:24 }}>
-        {[[0,"--radius-none","0"],[2,"--radius-xs","xs"],[4,"--radius-sm","sm"],[6,"--radius-md","md ·"],[10,"--radius-lg","lg"],[14,"--radius-xl","xl"]].map(([r,tok,label]) => (
+        {[[0,"--radius-none","0"],[2,"--radius-xs","xs"],[4,"--radius-sm","sm"],[6,"--radius-md","md ·"],[10,"--radius-lg","lg"],[14,"--radius-xl","xl"]].map(([r]) => (
           <div key={r} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:8 }}>
             <div style={{ width:56, height:56, background:"var(--bg-muted)", border:"1px solid var(--border-subtle)", borderRadius:r }}/>
             <span style={{ fontSize:10, fontFamily:"var(--font-mono)", color:"var(--fg3)", textAlign:"center" }}>{r}px</span>
@@ -471,6 +474,8 @@ function PageSpacing() {
 }
 
 function PageMotion() {
+  const [open, setOpen] = useState(false);
+  const [tab, setTab] = useState(0);
   return (
     <div>
       <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Foundations</div>
@@ -512,20 +517,9 @@ function PageMotion() {
       <Code>{`transition: background var(--duration-fast) var(--ease-standard);
 transition: opacity var(--duration-base) var(--ease-emphasis),
             transform var(--duration-base) var(--ease-emphasis);`}</Code>
-    </div>
-  );
-}
 
-/* ─── FRAMER MOTION PAGE ──────────────────────────────────────────────── */
-function PageFramerMotion() {
-  const [open, setOpen] = useState(false);
-  const [tab, setTab] = useState(0);
-
-  return (
-    <div>
-      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Foundations</div>
-      <H1>Framer Motion</H1>
-      <Lead>Reach for Framer Motion when CSS transitions hit their limit, like FLIP layout animations or anything that needs to interrupt itself mid-play. Same rules as the CSS tokens: short durations, one curve, no springs.</Lead>
+      <Divider/>
+      <P>When CSS transitions hit their limit, like FLIP layout animations or anything that needs to interrupt itself mid-play, reach for Framer Motion. Same rules as the CSS tokens: short durations, one curve, no springs.</P>
 
       <H2 id="install">Install</H2>
       <Code language="bash" filename="terminal">npm install framer-motion</Code>
@@ -750,7 +744,7 @@ function PageButtons() {
 
       <H3>Props</H3>
       <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden" }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
+        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
           <thead><tr style={{ background:"var(--bg-subtle)" }}>
             {["Prop","Type","Default","Description"].map(h=>(
               <th key={h} style={{ padding:"8px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)", letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
@@ -763,10 +757,10 @@ function PageButtons() {
               ["icon","string","–","Lucide icon name prepended to label"],
               ["onClick","() => void","–","Click handler"]].map(([p,t,d,desc],i,arr)=>(
               <tr key={p} style={{ borderBottom:i<arr.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{p}</InlineCode></td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{desc}</td>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{p}</InlineCode></td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
+                <td style={{ padding:"11px 14px", color:"var(--fg3)" }}>{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -789,9 +783,9 @@ function PageInputs() {
         bg="var(--bg)"
         native="InputDemo"
         web={
-          <div style={{ width:280, display:"flex", flexDirection:"column", gap:14 }}>
+          <div style={{ width:280, display:"flex", flexDirection:"column", gap:24 }}>
             <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-              <label style={{ fontSize:12, fontWeight:500 }}>Email</label>
+              <label style={{ fontSize:12, fontWeight:500, color:"var(--fg2)" }}>Email</label>
               <input defaultValue="ada@monoset.dev"
                 onFocus={()=>setFocused(true)} onBlur={()=>setFocused(false)}
                 style={{ fontFamily:"inherit", fontSize:13, padding:"9px 12px",
@@ -801,7 +795,7 @@ function PageInputs() {
               <span style={{ fontSize:11, color:"var(--fg3)" }}>We'll send a confirmation.</span>
             </div>
             <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-              <label style={{ fontSize:12, fontWeight:500 }}>Password</label>
+              <label style={{ fontSize:12, fontWeight:500, color:"var(--fg2)" }}>Password</label>
               <input readOnly type="password" defaultValue="••••••" style={{ fontFamily:"inherit", fontSize:13, padding:"9px 12px",
                 border:"1px solid var(--status-danger, #5a2626)", borderRadius:6, color:"var(--fg1)", background:"var(--bg)", outline:"none" }}/>
               <span style={{ fontSize:11, color:"var(--status-danger, #5a2626)" }}>At least 8 characters.</span>
@@ -828,6 +822,25 @@ function PageInputs() {
           ))}
         </div>
       </Preview>
+
+      <H2 id="textarea">Textarea</H2>
+      <P>Multi-line input, same styling and the same <InlineCode>Field</InlineCode> pattern. It accepts every native <InlineCode>textarea</InlineCode> attribute; <InlineCode>rows</InlineCode> defaults to 3.</P>
+      <Preview bg="var(--bg)">
+        <div style={{ width:"100%", maxWidth:400, display:"flex", flexDirection:"column", gap:6 }}>
+          <label style={{ fontSize:12, fontWeight:500, color:"var(--fg2)" }}>Description</label>
+          <textarea readOnly defaultValue="A minimal, monotone design system for teams that want their product to look like their product."
+            style={{ fontFamily:"inherit", fontSize:13, padding:"9px 12px", minHeight:80, resize:"vertical",
+              border:"1px solid var(--border)", borderRadius:6, color:"var(--fg1)", background:"var(--bg)", outline:"none", lineHeight:1.5 }}/>
+          <span style={{ fontSize:11, color:"var(--fg3)" }}>Supports markdown formatting.</span>
+        </div>
+      </Preview>
+      <Code language="jsx">{`<Field label="Description" help="Supports markdown formatting.">
+  <Textarea rows={3} placeholder="Tell us more…"/>
+</Field>
+
+<Field label="Bio" error={errors.bio}>
+  <Textarea rows={4} placeholder="A few words about yourself"/>
+</Field>`}</Code>
     </div>
   );
 }
@@ -899,7 +912,7 @@ function PageBadges() {
 
       <H3>Props</H3>
       <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden" }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
+        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
           <thead><tr style={{ background:"var(--bg-subtle)" }}>
             {["Prop","Type","Default","Description"].map(h=>(
               <th key={h} style={{ padding:"8px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)", letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
@@ -910,10 +923,10 @@ function PageBadges() {
               ["children","ReactNode","--","Badge content"],
               ["className","string","--","Additional CSS classes"]].map(([p,t,d,desc],i,arr)=>(
               <tr key={p} style={{ borderBottom:i<arr.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{p}</InlineCode></td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{desc}</td>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{p}</InlineCode></td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
+                <td style={{ padding:"11px 14px", color:"var(--fg3)" }}>{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -934,10 +947,10 @@ function PageCards() {
       <PlatformPreview
         bg="var(--bg)"
         web={
-          <div style={{ width:"100%", maxWidth:320, border:"1px solid var(--border-subtle)", borderRadius:6, padding:16 }}>
+          <Card style={{ width:"100%", maxWidth:320 }}>
             <div style={{ fontSize:13, fontWeight:600, marginBottom:6 }}>Outline card</div>
             <div style={{ fontSize:12, color:"var(--fg3)", lineHeight:1.5 }}>Default surface. Hairline border, no shadow.</div>
-          </div>
+          </Card>
         }
         native="CardDemo"
       />
@@ -948,22 +961,21 @@ function PageCards() {
 
       <H2 id="elevated">Elevated</H2>
       <Preview>
-        <div style={{ width:"100%", maxWidth:320, border:"1px solid var(--border-subtle)", borderRadius:6, padding:16, background:"var(--bg)",
-                      boxShadow:"0 1px 2px 0 rgb(0 0 0 / 0.06)" }}>
+        <Card variant="elevated" style={{ width:"100%", maxWidth:320 }}>
           <div style={{ fontSize:13, fontWeight:600, marginBottom:6 }}>Elevated card</div>
           <div style={{ fontSize:12, color:"var(--fg3)", lineHeight:1.5 }}>Use when lifting off a subtle background.</div>
-        </div>
+        </Card>
       </Preview>
-      <Code>{`<Card elevated>Elevated card</Card>`}</Code>
+      <Code>{`<Card variant="elevated">Elevated card</Card>`}</Code>
 
       <H2 id="inset">Inset</H2>
       <Preview>
-        <div style={{ width:"100%", maxWidth:320, background:"var(--bg-subtle)", borderRadius:6, padding:16 }}>
+        <Card variant="inset" style={{ width:"100%", maxWidth:320 }}>
           <div style={{ fontSize:13, fontWeight:600, marginBottom:6 }}>Inset card</div>
           <div style={{ fontSize:12, color:"var(--fg3)", lineHeight:1.5 }}>Borderless. For sidebars or quiet sections.</div>
-        </div>
+        </Card>
       </Preview>
-      <Code>{`<Card style={{background:"var(--bg-subtle)", border:"none"}}>Inset card</Card>`}</Code>
+      <Code>{`<Card variant="inset">Inset card</Card>`}</Code>
     </div>
   );
 }
@@ -1112,20 +1124,18 @@ function PageTabs() {
 
       <H2 id="underline">Underline tabs</H2>
       <Preview bg="var(--bg)">
-        <div style={{ width:"100%", borderBottom:"1px solid var(--border-subtle)", display:"flex", gap:24 }}>
-          {["overview","activity","members","settings"].map(t=>(
-            <div key={t} onClick={()=>setTab(t)} style={{ position:"relative", padding:"10px 0", fontSize:13, cursor:"pointer",
-              color:tab===t?"var(--fg1)":"var(--fg3)", fontWeight:tab===t?500:400,
-              marginBottom:-1, textTransform:"capitalize",
-              transition:"color var(--duration-fast) var(--ease-standard)" }}>
-              {t}
-              {tab===t && (
-                <motion.div layoutId="tabs-underline"
-                  transition={{ duration: DUR.base, ease: EASE_EMPHASIS }}
-                  style={{ position:"absolute", left:0, right:0, bottom:-1, height:1.5, background:"var(--fg1)" }}/>
-              )}
-            </div>
-          ))}
+        <div style={{ width:"100%" }}>
+          <Tabs value={tab} onValueChange={setTab}>
+            <TabsList>
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="activity">Activity</TabsTrigger>
+              <TabsTrigger value="members">Members</TabsTrigger>
+              <TabsTrigger value="settings">Settings</TabsTrigger>
+            </TabsList>
+            <TabsContent value={tab}>
+              <div style={{ padding:"14px 0", fontSize:13, color:"var(--fg3)", textTransform:"capitalize" }}>{tab} content</div>
+            </TabsContent>
+          </Tabs>
         </div>
       </Preview>
       <Code language="jsx">{`<Tabs defaultValue="overview">
@@ -1179,7 +1189,7 @@ function PageTabs() {
       <H3>Props</H3>
       <P><InlineCode>Tabs</InlineCode> wraps Radix UI Tabs. All Radix props are forwarded.</P>
       <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden" }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
+        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
           <thead><tr style={{ background:"var(--bg-subtle)" }}>
             {["Prop","Type","Default","Description"].map(h=>(
               <th key={h} style={{ padding:"8px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)", letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
@@ -1191,10 +1201,10 @@ function PageTabs() {
               ["onValueChange","(value: string) => void","--","Called when the active tab changes"],
               ["children","ReactNode","--","TabsList + TabsContent elements"]].map(([p,t,d,desc],i,arr)=>(
               <tr key={p} style={{ borderBottom:i<arr.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{p}</InlineCode></td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{desc}</td>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{p}</InlineCode></td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
+                <td style={{ padding:"11px 14px", color:"var(--fg3)" }}>{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -1220,7 +1230,7 @@ function PageAlerts() {
         <div style={{ width:"100%", display:"flex", flexDirection:"column", gap:10 }}>
           {[
             { title:"Verify your email", msg:"We sent a link to ada@monoset.dev.", dot:"var(--fg1)" },
-            { title:"Usage near limit",  msg:"92% of monthly quota used.",         dot:"#5a4a1e", bg:"#fdf9ee", bc:"#e0d9c5", tc:"#3d3214", mc:"#5a4a1e" },
+            { title:"Usage near limit",  msg:"92% of monthly quota used.",         dot:"var(--fg1)", bg:"var(--bg-muted)", bc:"var(--border)" },
           ].map(a=>(
             <div key={a.title} style={{ display:"flex", gap:10, padding:"10px 14px", background:a.bg||"var(--bg-subtle)",
                                          border:`1px solid ${a.bc||"var(--border-subtle)"}`, borderRadius:6 }}>
@@ -1273,7 +1283,7 @@ function PageAlerts() {
       </Preview>
       <H3>Alert props</H3>
       <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden" }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
+        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
           <thead><tr style={{ background:"var(--bg-subtle)" }}>
             {["Prop","Type","Default","Description"].map(h=>(
               <th key={h} style={{ padding:"8px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)", letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
@@ -1286,10 +1296,10 @@ function PageAlerts() {
               ["children","ReactNode","--","Alert body text"],
               ["className","string","--","Additional CSS classes"]].map(([p,t,d,desc],i,arr)=>(
               <tr key={p} style={{ borderBottom:i<arr.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{p}</InlineCode></td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{desc}</td>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{p}</InlineCode></td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
+                <td style={{ padding:"11px 14px", color:"var(--fg3)" }}>{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -1395,7 +1405,7 @@ function PageAvatars() {
 
       <H3>Props</H3>
       <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden" }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
+        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
           <thead><tr style={{ background:"var(--bg-subtle)" }}>
             {["Prop","Type","Default","Description"].map(h=>(
               <th key={h} style={{ padding:"8px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)", letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
@@ -1408,10 +1418,10 @@ function PageAvatars() {
               ["alt","string",'""',"Alt text for the image"],
               ["className","string","--","Additional CSS classes"]].map(([p,t,d,desc],i,arr)=>(
               <tr key={p} style={{ borderBottom:i<arr.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{p}</InlineCode></td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{desc}</td>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{p}</InlineCode></td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
+                <td style={{ padding:"11px 14px", color:"var(--fg3)" }}>{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -1468,9 +1478,7 @@ function PageSlider() {
             <span>Volume</span>
             <span style={{ fontFamily:"var(--font-mono)", color:"var(--fg1)" }}>{slider}</span>
           </div>
-          <input type="range" min={0} max={100} value={slider}
-            onChange={e=>setSlider(+e.target.value)}
-            style={{ width:"100%", accentColor:"var(--fg1)" }}/>
+          <Slider value={[slider]} min={0} max={100} onValueChange={v=>setSlider(v[0])} aria-label="Volume"/>
         </div>
       </Preview>
       <Code language="jsx">{`<Slider defaultValue={[42]} min={0} max={100} onValueChange={…}/>`}</Code>
@@ -1485,7 +1493,7 @@ function PageToggle() {
   const [view, setView] = useState("grid");
   const [bold, setBold] = useState(false);
   const [italic, setItalic] = useState(false);
-  const [align, setAlign] = useState("left");
+  const [align, setAlign] = useState("center");
   return (
     <div>
       <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
@@ -1522,7 +1530,7 @@ function PageToggle() {
       <P>The standalone <InlineCode>Toggle</InlineCode> is for a single on/off action, like a bold button in a toolbar or a pin on a list item.</P>
       <Preview bg="var(--bg)">
         <div style={{ display:"flex", gap:2, border:"1px solid var(--border-subtle)", borderRadius:6, padding:2, width:"fit-content" }}>
-          {[["B", bold, setBold, "font-weight:700"], ["I", italic, setItalic, "font-style:italic"]].map(([label, on, set, style]) => (
+          {[["B", bold, setBold, "font-weight:700"], ["I", italic, setItalic, "font-style:italic"]].map(([label, on, set]) => (
             <button key={label} onClick={() => set(v => !v)}
               style={{ all:"unset", fontFamily:"inherit", fontSize:13, fontWeight: label==="B" ? 700 : 400,
                 fontStyle: label==="I" ? "italic" : "normal",
@@ -1538,6 +1546,24 @@ function PageToggle() {
 
       <H2 id="with-icons">With icons</H2>
       <P>Toggle groups work well for toolbar-style controls. Pass icon elements as children for compact controls like alignment or view switchers.</P>
+      <Preview bg="var(--bg)">
+        <div style={{ display:"inline-flex", background:"var(--bg-muted)", borderRadius:8, padding:3, gap:2 }}>
+          {[
+            { v:"left", Icon:AlignLeft },
+            { v:"center", Icon:AlignCenter },
+            { v:"right", Icon:AlignRight },
+          ].map(({ v, Icon }) => (
+            <button key={v} onClick={()=>setAlign(v)} aria-label={`Align ${v}`}
+              style={{ all:"unset", width:30, height:28, display:"inline-flex", alignItems:"center", justifyContent:"center",
+                       borderRadius:5, cursor:"pointer",
+                       background: align===v ? "var(--bg)" : "transparent",
+                       color: align===v ? "var(--fg1)" : "var(--fg3)",
+                       transition:"background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard)" }}>
+              <Icon size={14}/>
+            </button>
+          ))}
+        </div>
+      </Preview>
       <Code language="jsx">{`<ToggleGroup type="single" value={align} onValueChange={setAlign}>
   <ToggleGroupItem value="left"><AlignLeft size={14}/></ToggleGroupItem>
   <ToggleGroupItem value="center"><AlignCenter size={14}/></ToggleGroupItem>
@@ -1546,7 +1572,7 @@ function PageToggle() {
 
       <H3>Props</H3>
       <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden" }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
+        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
           <thead><tr style={{ background:"var(--bg-subtle)" }}>
             {["Prop","Type","Default","Description"].map(h=>(
               <th key={h} style={{ padding:"8px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)", letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
@@ -1558,10 +1584,10 @@ function PageToggle() {
               ["onValueChange","(value) => void","--","Called when selection changes"],
               ["children","ReactNode","--","ToggleGroupItem elements"]].map(([p,t,d,desc],i,arr)=>(
               <tr key={p} style={{ borderBottom:i<arr.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{p}</InlineCode></td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{desc}</td>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{p}</InlineCode></td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
+                <td style={{ padding:"11px 14px", color:"var(--fg3)" }}>{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -1683,10 +1709,10 @@ function PageSpinner() {
         bg="var(--bg)"
         native="SpinnerDemo"
         web={
-          <div style={{ display:"flex", gap:24, alignItems:"center" }}>
+          <div style={{ display:"flex", gap:24, alignItems:"flex-end" }}>
             {[14, 20, 28, 40].map(s => (
               <div key={s} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:8 }}>
-                <SpinnerSpan size={s}/>
+                <span style={{ display:"flex", height:40, alignItems:"center" }}><SpinnerSpan size={s}/></span>
                 <span style={{ fontSize:11, color:"var(--fg3)", fontFamily:"var(--font-mono)" }}>{s}px</span>
               </div>
             ))}
@@ -1726,7 +1752,7 @@ function PageSpinner() {
 
       <H3>Props</H3>
       <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden" }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
+        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
           <thead><tr style={{ background:"var(--bg-subtle)" }}>
             {["Prop","Type","Default","Description"].map(h=>(
               <th key={h} style={{ padding:"8px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)", letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
@@ -1737,10 +1763,10 @@ function PageSpinner() {
               ["label","string",'"Loading"',"Screen reader text (aria-label)"],
               ["className","string","--","Additional CSS classes"]].map(([p,t,d,desc],i,arr)=>(
               <tr key={p} style={{ borderBottom:i<arr.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{p}</InlineCode></td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{desc}</td>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{p}</InlineCode></td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
+                <td style={{ padding:"11px 14px", color:"var(--fg3)" }}>{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -1803,77 +1829,6 @@ function SpinnerSpan({ size = 16 }) {
   );
 }
 
-function PageTextarea() {
-  return (
-    <div>
-      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
-      <H1>Textarea</H1>
-      <Lead>A multi-line text input. Same styling as Input, same Field wrapper pattern. Use it for comments, descriptions, notes, and anything that might run past a single line.</Lead>
-
-      <H2 id="default-textarea">Default</H2>
-      <Preview bg="var(--bg)">
-        <div style={{ width:"100%", maxWidth:400, display:"flex", flexDirection:"column", gap:6 }}>
-          <label style={{ fontSize:12, fontWeight:500 }}>Description</label>
-          <textarea readOnly defaultValue="A minimal, monotone design system for teams that want their product to look like their product."
-            style={{ fontFamily:"inherit", fontSize:13, padding:"9px 12px", minHeight:80, resize:"vertical",
-              border:"1px solid var(--border)", borderRadius:6, color:"var(--fg1)", background:"var(--bg)", outline:"none", lineHeight:1.5 }}/>
-          <span style={{ fontSize:11, color:"var(--fg3)" }}>Supports markdown formatting.</span>
-        </div>
-      </Preview>
-      <Code language="jsx">{`<Field label="Description" help="Supports markdown formatting.">
-  <Textarea rows={3} placeholder="Tell us more…"/>
-</Field>`}</Code>
-
-      <H2 id="with-field">With Field wrapper</H2>
-      <P>Wrap in <InlineCode>Field</InlineCode> for label, helper text, and error handling. Same pattern as Input.</P>
-      <Code language="jsx">{`<Field label="Bio" error={errors.bio}>
-  <Textarea rows={4} placeholder="A few words about yourself"/>
-</Field>
-
-<Field label="Notes" help="Optional. Only visible to admins.">
-  <Textarea rows={3}/>
-</Field>`}</Code>
-
-      <H2 id="states-textarea">States</H2>
-      <Preview bg="var(--bg)">
-        <div style={{ display:"flex", gap:10 }}>
-          {["Default","Disabled","Error"].map(s => (
-            <textarea key={s} readOnly value={s} disabled={s==="Disabled"} rows={2}
-              style={{ fontFamily:"inherit", fontSize:13, padding:"8px 12px", borderRadius:6, color:"var(--fg1)",
-                background: s==="Disabled"?"var(--bg-muted)":"var(--bg)", outline:"none", resize:"none", width:120,
-                border: `1px solid ${s==="Error"?"#5a2626":s==="Disabled"?"var(--border-subtle)":"var(--border)"}` }}/>
-          ))}
-        </div>
-      </Preview>
-
-      <H3>Props</H3>
-      <P>Textarea accepts all native <InlineCode>&lt;textarea&gt;</InlineCode> attributes plus:</P>
-      <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden" }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
-          <thead><tr style={{ background:"var(--bg-subtle)" }}>
-            {["Prop","Type","Default","Description"].map(h=>(
-              <th key={h} style={{ padding:"8px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)", letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
-            ))}
-          </tr></thead>
-          <tbody>
-            {[["rows","number","3","Visible line count"],
-              ["disabled","boolean","false","Prevents interaction"],
-              ["placeholder","string","--","Placeholder text"],
-              ["className","string","--","Additional CSS classes"]].map(([p,t,d,desc],i,arr)=>(
-              <tr key={p} style={{ borderBottom:i<arr.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{p}</InlineCode></td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{desc}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
 function PageSelect() {
   const [value, setValue] = useState("viewer");
   return (
@@ -1886,7 +1841,7 @@ function PageSelect() {
       <Preview bg="var(--bg)">
         <div style={{ width:220 }}>
           <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-            <label style={{ fontSize:12, fontWeight:500 }}>Role</label>
+            <label style={{ fontSize:12, fontWeight:500, color:"var(--fg2)" }}>Role</label>
             <Select value={value} onValueChange={setValue}>
               <SelectTrigger placeholder="Choose a role"/>
               <SelectContent>
@@ -1946,7 +1901,7 @@ function PageSelect() {
 
       <H3>Props</H3>
       <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden" }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
+        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
           <thead><tr style={{ background:"var(--bg-subtle)" }}>
             {["Component","Prop","Type","Description"].map(h=>(
               <th key={h} style={{ padding:"8px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)", letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
@@ -1959,10 +1914,10 @@ function PageSelect() {
               ["SelectItem","value","string","Option value (required)"],
               ["SelectItem","children","ReactNode","Option label"]].map(([c,p,t,desc],i,arr)=>(
               <tr key={c+p} style={{ borderBottom:i<arr.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{c}</InlineCode></td>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{p}</InlineCode></td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{desc}</td>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{c}</InlineCode></td>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{p}</InlineCode></td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
+                <td style={{ padding:"11px 14px", color:"var(--fg3)" }}>{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -2020,7 +1975,7 @@ function PageLayout() {
           {["Users","Revenue","Orders","Growth"].map(t => (
             <div key={t} style={{ padding:"16px 14px", background:"var(--bg-muted)", borderRadius:6, border:"1px solid var(--border-subtle)" }}>
               <div style={{ fontSize:11, color:"var(--fg3)", marginBottom:4 }}>{t}</div>
-              <div style={{ fontSize:20, fontWeight:600 }}>{Math.floor(Math.random()*900+100)}</div>
+              <div style={{ fontSize:20, fontWeight:600 }}>{[...t].reduce((a, c) => a + c.charCodeAt(0), 0) % 900 + 100}</div>
             </div>
           ))}
         </div>
@@ -2064,7 +2019,7 @@ function PageLayout() {
 
       <H3>Stack props</H3>
       <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden", marginBottom:24 }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
+        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
           <thead><tr style={{ background:"var(--bg-subtle)" }}>
             {["Prop","Type","Default","Description"].map(h=>(
               <th key={h} style={{ padding:"8px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)", letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
@@ -2074,10 +2029,10 @@ function PageLayout() {
             {[["gap","0-14","4","Spacing scale step (maps to --space-*)"],
               ["align",'"start" | "center" | "end" | "stretch"',"--","Cross-axis alignment"]].map(([p,t,d,desc],i,arr)=>(
               <tr key={p} style={{ borderBottom:i<arr.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{p}</InlineCode></td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{desc}</td>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{p}</InlineCode></td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
+                <td style={{ padding:"11px 14px", color:"var(--fg3)" }}>{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -2086,7 +2041,7 @@ function PageLayout() {
 
       <H3>Inline props</H3>
       <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden", marginBottom:24 }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
+        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
           <thead><tr style={{ background:"var(--bg-subtle)" }}>
             {["Prop","Type","Default","Description"].map(h=>(
               <th key={h} style={{ padding:"8px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)", letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
@@ -2097,10 +2052,10 @@ function PageLayout() {
               ["align",'"start" | "center" | "end" | "baseline"',"--","Cross-axis alignment"],
               ["wrap","boolean","true","Whether items wrap to new lines"]].map(([p,t,d,desc],i,arr)=>(
               <tr key={p} style={{ borderBottom:i<arr.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{p}</InlineCode></td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{desc}</td>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{p}</InlineCode></td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
+                <td style={{ padding:"11px 14px", color:"var(--fg3)" }}>{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -2109,7 +2064,7 @@ function PageLayout() {
 
       <H3>Grid props</H3>
       <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden", marginBottom:24 }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
+        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
           <thead><tr style={{ background:"var(--bg-subtle)" }}>
             {["Prop","Type","Default","Description"].map(h=>(
               <th key={h} style={{ padding:"8px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)", letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
@@ -2120,10 +2075,10 @@ function PageLayout() {
               ["minWidth","number | string","240","Minimum column width for auto-fit"],
               ["gap","0-14","4","Spacing scale step"]].map(([p,t,d,desc],i,arr)=>(
               <tr key={p} style={{ borderBottom:i<arr.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{p}</InlineCode></td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{desc}</td>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{p}</InlineCode></td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
+                <td style={{ padding:"11px 14px", color:"var(--fg3)" }}>{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -2132,7 +2087,7 @@ function PageLayout() {
 
       <H3>Container props</H3>
       <div style={{ border:"1px solid var(--border-subtle)", borderRadius:8, overflow:"hidden" }}>
-        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
+        <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
           <thead><tr style={{ background:"var(--bg-subtle)" }}>
             {["Prop","Type","Default","Description"].map(h=>(
               <th key={h} style={{ padding:"8px 14px", textAlign:"left", fontWeight:500, fontSize:11, color:"var(--fg3)", letterSpacing:"0.04em", textTransform:"uppercase", borderBottom:"1px solid var(--border-subtle)" }}>{h}</th>
@@ -2142,10 +2097,10 @@ function PageLayout() {
             {[["size",'"sm" | "md" | "lg" | "xl" | "2xl"','"lg"',"Max-width (640-1536px)"],
               ["padding","boolean","true","Horizontal padding"]].map(([p,t,d,desc],i,arr)=>(
               <tr key={p} style={{ borderBottom:i<arr.length-1?"1px solid var(--border-subtle)":"none" }}>
-                <td style={{ padding:"9px 14px" }}><InlineCode>{p}</InlineCode></td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
-                <td style={{ padding:"9px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
-                <td style={{ padding:"9px 14px", color:"var(--fg3)" }}>{desc}</td>
+                <td style={{ padding:"11px 14px" }}><InlineCode>{p}</InlineCode></td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg3)" }}>{t}</td>
+                <td style={{ padding:"11px 14px", fontFamily:"var(--font-mono)", fontSize:11, color:"var(--fg4)" }}>{d}</td>
+                <td style={{ padding:"11px 14px", color:"var(--fg3)" }}>{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -3032,7 +2987,7 @@ function ThemeStatus() {
 
 /* ── Settings Guide ────────────────────────────────────────── */
 
-function PageSettingsGuide({ setPage }) {
+function PageSettingsGuide() {
   return (
     <div>
       <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Guides</div>
@@ -4122,13 +4077,13 @@ function PageTooltip() {
         <TooltipProvider>
           <div style={{ display:"flex", gap:14 }}>
             <Tooltip content="Save changes">
-              <DemoButton aria-label="Save"><Icon name="check" size={14}/></DemoButton>
+              <DemoButton aria-label="Save" style={{ width:34, height:34, padding:0 }}><Icon name="check" size={14}/></DemoButton>
             </Tooltip>
             <Tooltip content="Copy link">
-              <DemoButton aria-label="Copy"><Icon name="copy" size={14}/></DemoButton>
+              <DemoButton aria-label="Copy" style={{ width:34, height:34, padding:0 }}><Icon name="copy" size={14}/></DemoButton>
             </Tooltip>
             <Tooltip content="Open in new tab">
-              <DemoButton aria-label="Open"><Icon name="arrowRight" size={14}/></DemoButton>
+              <DemoButton aria-label="Open" style={{ width:34, height:34, padding:0 }}><Icon name="arrowRight" size={14}/></DemoButton>
             </Tooltip>
           </div>
         </TooltipProvider>
@@ -4163,21 +4118,27 @@ function PagePopover() {
 
       <H2 id="basic">Basic popover</H2>
       <Preview bg="var(--bg)">
-        <Popover>
-          <PopoverTrigger asChild>
-            <DemoButton>Filter results</DemoButton>
-          </PopoverTrigger>
-          <PopoverContent>
-            <Stack gap={3} style={{ minWidth:240 }}>
-              <div style={{ fontSize:12, fontWeight:600 }}>Filters</div>
-              <Stack gap={2}>
-                <Checkbox label="Active"/>
-                <Checkbox label="Pending"/>
-                <Checkbox label="Paused"/>
+        <div style={{ width:"100%", minHeight:300, display:"flex", justifyContent:"center", alignItems:"flex-start", paddingTop:8 }}>
+          <Popover>
+            <PopoverTrigger asChild>
+              <DemoButton><SlidersHorizontal size={14}/> Filter</DemoButton>
+            </PopoverTrigger>
+            <PopoverContent>
+              <Stack gap={3} style={{ minWidth:228 }}>
+                <div style={{ fontSize:13, fontWeight:600 }}>Filters</div>
+                <Stack gap={2}>
+                  <Checkbox label="Active" defaultChecked/>
+                  <Checkbox label="Pending"/>
+                  <Checkbox label="Paused"/>
+                </Stack>
+                <div style={{ borderTop:"1px solid var(--border-subtle)", margin:"2px -14px 0", paddingTop:10,
+                              display:"flex", justifyContent:"flex-end", paddingRight:14 }}>
+                  <DemoButton size="sm" variant="primary">Apply</DemoButton>
+                </div>
               </Stack>
-            </Stack>
-          </PopoverContent>
-        </Popover>
+            </PopoverContent>
+          </Popover>
+        </div>
       </Preview>
       <Code language="jsx">{`import { Popover, PopoverTrigger, PopoverContent } from "@monoset/react";
 
@@ -4214,18 +4175,21 @@ function PageDropdown() {
 
       <H2 id="basic">Basic menu</H2>
       <Preview bg="var(--bg)">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <DemoButton>Actions</DemoButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Account</DropdownMenuLabel>
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuSeparator/>
-            <DropdownMenuItem>Log out</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div style={{ width:"100%", minHeight:280, display:"flex", justifyContent:"center", alignItems:"flex-start", paddingTop:8 }}>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <DemoButton>Actions <ChevronDown size={14}/></DemoButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent style={{ minWidth:200 }}>
+              <DropdownMenuLabel>Account</DropdownMenuLabel>
+              <DropdownMenuItem><User size={15}/> Profile <span className="ms-menu__shortcut">⌘P</span></DropdownMenuItem>
+              <DropdownMenuItem><CreditCard size={15}/> Billing</DropdownMenuItem>
+              <DropdownMenuItem><Settings size={15}/> Settings <span className="ms-menu__shortcut">⌘,</span></DropdownMenuItem>
+              <DropdownMenuSeparator/>
+              <DropdownMenuItem><LogOut size={15}/> Log out <span className="ms-menu__shortcut">⇧⌘Q</span></DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </Preview>
       <Code language="jsx">{`import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
@@ -4238,10 +4202,10 @@ function PageDropdown() {
   </DropdownMenuTrigger>
   <DropdownMenuContent>
     <DropdownMenuLabel>Account</DropdownMenuLabel>
-    <DropdownMenuItem>Profile</DropdownMenuItem>
-    <DropdownMenuItem>Billing</DropdownMenuItem>
+    <DropdownMenuItem><User size={15}/> Profile</DropdownMenuItem>
+    <DropdownMenuItem><CreditCard size={15}/> Billing</DropdownMenuItem>
     <DropdownMenuSeparator/>
-    <DropdownMenuItem>Log out</DropdownMenuItem>
+    <DropdownMenuItem><LogOut size={15}/> Log out</DropdownMenuItem>
   </DropdownMenuContent>
 </DropdownMenu>`}</Code>
 
@@ -4302,11 +4266,13 @@ function PageSkeleton() {
         bg="var(--bg)"
         native="SkeletonDemo"
         web={
-          <Stack gap={2} style={{ width:"100%", maxWidth:320 }}>
-            <Skeleton style={{ height:14, width:"60%" }}/>
-            <Skeleton style={{ height:14, width:"100%" }}/>
-            <Skeleton style={{ height:14, width:"85%" }}/>
-          </Stack>
+          <div style={{ width:"100%" }}>
+            <Stack gap={2} style={{ maxWidth:320 }}>
+              <Skeleton style={{ height:14, width:"60%" }}/>
+              <Skeleton style={{ height:14, width:"100%" }}/>
+              <Skeleton style={{ height:14, width:"85%" }}/>
+            </Stack>
+          </div>
         }
       />
       <Code language="jsx">{`import { Skeleton } from "@monoset/react";
@@ -4437,7 +4403,7 @@ function PageProgress() {
       <Preview bg="var(--bg)">
         <Stack gap={3} style={{ width:"100%", maxWidth:320 }}>
           <Progress value={value} aria-label="Upload progress"/>
-          <div style={{ display:"flex", gap:8, fontSize:12 }}>
+          <div style={{ display:"flex", gap:8, fontSize:12, alignItems:"center" }}>
             <DemoButton size="sm" onClick={() => setValue(v => Math.max(0, v - 20))}>-20</DemoButton>
             <DemoButton size="sm" onClick={() => setValue(v => Math.min(100, v + 20))}>+20</DemoButton>
             <span style={{ marginLeft:"auto", color:"var(--fg3)", fontFamily:"var(--font-mono)" }}>{value}%</span>
@@ -4489,6 +4455,73 @@ function PageSeparator() {
   );
 }
 
+/* ─── Collapsible ──────────────────────────────────────────────── */
+function PageCollapsible() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Collapsible</H1>
+      <Lead>A single open-or-closed disclosure. One trigger, one panel. Reach for Accordion when you have a set of sections; reach for Collapsible when you have one optional region, like an advanced-settings block.</Lead>
+
+      <H2 id="example">Example</H2>
+      <Preview bg="var(--bg)">
+        <div style={{ width:"100%", maxWidth:380 }}>
+          <Collapsible defaultOpen>
+            <CollapsibleTrigger>Advanced settings</CollapsibleTrigger>
+            <CollapsibleContent>
+              Tune cache size, retry limits, and request timeouts. Most teams never touch these. The defaults are tuned for typical workloads.
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+      </Preview>
+      <Code language="jsx">{`import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@monoset/react";
+
+<Collapsible>
+  <CollapsibleTrigger>Advanced settings</CollapsibleTrigger>
+  <CollapsibleContent>
+    Tune cache size, retry limits, and request timeouts.
+  </CollapsibleContent>
+</Collapsible>`}</Code>
+
+      <H2 id="api">API</H2>
+      <P>The root takes Radix Collapsible props: <InlineCode>open</InlineCode>, <InlineCode>defaultOpen</InlineCode>, <InlineCode>onOpenChange</InlineCode>, <InlineCode>disabled</InlineCode>.</P>
+      <PropsTable rows={[
+        { name:"hideChevron", type:"boolean", default:"false", desc:"Hide the built-in chevron on the trigger." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── AspectRatio ──────────────────────────────────────────────── */
+function PageAspectRatio() {
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Aspect ratio</H1>
+      <Lead>Holds media at a fixed width-to-height ratio so layouts don't jump while images load. Wrap an image, video, or map embed and pass the ratio you want.</Lead>
+
+      <H2 id="example">Example</H2>
+      <Preview bg="var(--bg)">
+        <div style={{ width:"100%", maxWidth:360 }}>
+          <AspectRatio ratio={16/9}>
+            <div style={{ width:"100%", height:"100%", background:"linear-gradient(135deg, var(--mono-200), var(--mono-400))", display:"flex", alignItems:"center", justifyContent:"center", color:"var(--fg2)", fontSize:12 }}>16 : 9</div>
+          </AspectRatio>
+        </div>
+      </Preview>
+      <Code language="jsx">{`import { AspectRatio } from "@monoset/react";
+
+<AspectRatio ratio={16/9}>
+  <img src="/cover.jpg" alt="Cover" />
+</AspectRatio>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"ratio", type:"number", default:"1", desc:"Width divided by height, e.g. 16/9 or 4/3." },
+      ]}/>
+    </div>
+  );
+}
+
 /* ─── DatePicker ───────────────────────────────────────────────── */
 function PageDatePicker() {
   const [d, setD] = useState(null);
@@ -4525,6 +4558,44 @@ const [d, setD] = useState(null);
         { name:"max",           type:"Date",        default:"—", desc:"Latest selectable date." },
         { name:"locale",        type:"string",      default:"browser", desc:"Locale for month/weekday labels." },
         { name:"format",        type:"(d: Date) => string", default:"locale-aware short", desc:"Trigger label formatter." },
+      ]}/>
+    </div>
+  );
+}
+
+/* ─── Calendar ─────────────────────────────────────────────────── */
+function PageCalendar() {
+  const [d, setD] = useState(null);
+  return (
+    <div>
+      <div style={{ fontSize:11, color:"var(--fg3)", letterSpacing:"0.08em", textTransform:"uppercase", fontWeight:500, marginBottom:12 }}>Components</div>
+      <H1>Calendar</H1>
+      <Lead>A standalone month grid. Inline, always visible, no popover. DatePicker is built on it. Weekday labels follow the locale. Pure JS date math, no external library.</Lead>
+
+      <H2 id="basic">Basic</H2>
+      <Preview bg="var(--bg)">
+        <Calendar value={d} onValueChange={setD}/>
+      </Preview>
+      <Code language="jsx">{`import { Calendar } from "@monoset/react";
+
+const [d, setD] = useState(null);
+<Calendar value={d} onValueChange={setD}/>`}</Code>
+
+      <H2 id="week-start">Week start</H2>
+      <P>Defaults to Monday. Pass <InlineCode>weekStartsOn={0}</InlineCode> for a Sunday-first grid.</P>
+      <Code language="jsx">{`<Calendar value={d} onValueChange={setD} weekStartsOn={0}/>`}</Code>
+
+      <H2 id="api">API</H2>
+      <PropsTable rows={[
+        { name:"value",         type:"Date | null", default:"—", desc:"Selected date (controlled)." },
+        { name:"defaultValue",  type:"Date | null", default:"—", desc:"Uncontrolled initial value." },
+        { name:"onValueChange", type:"(date: Date) => void", default:"—", desc:"Called when a day is selected." },
+        { name:"month",         type:"Date", default:"—", desc:"Visible month (controlled)." },
+        { name:"onMonthChange", type:"(month: Date) => void", default:"—", desc:"Called when the user navigates months." },
+        { name:"min",           type:"Date", default:"—", desc:"Earliest selectable date." },
+        { name:"max",           type:"Date", default:"—", desc:"Latest selectable date." },
+        { name:"weekStartsOn",  type:"0 | 1", default:"1", desc:"0 = Sunday, 1 = Monday." },
+        { name:"locale",        type:"string", default:"browser", desc:"Locale for labels." },
       ]}/>
     </div>
   );
@@ -4630,7 +4701,7 @@ function PageFileUpload() {
 
       <H2 id="basic">Basic</H2>
       <Preview bg="var(--bg)">
-        <FileUpload files={files} onFilesChange={setFiles} accept="image/*,.pdf" multiple/>
+        <FileUpload files={files} onFilesChange={setFiles} accept="image/*,.pdf" multiple style={{ width:"100%", maxWidth:480 }}/>
       </Preview>
       <Code language="jsx">{`const [files, setFiles] = useState([]);
 
@@ -4863,7 +4934,6 @@ const PAGES = {
   typography:   PageTypography,
   spacing:      PageSpacing,
   motion:       PageMotion,
-  framer:       PageFramerMotion,
   buttons:      PageButtons,
   inputs:       PageInputs,
   badges:       PageBadges,
@@ -4878,7 +4948,6 @@ const PAGES = {
   toggle:       PageToggle,
   kbd:          PageKbd,
   spinner:      PageSpinner,
-  textarea:     PageTextarea,
   select:       PageSelect,
   layout:       PageLayout,
   sheet:        PageSheet,
@@ -4897,8 +4966,11 @@ const PAGES = {
   breadcrumb:   PageBreadcrumb,
   progress:     PageProgress,
   separator:    PageSeparator,
+  collapsible:  PageCollapsible,
+  aspectratio:  PageAspectRatio,
   // v0.6 components
   datepicker:    PageDatePicker,
+  calendar:      PageCalendar,
   numberinput:   PageNumberInput,
   pininput:      PagePinInput,
   password:      PagePasswordInput,

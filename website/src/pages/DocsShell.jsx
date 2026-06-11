@@ -23,52 +23,61 @@ const NAV = [
     { id:"typography", label:"Typography" },
     { id:"spacing",    label:"Spacing & radii" },
     { id:"motion",     label:"Motion" },
-    { id:"framer",     label:"Framer Motion" },
   ]},
-  { section: "Components", items: [
+  { section: "Form", items: [
     { id:"buttons",   label:"Button" },
     { id:"inputs",    label:"Input" },
-    { id:"badges",    label:"Badge" },
-    { id:"cards",     label:"Card" },
-    { id:"toggles",   label:"Checkbox & Switch" },
-    { id:"table",     label:"Table" },
-    { id:"tabs",      label:"Tabs" },
-    { id:"alerts",    label:"Alert & Toast" },
-    { id:"avatars",   label:"Avatar" },
-    { id:"accordion", label:"Accordion" },
-    { id:"slider",    label:"Slider" },
-    { id:"toggle",    label:"Toggle group" },
-    { id:"kbd",       label:"Kbd" },
-    { id:"spinner",   label:"Spinner" },
-    { id:"textarea",  label:"Textarea" },
     { id:"select",    label:"Select" },
-    { id:"layout",    label:"Layout" },
-    { id:"sheet",     label:"Sheet" },
-    { id:"command",   label:"Command palette" },
-    { id:"appshell",  label:"AppShell" },
     { id:"combobox",  label:"Combobox" },
-    { id:"hovercard", label:"HoverCard" },
-    { id:"dialog",    label:"Dialog" },
-    { id:"tooltip",   label:"Tooltip" },
-    { id:"popover",   label:"Popover" },
-    { id:"dropdown",  label:"Dropdown menu" },
-    { id:"radio",     label:"Radio group" },
-    { id:"skeleton",  label:"Skeleton" },
-    { id:"empty",     label:"Empty state" },
-    { id:"paging",    label:"Pagination" },
-    { id:"breadcrumb",label:"Breadcrumb" },
-    { id:"progress",  label:"Progress" },
-    { id:"separator", label:"Separator" },
+    { id:"multicombobox", label:"Multi-select" },
     { id:"datepicker", label:"DatePicker" },
+    { id:"calendar", label:"Calendar" },
     { id:"numberinput", label:"Number input" },
     { id:"pininput", label:"Pin input" },
     { id:"password", label:"Password input" },
     { id:"fileupload", label:"File upload" },
-    { id:"stepper", label:"Stepper" },
-    { id:"navmenu", label:"Navigation menu" },
+    { id:"toggles",   label:"Checkbox & Switch" },
+    { id:"radio",     label:"Radio group" },
+    { id:"slider",    label:"Slider" },
+    { id:"toggle",    label:"Toggle group" },
+  ]},
+  { section: "Display", items: [
+    { id:"badges",    label:"Badge" },
+    { id:"cards",     label:"Card" },
+    { id:"avatars",   label:"Avatar" },
+    { id:"table",     label:"Table" },
+    { id:"alerts",    label:"Alert & Toast" },
+    { id:"kbd",       label:"Kbd" },
+    { id:"spinner",   label:"Spinner" },
+    { id:"skeleton",  label:"Skeleton" },
+    { id:"empty",     label:"Empty state" },
+    { id:"progress",  label:"Progress" },
+    { id:"accordion", label:"Accordion" },
+    { id:"collapsible", label:"Collapsible" },
+    { id:"carousel",  label:"Carousel" },
+  ]},
+  { section: "Overlay", items: [
+    { id:"dialog",    label:"Dialog" },
+    { id:"sheet",     label:"Sheet" },
+    { id:"popover",   label:"Popover" },
+    { id:"tooltip",   label:"Tooltip" },
+    { id:"hovercard", label:"HoverCard" },
+    { id:"dropdown",  label:"Dropdown menu" },
     { id:"contextmenu", label:"Context menu" },
-    { id:"multicombobox", label:"Multi-select" },
-    { id:"carousel", label:"Carousel" },
+    { id:"command",   label:"Command palette" },
+  ]},
+  { section: "Navigation", items: [
+    { id:"tabs",      label:"Tabs" },
+    { id:"navmenu",   label:"Navigation menu" },
+    { id:"breadcrumb",label:"Breadcrumb" },
+    { id:"paging",    label:"Pagination" },
+    { id:"stepper",   label:"Stepper" },
+  ]},
+  { section: "Layout", items: [
+    { id:"layout",    label:"Layout" },
+    { id:"appshell",  label:"AppShell" },
+    { id:"separator", label:"Separator" },
+    { id:"aspectratio", label:"Aspect ratio" },
   ]},
   { section: "Tools", items: [
     { id:"cli",       label:"CLI" },
@@ -121,6 +130,7 @@ const NATIVE_NAV = [
     { id:"segmented",   label:"Segmented control" },
     { id:"comboboxn",   label:"Combobox" },
     { id:"datepickern", label:"DatePicker" },
+    { id:"calendarn", label:"Calendar" },
   ]},
   { section: "Layout", items: [
     { id:"cards",     label:"Card" },
@@ -130,6 +140,7 @@ const NATIVE_NAV = [
   ]},
   { section: "Overlay & navigation", items: [
     { id:"sheet",      label:"Sheet" },
+    { id:"bottomsheet", label:"Bottom sheet" },
     { id:"dialog",     label:"Dialog" },
     { id:"toast",      label:"Toast" },
     { id:"actionsheet",label:"Action sheet" },
@@ -163,7 +174,7 @@ function Sidebar({ active, setPage, mobile, onClose, nav = NAV }) {
           <div style={{ fontSize:10, fontWeight:600, letterSpacing:"0.1em", textTransform:"uppercase",
                         color:"var(--fg3)", padding:"0 8px 8px" }}>{group.section}</div>
           {group.items.map(item => (
-            <div key={item.id} onClick={() => { setPage(item.id); if(onClose) onClose(); }}
+            <div key={item.id} data-nav-id={item.id} onClick={() => { setPage(item.id); if(onClose) onClose(); }}
               style={{ padding:"7px 10px", borderRadius:5, fontSize:13, cursor:"pointer",
                        background: active===item.id ? "var(--bg-muted)" : "transparent",
                        color: active===item.id ? "var(--fg1)" : "var(--fg2)",
@@ -259,6 +270,37 @@ export default function DocsLayout({ page, setPage, onHome }) {
       if (canonical) canonical.setAttribute("href", `https://monoset.design/${safePage}`);
     }
   }, [safePage, isNative, meta]);
+
+  // Arrow up/down moves through the sidebar pages. Skipped whenever the key
+  // belongs to something else: text fields, menus, selects, dialogs, grids.
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+      const t = e.target;
+      if (t instanceof Element && t.closest(
+        'input, textarea, select, [contenteditable="true"], [role="dialog"], [role="alertdialog"], ' +
+        '[role="menu"], [role="listbox"], [role="combobox"], [role="grid"], [role="gridcell"], ' +
+        '[role="slider"], [role="spinbutton"], [role="radiogroup"], [role="tablist"], [role="tab"], ' +
+        '[role="option"], [role="menuitem"]',
+      )) return;
+      const flat = nav.flatMap((g) => g.items.map((i) => i.id));
+      const idx = flat.indexOf(safePage);
+      if (idx < 0) return;
+      const next = e.key === "ArrowDown" ? Math.min(flat.length - 1, idx + 1) : Math.max(0, idx - 1);
+      if (next !== idx) {
+        e.preventDefault();
+        setPage(flat[next]);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [nav, safePage, setPage]);
+
+  // Keep the active item visible as arrow keys walk the sidebar.
+  useEffect(() => {
+    document.querySelector(`[data-nav-id="${safePage}"]`)?.scrollIntoView({ block: "nearest" });
+  }, [safePage]);
 
   return (
     <div data-ms="docs-layout" style={{ height:"100vh", display:"flex", flexDirection:"column", background:"var(--bg)", color:"var(--fg1)" }}>

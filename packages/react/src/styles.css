@@ -13,7 +13,7 @@
 
 /* ---- Focus ring (shared) ---------------------------------------------- */
 .ms-focus-visible:focus-visible {
-  outline: 2px solid var(--mono-900);
+  outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
 
@@ -21,7 +21,7 @@
    Button
    ========================================================================== */
 .ms-btn {
-  --_ring: var(--mono-900);
+  --_ring: var(--ring);
   font-family: inherit;
   font-weight: 500;
   line-height: 1;
@@ -48,7 +48,7 @@
 /* sizes */
 .ms-btn--sm { font-size: 12px; padding: 5px 10px; height: 28px; }
 .ms-btn--md { font-size: 13px; padding: 8px 14px; height: 34px; }
-.ms-btn--lg { font-size: 14px; padding: 0 20px; height: 44px; }
+.ms-btn--lg { font-size: 14px; padding: 0 16px; height: 40px; }
 
 /* variants */
 .ms-btn--primary   { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
@@ -84,7 +84,7 @@
   position: relative; flex-shrink: 0;
 }
 .ms-avatar--sm { width: 24px; height: 24px; font-size: 10px; }
-.ms-avatar--md { width: 34px; height: 34px; font-size: 12px; }
+.ms-avatar--md { width: 32px; height: 32px; font-size: 12px; }
 .ms-avatar--lg { width: 44px; height: 44px; font-size: 14px; }
 .ms-avatar__img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -94,7 +94,7 @@
 .ms-card {
   background: var(--bg);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--space-6);
 }
 .ms-card--elevated { box-shadow: var(--shadow-sm); }
@@ -105,7 +105,7 @@
    ========================================================================== */
 .ms-alert {
   display: flex; gap: 10px; align-items: flex-start;
-  padding: 10px 14px;
+  padding: 12px 14px;
   background: var(--bg-subtle);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -116,7 +116,7 @@
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 11px; font-weight: 600; flex-shrink: 0; margin-top: 1px;
 }
-.ms-alert__title { font-size: 12px; font-weight: 600; color: var(--fg1); }
+.ms-alert__title { font-size: 13px; font-weight: 600; color: var(--fg1); }
 .ms-alert__msg   { font-size: 12px; color: var(--fg2); margin-top: 2px; line-height: 1.5; }
 
 /* ==========================================================================
@@ -124,10 +124,10 @@
    ========================================================================== */
 .ms-field { display: flex; flex-direction: column; gap: 6px; }
 .ms-field__label { font-size: 12px; font-weight: 500; color: var(--fg2); }
-.ms-field__help  { font-size: 11px; color: var(--fg3); }
-.ms-field__error { font-size: 11px; color: var(--status-danger); }
+.ms-field__help  { font-size: 12px; color: var(--fg3); }
+.ms-field__error { font-size: 12px; color: var(--status-danger); }
 
-.ms-form { display: flex; flex-direction: column; gap: var(--space-5); }
+.ms-form { display: flex; flex-direction: column; gap: var(--space-7); }
 
 .ms-input {
   font-family: inherit; font-size: 13px;
@@ -156,6 +156,7 @@
 .ms-check {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: 13px; cursor: pointer;
+  min-height: 24px;
   user-select: none;
 }
 .ms-check__box {
@@ -171,11 +172,12 @@
 .ms-check[data-state="checked"] .ms-check__box {
   background: var(--mono-1000); border-color: var(--mono-1000);
 }
-.ms-check:focus-within .ms-check__box { outline: 2px solid var(--mono-900); outline-offset: 2px; }
+.ms-check:focus-within .ms-check__box { outline: 2px solid var(--ring); outline-offset: 2px; }
 
 .ms-switch {
   display: inline-flex; align-items: center; gap: 10px;
   font-size: 13px; cursor: pointer; user-select: none;
+  min-height: 24px;
 }
 .ms-switch__track {
   all: unset; box-sizing: border-box;
@@ -191,7 +193,7 @@
   transition: transform var(--duration-base) var(--ease-emphasis);
 }
 .ms-switch[data-state="checked"] .ms-switch__thumb { transform: translateX(14px); }
-.ms-switch:focus-within .ms-switch__track { outline: 2px solid var(--mono-900); outline-offset: 2px; }
+.ms-switch:focus-within .ms-switch__track { outline: 2px solid var(--ring); outline-offset: 2px; }
 
 /* ==========================================================================
    Radio
@@ -200,19 +202,22 @@
 .ms-radio { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; font-size: 13px; }
 .ms-radio__dot {
   width: 16px; height: 16px; border-radius: 50%;
+  padding: 0;
   border: 1px solid var(--mono-400); background: var(--bg);
   display: inline-flex; align-items: center; justify-content: center;
   transition: border-color var(--duration-fast) var(--ease-standard);
 }
-.ms-radio[data-state="checked"] .ms-radio__dot { border-color: var(--mono-1000); }
-.ms-radio[data-state="checked"] .ms-radio__dot::after {
+.ms-radio__dot[data-state="checked"] { border-color: var(--mono-1000); }
+.ms-radio__dot[data-state="checked"]::after {
   content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--mono-1000);
+  flex-shrink: 0;
 }
 
 /* ==========================================================================
    Tabs
    ========================================================================== */
 .ms-tabs__list {
+  position: relative;
   display: flex; gap: 24px;
   border-bottom: 1px solid var(--border-subtle);
 }
@@ -225,10 +230,10 @@
   transition: color var(--duration-fast) var(--ease-standard);
 }
 .ms-tabs__trigger[data-state="active"] { color: var(--fg1); font-weight: 500; }
-.ms-tabs__trigger:focus-visible { outline: 2px solid var(--mono-900); outline-offset: 2px; border-radius: var(--radius-xs); }
+.ms-tabs__trigger:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: var(--radius-xs); }
 .ms-tabs__indicator {
-  position: absolute; left: 0; right: 0; bottom: -1px;
-  height: 1.5px; background: var(--fg1);
+  position: absolute; bottom: -1px; left: 0;
+  height: 2px; background: var(--fg1);
 }
 
 /* ==========================================================================
@@ -246,7 +251,7 @@
 .ms-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .ms-table thead th {
   background: var(--bg-subtle);
-  padding: 9px 14px; text-align: left;
+  padding: 8px 16px; text-align: left;
   font-weight: 500; font-size: 11px; color: var(--fg3);
   letter-spacing: 0.04em; text-transform: uppercase;
   border-bottom: 1px solid var(--border-subtle);
@@ -257,7 +262,7 @@
   top: 0;
   z-index: 1;
 }
-.ms-table tbody td { padding: 11px 14px; color: var(--fg2); }
+.ms-table tbody td { padding: 12px 16px; color: var(--fg2); }
 .ms-table tbody tr + tr td { border-top: 1px solid var(--border-subtle); }
 .ms-table tbody tr:hover td { background: var(--bg-subtle); }
 /* Table: sortable header */
@@ -269,6 +274,7 @@
 }
 .ms-table-header--sortable:hover .ms-table-header__sort,
 .ms-table-header__sort--active { color: var(--fg1); }
+.ms-table-header__sort-neutral { opacity: 0.4; }
 /* Table: selection checkbox */
 .ms-table-select { width: 40px; text-align: center; padding: 0 !important; }
 .ms-table-select input[type="checkbox"] { accent-color: var(--mono-1000); cursor: pointer; }
@@ -301,12 +307,13 @@
 .ms-popover, .ms-menu {
   background: var(--bg);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  padding: 6px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
   min-width: 180px;
   z-index: var(--z-popover);
 }
+.ms-menu    { padding: 5px; }
+.ms-popover { padding: 14px; }
 .ms-tooltip {
   background: var(--mono-1000); color: #fff;
   font-size: 11px; padding: 6px 10px;
@@ -317,15 +324,20 @@
 
 .ms-menu__item {
   display: flex; align-items: center; gap: 8px;
-  padding: 7px 10px; border-radius: var(--radius-sm);
+  padding: 8px 10px; border-radius: var(--radius-sm);
   font-size: 13px; color: var(--fg1);
   cursor: pointer; user-select: none;
   transition: background var(--duration-fast) var(--ease-standard);
 }
 .ms-menu__item[data-highlighted] { background: var(--bg-muted); outline: none; }
 .ms-menu__item[data-disabled]    { color: var(--fg4); cursor: not-allowed; }
+.ms-menu__item > svg { color: var(--fg3); flex-shrink: 0; }
+.ms-menu__shortcut {
+  margin-left: auto; padding-left: 20px;
+  font-size: 11px; color: var(--fg4); font-family: var(--font-mono);
+}
 .ms-menu__label    { padding: 6px 10px; font-size: 11px; color: var(--fg3); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
-.ms-menu__separator { height: 1px; background: var(--border-subtle); margin: 4px -6px; }
+.ms-menu__separator { height: 1px; background: var(--border-subtle); margin: 5px -5px; }
 
 /* ==========================================================================
    Select trigger
@@ -343,12 +355,14 @@
     box-shadow var(--duration-fast) var(--ease-standard);
 }
 .ms-select:focus-visible { border-color: var(--fg1); box-shadow: 0 0 0 3px var(--mono-100); outline: none; }
+.ms-select__chevron { display: inline-flex; color: var(--fg3); flex-shrink: 0; transition: transform var(--duration-base) var(--ease-standard); }
+.ms-select[data-state="open"] .ms-select__chevron { transform: rotate(180deg); }
 
 /* ==========================================================================
    Skeleton
    ========================================================================== */
 .ms-skeleton {
-  background: var(--bg-muted);
+  background: var(--mono-200);
   border-radius: var(--radius-sm);
   animation: ms-pulse 1.6s var(--ease-standard) infinite;
 }
@@ -373,12 +387,14 @@
 }
 .ms-empty__title { font-size: 14px; font-weight: 600; color: var(--fg1); }
 .ms-empty__body  { font-size: 13px; color: var(--fg3); max-width: 36ch; }
+.ms-empty__action { margin-top: 8px; }
 
 /* ==========================================================================
    Pagination
    ========================================================================== */
 .ms-pagination { display: inline-flex; align-items: center; gap: 2px; }
 .ms-pagination__btn {
+  display: inline-flex; align-items: center; justify-content: center;
   min-width: 32px; height: 32px; padding: 0 10px;
   background: transparent; color: var(--fg2);
   border: 1px solid transparent; border-radius: var(--radius-sm);
@@ -418,14 +434,14 @@
 }
 .ms-toast {
   display: flex; gap: 10px; align-items: center;
-  padding: 10px 14px;
+  padding: 12px 16px;
   background: var(--mono-1000); color: #fff;
-  border-radius: var(--radius-md);
-  font-size: 12px;
+  border-radius: var(--radius-lg);
+  font-size: 13px;
   box-shadow: var(--shadow-lg);
 }
 .ms-toast[data-kind="error"] { background: var(--status-danger); }
-.ms-toast__action { margin-left: auto; color: var(--mono-400); font-weight: 500; cursor: pointer; font-size: 11px; }
+.ms-toast__action { margin-left: auto; color: var(--mono-400); font-weight: 500; cursor: pointer; font-size: 12px; }
 .ms-toast__action:hover { color: #fff; }
 
 /* ==========================================================================
@@ -485,7 +501,7 @@
   cursor: pointer;
   text-align: left;
 }
-.ms-accordion__trigger:focus-visible { outline: 2px solid var(--mono-900); outline-offset: 2px; border-radius: 4px; }
+.ms-accordion__trigger:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
 .ms-accordion__trigger:hover { color: var(--mono-1000); }
 .ms-accordion__chevron {
   color: var(--fg3);
@@ -547,7 +563,7 @@
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
   cursor: grab;
 }
-.ms-slider__thumb:focus-visible { outline: 2px solid var(--mono-900); outline-offset: 2px; }
+.ms-slider__thumb:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 .ms-slider__thumb:active { cursor: grabbing; }
 
 /* ==========================================================================
@@ -563,11 +579,14 @@
 }
 .ms-toggle {
   all: unset;
+  box-sizing: border-box;
+  min-width: 28px;
+  min-height: 28px;
   font-family: inherit;
   font-size: 12px;
   font-weight: 500;
   color: var(--fg2);
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: calc(var(--radius-md) - 3px);
   cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center;
@@ -580,7 +599,7 @@
   color: var(--fg1);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
 }
-.ms-toggle:focus-visible { outline: 2px solid var(--mono-900); outline-offset: 2px; }
+.ms-toggle:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 .ms-toggle[disabled] { cursor: not-allowed; opacity: 0.5; }
 
 /* ==========================================================================
@@ -645,7 +664,9 @@
   display: flex; align-items: center; gap: 10px;
   padding: 12px 16px;
   border-bottom: 1px solid var(--border-subtle);
+  transition: border-color var(--duration-fast) var(--ease-standard);
 }
+.ms-cmd__input-wrap:focus-within { border-bottom-color: var(--fg1); }
 .ms-cmd__search-icon { color: var(--fg3); flex-shrink: 0; }
 .ms-cmd__input {
   flex: 1; font-family: inherit; font-size: 15px;
@@ -755,7 +776,7 @@
 }
 .ms-app-shell__item:hover { background: var(--bg-muted); color: var(--fg1); }
 .ms-app-shell__item:focus-visible {
-  outline: 2px solid var(--mono-900);
+  outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
 .ms-app-shell__item--active {
@@ -802,7 +823,7 @@
 }
 .ms-app-shell__mobile-trigger:hover { background: var(--bg-muted); }
 .ms-app-shell__mobile-trigger:focus-visible {
-  outline: 2px solid var(--mono-900);
+  outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
 
@@ -832,11 +853,13 @@
    Combobox
    ========================================================================== */
 .ms-combobox__trigger {
+  min-height: 36px;
+  box-sizing: border-box;
   font-family: inherit; font-size: 13px;
   display: inline-flex; align-items: center; justify-content: space-between;
   gap: 8px;
   width: 100%;
-  padding: 8px 12px;
+  padding: 9px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: var(--bg);
@@ -890,7 +913,9 @@
   display: flex; align-items: center; gap: 8px;
   padding: 8px 12px;
   border-bottom: 1px solid var(--border-subtle);
+  transition: border-color var(--duration-fast) var(--ease-standard);
 }
+.ms-combobox__input-wrap:focus-within { border-bottom-color: var(--fg1); }
 .ms-combobox__search-icon { color: var(--fg3); flex-shrink: 0; }
 .ms-combobox__input {
   flex: 1;
@@ -952,7 +977,7 @@
    PasswordInput
    ========================================================================== */
 .ms-password { position: relative; display: block; }
-.ms-password__input { padding-right: 60px; }
+.ms-password__input { padding-right: 44px; }
 .ms-password__toggle {
   position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
   background: transparent; border: none; cursor: pointer;
@@ -972,13 +997,16 @@
 .ms-numberinput--disabled { opacity: 0.6; }
 .ms-numberinput__btn {
   background: var(--bg-subtle); border: none;
-  font-family: inherit; font-size: 16px; font-weight: 500;
+  font-family: inherit; font-weight: 500;
   color: var(--fg1); cursor: pointer;
   padding: 0 14px; min-width: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
   transition: background var(--duration-fast) var(--ease-standard);
 }
 .ms-numberinput__btn:hover:not([disabled]) { background: var(--bg-muted); }
 .ms-numberinput__btn[disabled] { color: var(--fg4); cursor: not-allowed; }
+.ms-numberinput__btn:first-of-type { border-right: 1px solid var(--border-subtle); }
+.ms-numberinput__btn:last-of-type { border-left: 1px solid var(--border-subtle); }
 .ms-numberinput__input {
   border: none !important; border-radius: 0 !important;
   text-align: center; min-width: 60px;
@@ -1014,14 +1042,14 @@
    ========================================================================== */
 .ms-fileupload {
   display: flex; align-items: center; justify-content: center;
-  padding: 24px; border: 1px dashed var(--border); border-radius: var(--radius-md);
+  padding: 32px 24px; border: 1px dashed var(--border); border-radius: var(--radius-md);
   background: var(--bg-subtle); cursor: pointer;
   transition: background var(--duration-fast) var(--ease-standard),
               border-color var(--duration-fast) var(--ease-standard);
   text-align: center;
 }
 .ms-fileupload:hover { background: var(--bg-muted); border-color: var(--fg3); }
-.ms-fileupload:focus-visible { outline: 2px solid var(--mono-900); outline-offset: 2px; }
+.ms-fileupload:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 .ms-fileupload--over { background: var(--bg-muted); border-color: var(--fg1); }
 .ms-fileupload--disabled { opacity: 0.6; cursor: not-allowed; }
 .ms-fileupload__input {
@@ -1030,7 +1058,7 @@
 }
 .ms-fileupload__hint { display: flex; flex-direction: column; gap: 4px; }
 .ms-fileupload__title { font-size: 13px; font-weight: 500; color: var(--fg1); }
-.ms-fileupload__sub { font-size: 11px; color: var(--fg3); }
+.ms-fileupload__sub { font-size: 12px; color: var(--fg3); }
 
 /* ==========================================================================
    Stepper (multi-step indicator)
@@ -1049,6 +1077,8 @@
 .ms-stepper__body { text-align: center; }
 .ms-stepper__label { font-size: 12px; font-weight: 500; color: var(--fg1); }
 .ms-stepper__step--pending .ms-stepper__label { color: var(--fg3); }
+.ms-stepper__step--current .ms-stepper__label { font-weight: 600; }
+.ms-stepper__step--done .ms-stepper__label { color: var(--fg2); }
 .ms-stepper__desc { font-size: 11px; color: var(--fg3); margin-top: 2px; }
 .ms-stepper__connector {
   position: absolute; top: 13px; left: calc(50% + 18px); right: calc(-50% + 18px);
@@ -1071,12 +1101,12 @@
 .ms-nav-caret { font-size: 10px; opacity: 0.7; transition: transform var(--duration-fast) var(--ease-standard); }
 .ms-nav-trigger[data-state="open"] .ms-nav-caret { transform: rotate(180deg); }
 .ms-nav-content {
-  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg); padding: 8px; min-width: 240px;
+  background: var(--bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md); padding: 6px; min-width: 240px;
   z-index: var(--z-dropdown);
 }
 .ms-nav-link {
-  display: block; padding: 8px 10px; border-radius: var(--radius-md);
+  display: block; padding: 7px 10px; border-radius: var(--radius-sm);
   color: var(--fg1); text-decoration: none; font-size: 13px;
   transition: background var(--duration-fast) var(--ease-standard);
 }
@@ -1104,12 +1134,14 @@
    Carousel
    ========================================================================== */
 .ms-carousel { position: relative; }
+.ms-carousel__viewport { position: relative; }
 .ms-carousel__track {
   display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
   scrollbar-width: none; -ms-overflow-style: none;
 }
 .ms-carousel__track::-webkit-scrollbar { display: none; }
-.ms-carousel__slide { flex: 0 0 100%; scroll-snap-align: start; }
+.ms-carousel__slide { flex: 0 0 100%; scroll-snap-align: start; display: flex; }
+.ms-carousel__slide > * { flex: 1; min-width: 0; }
 .ms-carousel__arrow {
   position: absolute; top: 50%; transform: translateY(-50%);
   width: 36px; height: 36px; border-radius: 999px;
@@ -1147,10 +1179,12 @@
 }
 .ms-multicombobox__tag-remove {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 16px; height: 16px; border-radius: 999px;
-  cursor: pointer; color: var(--fg3); font-size: 14px; line-height: 1;
+  width: 16px; height: 16px; border-radius: var(--radius-xs);
+  background: transparent; border: none; padding: 0;
+  cursor: pointer; color: var(--fg3); line-height: 1;
+  transition: color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
 }
-.ms-multicombobox__tag-remove:hover { color: var(--fg1); background: var(--bg); }
+.ms-multicombobox__tag-remove:hover { color: var(--fg1); background: var(--mono-200); }
 .ms-multicombobox__check {
   display: inline-flex; align-items: center; justify-content: center;
   width: 16px; height: 16px; border-radius: 4px;
@@ -1184,7 +1218,7 @@
   margin-bottom: 4px;
 }
 .ms-datepicker__weekdays > span {
-  font-size: 10px; color: var(--fg3); text-align: center; padding: 4px 0;
+  font-size: 11px; color: var(--fg3); text-align: center; padding: 4px 0;
   text-transform: uppercase; letter-spacing: 0.04em;
 }
 .ms-datepicker__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
@@ -1195,7 +1229,7 @@
 }
 .ms-datepicker__cell:hover:not([disabled]) { background: var(--bg-muted); }
 .ms-datepicker__cell--outside { color: var(--fg4); }
-.ms-datepicker__cell--today { border-color: var(--border); }
+.ms-datepicker__cell--today { border-color: var(--border); font-weight: 600; }
 .ms-datepicker__cell--selected { background: var(--accent) !important; color: var(--accent-fg); border-color: var(--accent); }
 .ms-datepicker__cell[disabled] { color: var(--fg4); cursor: not-allowed; }
 .ms-datepicker__footer { display: flex; justify-content: flex-end; padding-top: 8px; margin-top: 4px; border-top: 1px solid var(--border-subtle); }
@@ -1204,3 +1238,164 @@
   font-family: inherit; font-size: 12px; color: var(--fg3); padding: 4px 8px;
 }
 .ms-datepicker__clear:hover { color: var(--fg1); }
+
+/* ==========================================================================
+   Calendar (standalone month grid)
+   ========================================================================== */
+.ms-calendar {
+  display: inline-block; width: 292px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md);
+  padding: 12px;
+}
+.ms-calendar__header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+}
+.ms-calendar__nav {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: none; cursor: pointer;
+  width: 28px; height: 28px; border-radius: var(--radius-sm); color: var(--fg1);
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.ms-calendar__nav:hover { background: var(--bg-muted); }
+.ms-calendar__nav:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.ms-calendar__month { font-size: 13px; font-weight: 600; color: var(--fg1); }
+.ms-calendar__weekdays {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 4px;
+}
+.ms-calendar__weekdays > span {
+  font-size: 11px; color: var(--fg3); text-align: center; padding: 4px 0;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.ms-calendar__grid { display: flex; flex-direction: column; gap: 2px; }
+.ms-calendar__row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.ms-calendar__cell {
+  background: transparent; border: 1px solid transparent; cursor: pointer;
+  border-radius: var(--radius-sm); aspect-ratio: 1 / 1; min-height: 34px;
+  font-family: inherit; font-size: 13px; color: var(--fg1);
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.ms-calendar__cell:hover:not([disabled]) { background: var(--bg-muted); }
+.ms-calendar__cell:focus-visible { outline: 2px solid var(--ring); outline-offset: -1px; }
+.ms-calendar__cell--outside { color: var(--fg4); }
+.ms-calendar__cell--today { border-color: var(--border); font-weight: 600; }
+.ms-calendar__cell--selected { background: var(--accent) !important; color: var(--accent-fg); border-color: var(--accent); }
+.ms-calendar__cell[disabled] { color: var(--fg4); cursor: not-allowed; }
+
+/* Inside the DatePicker popover, the panel provides the frame. */
+.ms-datepicker__panel .ms-calendar { border: none; padding: 0; width: auto; }
+
+/* ==========================================================================
+   Motion — enter/exit animations (Radix data-state driven)
+   ========================================================================== */
+
+/* Progress: indeterminate sweep (the bar has width:40%, this slides it across) */
+@keyframes ms-indeterminate {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(320%); }
+}
+
+@keyframes ms-fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ms-fade-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* Dialog — fade + subtle scale, preserving the centering translate */
+@keyframes ms-dialog-in {
+  from { opacity: 0; transform: translate(-50%, -48%) scale(0.97); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes ms-dialog-out {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to   { opacity: 0; transform: translate(-50%, -48%) scale(0.97); }
+}
+.ms-dialog[data-state="open"], .ms-cmd[data-state="open"] { animation: ms-dialog-in var(--duration-base) var(--ease-emphasis); }
+.ms-dialog[data-state="closed"], .ms-cmd[data-state="closed"] { animation: ms-dialog-out var(--duration-fast) var(--ease-standard); }
+.ms-dialog-scrim[data-state="open"], .ms-sheet-scrim[data-state="open"], .ms-cmd-scrim[data-state="open"] { animation: ms-fade-in var(--duration-base) var(--ease-standard); }
+.ms-dialog-scrim[data-state="closed"], .ms-sheet-scrim[data-state="closed"], .ms-cmd-scrim[data-state="closed"] { animation: ms-fade-out var(--duration-fast) var(--ease-standard); }
+
+/* Popover / menu / select content / combobox panel — pop in */
+@keyframes ms-pop-in  { from { opacity: 0; transform: translateY(-4px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes ms-pop-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-4px) scale(0.98); } }
+.ms-popover[data-state="open"], .ms-menu[data-state="open"], .ms-combobox__panel[data-state="open"] { animation: ms-pop-in var(--duration-fast) var(--ease-emphasis); }
+.ms-popover[data-state="closed"], .ms-menu[data-state="closed"], .ms-combobox__panel[data-state="closed"] { animation: ms-pop-out var(--duration-fast) var(--ease-standard); }
+
+/* Sheet — slide from its edge */
+@keyframes ms-slide-in-right  { from { transform: translateX(100%); }  to { transform: translateX(0); } }
+@keyframes ms-slide-out-right { from { transform: translateX(0); }     to { transform: translateX(100%); } }
+@keyframes ms-slide-in-left   { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes ms-slide-out-left  { from { transform: translateX(0); }     to { transform: translateX(-100%); } }
+@keyframes ms-slide-in-top    { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+@keyframes ms-slide-out-top   { from { transform: translateY(0); }     to { transform: translateY(-100%); } }
+@keyframes ms-slide-in-bottom { from { transform: translateY(100%); }  to { transform: translateY(0); } }
+@keyframes ms-slide-out-bottom{ from { transform: translateY(0); }     to { transform: translateY(100%); } }
+.ms-sheet--right[data-state="open"]  { animation: ms-slide-in-right  var(--duration-base) var(--ease-emphasis); }
+.ms-sheet--right[data-state="closed"]{ animation: ms-slide-out-right var(--duration-base) var(--ease-standard); }
+.ms-sheet--left[data-state="open"]   { animation: ms-slide-in-left   var(--duration-base) var(--ease-emphasis); }
+.ms-sheet--left[data-state="closed"] { animation: ms-slide-out-left  var(--duration-base) var(--ease-standard); }
+.ms-sheet--top[data-state="open"]    { animation: ms-slide-in-top    var(--duration-base) var(--ease-emphasis); }
+.ms-sheet--top[data-state="closed"]  { animation: ms-slide-out-top   var(--duration-base) var(--ease-standard); }
+.ms-sheet--bottom[data-state="open"] { animation: ms-slide-in-bottom var(--duration-base) var(--ease-emphasis); }
+.ms-sheet--bottom[data-state="closed"]{ animation: ms-slide-out-bottom var(--duration-base) var(--ease-standard); }
+
+/* Sheet — built-in close button */
+.ms-sheet__close {
+  position: absolute; top: 16px; right: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; padding: 0;
+  background: transparent; border: none; border-radius: var(--radius-sm);
+  color: var(--fg3); cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
+}
+.ms-sheet__close:hover { color: var(--fg1); background: var(--bg-muted); }
+.ms-sheet__close:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+/* Toast — slide up + fade */
+@keyframes ms-toast-in  { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes ms-toast-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(12px); } }
+.ms-toast[data-state="open"]   { animation: ms-toast-in var(--duration-base) var(--ease-emphasis); }
+.ms-toast[data-state="closed"] { animation: ms-toast-out var(--duration-fast) var(--ease-standard); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-dialog, .ms-cmd, .ms-dialog-scrim, .ms-sheet-scrim, .ms-cmd-scrim,
+  .ms-popover, .ms-menu, .ms-combobox__panel, .ms-sheet, .ms-toast,
+  .ms-accordion__content,
+  .ms-progress__indicator { animation: none !important; }
+}
+
+/* ==========================================================================
+   Collapsible
+   ========================================================================== */
+.ms-collapsible__trigger {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%; padding: 12px 0;
+  background: none; border: none; cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 500; color: var(--fg1);
+  text-align: left;
+}
+.ms-collapsible__label { min-width: 0; }
+.ms-collapsible__chevron {
+  color: var(--fg3); flex-shrink: 0;
+  transition: transform var(--duration-base) var(--ease-standard);
+}
+.ms-collapsible__trigger[data-state="open"] .ms-collapsible__chevron { transform: rotate(180deg); }
+.ms-collapsible__trigger:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: var(--radius-xs); }
+.ms-collapsible__content { overflow: hidden; }
+.ms-collapsible__content[data-state="open"]   { animation: ms-collapsible-down var(--duration-base) var(--ease-standard); }
+.ms-collapsible__content[data-state="closed"] { animation: ms-collapsible-up   var(--duration-base) var(--ease-standard); }
+.ms-collapsible__inner { padding-bottom: 12px; font-size: 13px; color: var(--fg2); line-height: 1.6; }
+@keyframes ms-collapsible-down {
+  from { height: 0; }
+  to   { height: var(--radix-collapsible-content-height); }
+}
+@keyframes ms-collapsible-up {
+  from { height: var(--radix-collapsible-content-height); }
+  to   { height: 0; }
+}
+
+/* ==========================================================================
+   AspectRatio
+   ========================================================================== */
+.ms-aspect-ratio { overflow: hidden; border-radius: var(--radius-md); }
+.ms-aspect-ratio > * { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-collapsible__content { animation: none !important; }
+}

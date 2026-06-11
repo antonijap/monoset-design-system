@@ -46,6 +46,11 @@ export { ActionSheet, type ActionSheetProps, type ActionSheetAction } from "./Ac
 export { AppShell, type AppShellProps } from "./AppShell";
 export { Tooltip, type TooltipProps } from "./Tooltip";
 export { DatePicker, type DatePickerProps } from "./DatePicker";
+export { Calendar, type CalendarProps } from "./Calendar";
+export { BottomSheet, type BottomSheetProps } from "./BottomSheet";
+
+/* ─── Hooks ──────────────────────────────────────────────────────── */
+export { useReducedMotion } from "./useReducedMotion";
 
 /* ─── Tokens + style recipes ────────────────────────────────────── */
 export { tokens, mono, colors, space, radius, fontSize, fontWeight, lineHeight, shadow } from "./tokens";

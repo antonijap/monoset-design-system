@@ -1,6 +1,6 @@
 {
   "name": "@monoset/native",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Monoset for React Native. Monotone, minimal, unopinionated. Variant API on the surface, vanilla StyleSheet inside.",
   "keywords": [
     "design-system",
@@ -11,6 +11,7 @@
   ],
   "license": "MIT",
   "homepage": "https://monoset.design",
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/antonijap/monoset-design-system.git",
@@ -43,17 +44,26 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src"
   },
   "peerDependencies": {
+    "lucide-react-native": ">=0.400",
     "react": ">=18",
-    "react-native": ">=0.74"
+    "react-native": ">=0.74",
+    "react-native-svg": ">=13"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@types/react": "^18.3.12",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "lucide-react-native": "^0.462.0",
     "react": "^18.3.1",
     "react-native": "^0.76.0",
+    "react-native-svg": "^15.8.0",
     "tsup": "^8.3.5",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.20.0"
   }
 }

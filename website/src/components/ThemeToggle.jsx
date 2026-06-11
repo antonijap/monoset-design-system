@@ -24,7 +24,7 @@ function writeTheme(theme) {
   if (layout) layout.classList.toggle("monoset-dark", theme === "dark");
   try {
     localStorage.setItem("monoset-theme", theme);
-  } catch {}
+  } catch { /* ignore */ }
 }
 
 /**

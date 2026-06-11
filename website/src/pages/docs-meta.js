@@ -6,7 +6,6 @@ export const PAGE_META = {
   typography:   { title: "Typography", desc: "Inter for UI, JetBrains Mono for code, a modular scale from 11px to 64px." },
   spacing:      { title: "Spacing & radii", desc: "A 4px base grid with named spacing and radius tokens." },
   motion:       { title: "Motion", desc: "Three durations, one easing curve. Monoset's approach to UI motion." },
-  framer:       { title: "Framer Motion", desc: "JS-driven animation presets that match the CSS motion tokens." },
   buttons:      { title: "Button", desc: "Four variants, three sizes, four states. A React Button component." },
   inputs:       { title: "Input", desc: "Text fields, textareas, and selects with a Field wrapper." },
   badges:       { title: "Badge", desc: "Small labels for status, counts, and category tags." },
@@ -21,7 +20,6 @@ export const PAGE_META = {
   toggle:       { title: "Toggle group", desc: "A segmented control for mutually-exclusive options." },
   kbd:          { title: "Kbd", desc: "Keyboard shortcut chips for menus and tooltips." },
   spinner:      { title: "Spinner", desc: "A monotone loading indicator for waits over 400ms." },
-  textarea:     { title: "Textarea", desc: "Multi-line text input with Field wrapper support." },
   select:       { title: "Select", desc: "A dropdown for picking one option from a list. Wraps Radix UI Select." },
   layout:       { title: "Layout", desc: "Stack, Inline, Grid, and Container primitives for spacing and structure." },
   sheet:        { title: "Sheet", desc: "A slide-over panel from any edge. Built on Radix Dialog." },
@@ -53,6 +51,7 @@ export const PAGE_META = {
 
   // v0.6 components
   datepicker:   { title: "DatePicker", desc: "Calendar in a popover for picking a single date." },
+  calendar:     { title: "Calendar", desc: "Standalone month grid. Inline, always visible. DatePicker is built on it." },
   numberinput:  { title: "Number input", desc: "Text input with +/- stepper buttons for numeric fields." },
   pininput:     { title: "Pin input", desc: "Multi-cell input for OTP and short codes. Auto-advance, paste support." },
   password:     { title: "Password input", desc: "Input with a show/hide toggle." },
@@ -62,4 +61,6 @@ export const PAGE_META = {
   contextmenu:  { title: "Context menu", desc: "Right-click menu with items, labels, and separators." },
   multicombobox:{ title: "Multi-select Combobox", desc: "Searchable Combobox that selects multiple values." },
   carousel:     { title: "Carousel", desc: "Horizontal slider with arrows and pagination dots." },
+  collapsible:  { title: "Collapsible", desc: "A single open-or-closed disclosure for one optional region." },
+  aspectratio:  { title: "Aspect ratio", desc: "Hold media at a fixed width-to-height ratio while it loads." },
 };

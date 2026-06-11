@@ -1,6 +1,6 @@
 import * as react from 'react';
 import { ReactNode, ReactElement } from 'react';
-import { PressableProps, StyleProp, ViewStyle, ViewProps, View, TextInputProps, TextStyle, TextInput, AccessibilityProps, DimensionValue, ImageSourcePropType, ModalProps } from 'react-native';
+import { PressableProps, StyleProp, ViewStyle, View, ViewProps, TextInputProps, TextStyle, TextInput, AccessibilityProps, DimensionValue, ImageSourcePropType, ModalProps } from 'react-native';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { space } from './tokens.cjs';
 export { colors, fontSize, fontWeight, lineHeight, mono, radius, shadow, default as tokens } from './tokens.cjs';
@@ -12,6 +12,8 @@ interface ButtonProps extends Omit<PressableProps, "children" | "style"> {
     variant?: ButtonVariant;
     size?: ButtonSize;
     disabled?: boolean;
+    /** Shows a spinner in the leading slot and blocks presses. Keeps the variant's normal style. */
+    loading?: boolean;
     /** Optional leading element (icon, etc.) */
     leading?: ReactNode;
     /** Optional trailing element */
@@ -19,7 +21,7 @@ interface ButtonProps extends Omit<PressableProps, "children" | "style"> {
     children?: ReactNode;
     style?: StyleProp<ViewStyle>;
 }
-declare const Button: react.ForwardRefExoticComponent<ButtonProps & react.RefAttributes<any>>;
+declare const Button: react.ForwardRefExoticComponent<ButtonProps & react.RefAttributes<View>>;
 
 type CardVariant = "default" | "elevated" | "inset";
 interface CardProps extends Omit<ViewProps, "children"> {
@@ -75,7 +77,7 @@ interface SwitchProps extends AccessibilityProps {
     /** Visually hidden accessible label. */
     label?: string;
 }
-declare const Switch: react.ForwardRefExoticComponent<SwitchProps & react.RefAttributes<any>>;
+declare const Switch: react.ForwardRefExoticComponent<SwitchProps & react.RefAttributes<View>>;
 
 interface SpinnerProps {
     /** Diameter in pixels. Default: 16. */
@@ -85,7 +87,7 @@ interface SpinnerProps {
     /** Visually hidden accessible label. Default: "Loading". */
     label?: string;
 }
-declare const Spinner: react.ForwardRefExoticComponent<SpinnerProps & react.RefAttributes<any>>;
+declare const Spinner: react.ForwardRefExoticComponent<SpinnerProps & react.RefAttributes<View>>;
 
 interface SkeletonProps {
     width?: DimensionValue;
@@ -150,7 +152,7 @@ interface ListItemProps extends Omit<PressableProps, "children" | "style"> {
     chevron?: boolean;
     style?: StyleProp<ViewStyle>;
 }
-declare const ListItem: react.ForwardRefExoticComponent<ListItemProps & react.RefAttributes<any>>;
+declare const ListItem: react.ForwardRefExoticComponent<ListItemProps & react.RefAttributes<View>>;
 
 interface CheckboxProps extends Omit<PressableProps, "children" | "style"> {
     checked?: boolean;
@@ -160,7 +162,7 @@ interface CheckboxProps extends Omit<PressableProps, "children" | "style"> {
     disabled?: boolean;
     style?: StyleProp<ViewStyle>;
 }
-declare const Checkbox: react.ForwardRefExoticComponent<CheckboxProps & react.RefAttributes<any>>;
+declare const Checkbox: react.ForwardRefExoticComponent<CheckboxProps & react.RefAttributes<View>>;
 
 type RadioStyleProp = StyleProp<ViewStyle>;
 interface RadioGroupProps {
@@ -179,7 +181,7 @@ interface RadioProps extends Omit<PressableProps, "children" | "style"> {
     disabled?: boolean;
     style?: RadioStyleProp;
 }
-declare const Radio: react.ForwardRefExoticComponent<RadioProps & react.RefAttributes<any>>;
+declare const Radio: react.ForwardRefExoticComponent<RadioProps & react.RefAttributes<View>>;
 
 interface ChipProps extends Omit<PressableProps, "children" | "style"> {
     selected?: boolean;
@@ -189,7 +191,7 @@ interface ChipProps extends Omit<PressableProps, "children" | "style"> {
     children?: ReactNode;
     style?: StyleProp<ViewStyle>;
 }
-declare const Chip: react.ForwardRefExoticComponent<ChipProps & react.RefAttributes<any>>;
+declare const Chip: react.ForwardRefExoticComponent<ChipProps & react.RefAttributes<View>>;
 
 interface ProgressProps extends ViewProps {
     /** Current value, 0-100 (or 0-max). */
@@ -367,8 +369,8 @@ interface PopoverProps {
     side?: "top" | "bottom";
     /** Distance from the anchor in pixels. Default: 6. */
     sideOffset?: number;
-    /** Custom width. Default: matches the anchor. */
-    width?: number;
+    /** Custom width, or "auto" to size to content. Default: matches the anchor. */
+    width?: number | "auto";
     children?: ReactNode;
     contentStyle?: StyleProp<ViewStyle>;
 }
@@ -453,6 +455,8 @@ declare function NavigationBack({ onPress, label }: {
 interface ActionSheetAction {
     label: string;
     onPress?: () => void;
+    /** Optional leading icon (pass a lucide-react-native element). */
+    icon?: ReactNode;
     /** Visual destructive styling. */
     destructive?: boolean;
     disabled?: boolean;
@@ -465,7 +469,8 @@ interface ActionSheetProps extends Omit<SheetProps, "children" | "title" | "desc
 }
 /**
  * iOS-style list of mutually exclusive actions plus a Cancel. Each action
- * dismisses the sheet on press by default. Destructive actions render in red.
+ * dismisses the sheet on press. Destructive actions render in red; pass an
+ * `icon` per action for the modern sheet-menu look.
  */
 declare const ActionSheet: react.ForwardRefExoticComponent<ActionSheetProps & react.RefAttributes<View>>;
 
@@ -530,4 +535,50 @@ interface DatePickerProps {
 }
 declare const DatePicker: react.ForwardRefExoticComponent<DatePickerProps & react.RefAttributes<View>>;
 
-export { Accordion, AccordionItem, type AccordionItemProps, type AccordionProps, ActionSheet, type ActionSheetAction, type ActionSheetProps, Alert, type AlertProps, type AlertVariant, AppShell, type AppShellProps, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Card, type CardProps, type CardVariant, Checkbox, type CheckboxProps, Chip, type ChipProps, Combobox, type ComboboxOption, type ComboboxProps, DatePicker, type DatePickerProps, Dialog, type DialogProps, Divider, type DividerProps, EmptyState, type EmptyStateProps, Field, type FieldProps, Inline, type InlineProps, Input, type InputProps, ListItem, type ListItemProps, NavigationBack, NavigationHeader, type NavigationHeaderProps, NumberInput, type NumberInputProps, PasswordInput, type PasswordInputProps, PinInput, type PinInputProps, Popover, type PopoverProps, Progress, type ProgressProps, Radio, RadioGroup, type RadioGroupProps, type RadioProps, SegmentedControl, type SegmentedControlProps, type SegmentedItem, Sheet, type SheetProps, Skeleton, type SkeletonProps, Slider, type SliderProps, Spinner, type SpinnerProps, Stack, type StackProps, Switch, type SwitchProps, TabBar, type TabBarItem, type TabBarProps, type TabItem, Tabs, type TabsProps, type ToastItem, ToastProvider, type ToastProviderProps, Tooltip, type TooltipProps, space, useToast };
+interface CalendarProps {
+    /** Selected date. Controlled. */
+    value?: Date | null;
+    defaultValue?: Date | null;
+    onValueChange?: (date: Date) => void;
+    /** Visible month. Controlled. */
+    month?: Date;
+    defaultMonth?: Date;
+    onMonthChange?: (month: Date) => void;
+    min?: Date;
+    max?: Date;
+    /** Locale for month + weekday labels. Default: device locale. */
+    locale?: string;
+    /** 0 = Sunday, 1 = Monday. Default: 1. */
+    weekStartsOn?: 0 | 1;
+    style?: StyleProp<ViewStyle>;
+}
+declare const Calendar: react.ForwardRefExoticComponent<CalendarProps & react.RefAttributes<View>>;
+
+interface BottomSheetProps extends Omit<ModalProps, "children"> {
+    /** Whether the sheet is visible. */
+    open: boolean;
+    /** Called when the user taps the scrim, drags down, or otherwise dismisses. */
+    onClose: () => void;
+    /** Optional title shown at the top. */
+    title?: ReactNode;
+    /** Optional description below the title. */
+    description?: ReactNode;
+    /** Show the grabber handle. Default: true. */
+    grabber?: boolean;
+    /** Allow dragging the sheet down to dismiss. Default: true. */
+    dragToDismiss?: boolean;
+    children?: ReactNode;
+}
+/**
+ * A bottom sheet that slides up over a scrim. Tap the scrim, drag the handle
+ * down, or call `onClose` to dismiss. Honors the OS reduce-motion setting.
+ */
+declare const BottomSheet: react.ForwardRefExoticComponent<BottomSheetProps & react.RefAttributes<View>>;
+
+/**
+ * Tracks the OS "Reduce Motion" accessibility setting. Components use it to skip
+ * looping or non-essential entrance animations for users who prefer reduced motion.
+ */
+declare function useReducedMotion(): boolean;
+
+export { Accordion, AccordionItem, type AccordionItemProps, type AccordionProps, ActionSheet, type ActionSheetAction, type ActionSheetProps, Alert, type AlertProps, type AlertVariant, AppShell, type AppShellProps, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, BottomSheet, type BottomSheetProps, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Calendar, type CalendarProps, Card, type CardProps, type CardVariant, Checkbox, type CheckboxProps, Chip, type ChipProps, Combobox, type ComboboxOption, type ComboboxProps, DatePicker, type DatePickerProps, Dialog, type DialogProps, Divider, type DividerProps, EmptyState, type EmptyStateProps, Field, type FieldProps, Inline, type InlineProps, Input, type InputProps, ListItem, type ListItemProps, NavigationBack, NavigationHeader, type NavigationHeaderProps, NumberInput, type NumberInputProps, PasswordInput, type PasswordInputProps, PinInput, type PinInputProps, Popover, type PopoverProps, Progress, type ProgressProps, Radio, RadioGroup, type RadioGroupProps, type RadioProps, SegmentedControl, type SegmentedControlProps, type SegmentedItem, Sheet, type SheetProps, Skeleton, type SkeletonProps, Slider, type SliderProps, Spinner, type SpinnerProps, Stack, type StackProps, Switch, type SwitchProps, TabBar, type TabBarItem, type TabBarProps, type TabItem, Tabs, type TabsProps, type ToastItem, ToastProvider, type ToastProviderProps, Tooltip, type TooltipProps, space, useReducedMotion, useToast };

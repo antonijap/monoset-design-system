@@ -1,6 +1,8 @@
 import { forwardRef, useState, type ReactNode } from "react";
 import { Pressable, Text, View, type PressableProps, type StyleProp, type ViewStyle } from "react-native";
+import { Check } from "lucide-react-native";
 import { styles } from "./styles";
+import { colors } from "./tokens";
 
 export interface CheckboxProps extends Omit<PressableProps, "children" | "style"> {
   checked?: boolean;
@@ -11,7 +13,7 @@ export interface CheckboxProps extends Omit<PressableProps, "children" | "style"
   style?: StyleProp<ViewStyle>;
 }
 
-export const Checkbox = forwardRef<any, CheckboxProps>(function Checkbox(
+export const Checkbox = forwardRef<View, CheckboxProps>(function Checkbox(
   { checked, defaultChecked, onCheckedChange, label, disabled, style, ...rest },
   ref,
 ) {
@@ -41,7 +43,7 @@ export const Checkbox = forwardRef<any, CheckboxProps>(function Checkbox(
       {...rest}
     >
       <View style={[styles.msCheck, value && styles.msCheckChecked]}>
-        {value && <Text style={styles.msCheckCheckmark}>✓</Text>}
+        {value && <Check size={14} color={colors.accentFg} strokeWidth={3} />}
       </View>
       {label && (typeof label === "string"
         ? <Text style={styles.msCheckLabel}>{label}</Text>

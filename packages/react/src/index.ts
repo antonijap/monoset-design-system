@@ -47,6 +47,7 @@ export {
 } from "./ContextMenu";
 export { Carousel, type CarouselProps } from "./Carousel";
 export { DatePicker, type DatePickerProps } from "./DatePicker";
+export { Calendar, type CalendarProps } from "./Calendar";
 export { Tooltip, TooltipProvider, type TooltipProps } from "./Tooltip";
 export { Popover, PopoverTrigger, PopoverContent, PopoverClose, type PopoverContentProps } from "./Popover";
 export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "./DropdownMenu";
@@ -70,6 +71,8 @@ export {
 } from "./Accordion";
 export { Slider, type SliderProps } from "./Slider";
 export { Toggle, ToggleGroup, ToggleGroupItem } from "./ToggleGroup";
+export { Collapsible, CollapsibleTrigger, CollapsibleContent, type CollapsibleTriggerProps } from "./Collapsible";
+export { AspectRatio, type AspectRatioProps } from "./AspectRatio";
 export { MonosetProvider, type MonosetProviderProps } from "./MonosetProvider";
 export { ThemeProvider, useTheme, ThemeToggle, type ThemeProviderProps, type Theme } from "./Theme";
 export { cx } from "./cx";

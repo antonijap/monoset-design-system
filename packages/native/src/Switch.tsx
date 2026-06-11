@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
-import { Animated, Easing, Pressable, type AccessibilityProps } from "react-native";
+import { Animated, Easing, Pressable, View, type AccessibilityProps } from "react-native";
 import { styles } from "./styles";
 import { colors } from "./tokens";
 
@@ -19,7 +19,7 @@ const TRACK_COLOR_ON  = colors.accent;
 // Track 51, thumb 27, padding 2 -> travel = 51 - 27 - 2*2 = 20
 const THUMB_TRAVEL    = 20;
 
-export const Switch = forwardRef<any, SwitchProps>(function Switch(
+export const Switch = forwardRef<View, SwitchProps>(function Switch(
   { checked, defaultChecked, onCheckedChange, disabled, label, ...rest },
   ref,
 ) {
@@ -62,6 +62,7 @@ export const Switch = forwardRef<any, SwitchProps>(function Switch(
       accessibilityLabel={label}
       onPress={onPress}
       disabled={disabled}
+      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
       style={({ pressed }) => [
         { opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
       ]}

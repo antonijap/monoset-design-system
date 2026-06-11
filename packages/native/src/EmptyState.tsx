@@ -1,6 +1,7 @@
 import { forwardRef, type ReactNode } from "react";
 import { View, Text, type ViewProps } from "react-native";
 import { styles } from "./styles";
+import { space } from "./tokens";
 
 export interface EmptyStateProps extends Omit<ViewProps, "children"> {
   title: ReactNode;
@@ -21,7 +22,7 @@ export const EmptyState = forwardRef<View, EmptyStateProps>(function EmptyState(
         ? <Text style={styles.msEmptyBody}>{body}</Text>
         : <View>{body}</View>
       )}
-      {action}
+      {action && <View style={{ marginTop: space[3] }}>{action}</View>}
     </View>
   );
 });

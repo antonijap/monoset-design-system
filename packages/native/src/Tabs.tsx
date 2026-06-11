@@ -1,5 +1,5 @@
 import { forwardRef, useState, type ReactNode } from "react";
-import { Pressable, ScrollView, Text, View, type StyleProp, type ViewStyle } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
 import { colors, fontSize, fontWeight, space } from "./tokens";
 
 export interface TabItem {
@@ -41,7 +41,7 @@ export const Tabs = forwardRef<View, TabsProps>(function Tabs(
       ref={ref}
       accessibilityRole="tablist"
       style={[
-        { borderBottomWidth: 1, borderBottomColor: colors.borderSubtle, backgroundColor: colors.bg },
+        { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderSubtle, backgroundColor: colors.bg },
         style,
       ]}
     >
@@ -68,7 +68,7 @@ export const Tabs = forwardRef<View, TabsProps>(function Tabs(
               })}
             >
               {typeof item.label === "string"
-                ? <Text style={{ fontSize: fontSize.base, fontWeight: active ? fontWeight.semibold : fontWeight.medium, color: active ? colors.fg1 : colors.fg3 }}>{item.label}</Text>
+                ? <Text style={{ fontSize: fontSize.md, fontWeight: active ? fontWeight.semibold : fontWeight.medium, color: active ? colors.fg1 : colors.fg3 }}>{item.label}</Text>
                 : item.label}
             </Pressable>
           );

@@ -1,4 +1,4 @@
-import { forwardRef, useState, type ReactNode } from "react";
+import { forwardRef, useState, Fragment, type ReactNode } from "react";
 import { Pressable, Text, View, type ViewProps } from "react-native";
 import { styles } from "./styles";
 
@@ -22,27 +22,36 @@ export const SegmentedControl = forwardRef<View, SegmentedControlProps>(function
   const isControlled = value !== undefined;
   const [internal, setInternal] = useState<string | undefined>(defaultValue ?? items[0]?.value);
   const current = isControlled ? value : internal;
+  const activeIndex = items.findIndex((i) => i.value === current);
 
   return (
     <View ref={ref} style={[styles.msSegmented, style]} role="tablist" {...rest}>
-      {items.map((item) => {
-        const active = item.value === current;
+      {items.map((item, i) => {
+        const active = i === activeIndex;
+        // iOS hides the hairline separators that touch the selected segment.
+        const showSeparator = i > 0 && i !== activeIndex && i - 1 !== activeIndex;
         return (
-          <Pressable
-            key={item.value}
-            role="tab"
-            accessibilityState={{ selected: active }}
-            disabled={item.disabled}
-            onPress={() => {
-              if (!isControlled) setInternal(item.value);
-              onValueChange?.(item.value);
-            }}
-            style={[styles.msSegmentedItem, active && styles.msSegmentedItemActive]}
-          >
-            {typeof item.label === "string"
-              ? <Text style={[styles.msSegmentedText, active && styles.msSegmentedTextActive]}>{item.label}</Text>
-              : item.label}
-          </Pressable>
+          <Fragment key={item.value}>
+            {i > 0 && <View style={[styles.msSegmentedSeparator, !showSeparator && { opacity: 0 }]} aria-hidden />}
+            <Pressable
+              role="tab"
+              accessibilityState={{ selected: active, disabled: item.disabled }}
+              disabled={item.disabled}
+              onPress={() => {
+                if (!isControlled) setInternal(item.value);
+                onValueChange?.(item.value);
+              }}
+              style={[
+                styles.msSegmentedItem,
+                active && styles.msSegmentedItemActive,
+                item.disabled && { opacity: 0.4 },
+              ]}
+            >
+              {typeof item.label === "string"
+                ? <Text style={[styles.msSegmentedText, active && styles.msSegmentedTextActive]}>{item.label}</Text>
+                : item.label}
+            </Pressable>
+          </Fragment>
         );
       })}
     </View>

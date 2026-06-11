@@ -9,6 +9,7 @@ import {
   type ModalProps,
 } from "react-native";
 import { styles } from "./styles";
+import { useReducedMotion } from "./useReducedMotion";
 
 export interface DialogProps extends Omit<ModalProps, "children"> {
   open: boolean;
@@ -28,6 +29,7 @@ export const Dialog = forwardRef<View, DialogProps>(function Dialog(
   { open, onClose, title, description, dismissible = true, children, ...rest },
   ref,
 ) {
+  const reduceMotion = useReducedMotion();
   const opacity = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(0.96)).current;
 
@@ -35,18 +37,18 @@ export const Dialog = forwardRef<View, DialogProps>(function Dialog(
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: open ? 1 : 0,
-        duration: open ? 180 : 120,
+        duration: reduceMotion ? 0 : open ? 180 : 120,
         easing: Easing.bezier(0.3, 0, 0, 1),
         useNativeDriver: true,
       }),
       Animated.timing(scale, {
         toValue: open ? 1 : 0.96,
-        duration: open ? 220 : 140,
+        duration: reduceMotion ? 0 : open ? 220 : 140,
         easing: Easing.bezier(0.3, 0, 0, 1),
         useNativeDriver: true,
       }),
     ]).start();
-  }, [open, opacity, scale]);
+  }, [open, opacity, scale, reduceMotion]);
 
   return (
     <Modal

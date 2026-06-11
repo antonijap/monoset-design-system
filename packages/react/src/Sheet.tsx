@@ -1,5 +1,6 @@
 import * as RDialog from "@radix-ui/react-dialog";
 import { type ReactNode } from "react";
+import { X } from "lucide-react";
 import { cx } from "./cx";
 
 export const Sheet = RDialog.Root;
@@ -16,6 +17,8 @@ export interface SheetContentProps extends Omit<React.ComponentPropsWithoutRef<t
   side?: SheetSide;
   /** Panel width (left/right) or height (top/bottom). Default: 380px. */
   size?: string | number;
+  /** Show the built-in close button in the top corner. Default: true. */
+  showClose?: boolean;
 }
 
 export function SheetContent({
@@ -25,6 +28,7 @@ export function SheetContent({
   className,
   side = "right",
   size = 380,
+  showClose = true,
   style,
   ...rest
 }: SheetContentProps) {
@@ -37,6 +41,11 @@ export function SheetContent({
         style={{ ...sizeStyle(side, px), ...style }}
         {...rest}
       >
+        {showClose && (
+          <RDialog.Close className="ms-sheet__close" aria-label="Close">
+            <X size={16} strokeWidth={2} aria-hidden />
+          </RDialog.Close>
+        )}
         {(title || description) && (
           <div className="ms-sheet__header">
             {title && <RDialog.Title className="ms-sheet__title">{title}</RDialog.Title>}

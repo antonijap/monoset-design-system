@@ -1,6 +1,7 @@
 import * as RCheckbox from "@radix-ui/react-checkbox";
 import { forwardRef, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Check } from "lucide-react";
 import { DUR, EASE_EMPHASIS, EASE_EXIT } from "@monoset/motion";
 import { cx } from "./cx";
 
@@ -32,9 +33,7 @@ export const Checkbox = forwardRef<
               exit={{ opacity: 0, scale: 0.6, transition: { duration: DUR.fast, ease: EASE_EXIT } }}
               style={{ display: "inline-flex" }}
             >
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12l5 5L20 7" />
-              </svg>
+              <Check size={11} strokeWidth={2} aria-hidden />
             </motion.span>
           </AnimatePresence>
         </RCheckbox.Indicator>

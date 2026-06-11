@@ -18,6 +18,8 @@ import * as RAccordion from '@radix-ui/react-accordion';
 import * as RSlider from '@radix-ui/react-slider';
 import * as RToggleGroup from '@radix-ui/react-toggle-group';
 import * as RToggle from '@radix-ui/react-toggle';
+import * as RCollapsible from '@radix-ui/react-collapsible';
+import * as RAspectRatio from '@radix-ui/react-aspect-ratio';
 export { DUR, EASE_EMPHASIS, EASE_EXIT, EASE_STANDARD, fadeUp, hoverLift, listStagger, modalPanel, modalScrim, popoverIn, pressDown, scaleIn, slideInBottom, slideInLeft, slideInRight, slideInTop } from '@monoset/motion';
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
@@ -152,9 +154,6 @@ declare const Tabs: react.ForwardRefExoticComponent<RTabs.TabsProps & react.RefA
 declare const TabsList: react.ForwardRefExoticComponent<Omit<RTabs.TabsListProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
 interface TabsTriggerProps extends React.ComponentPropsWithoutRef<typeof RTabs.Trigger> {
     children?: ReactNode;
-    /** Shared layoutId for the sliding underline. */
-    layoutId?: string;
-    isActive?: boolean;
 }
 declare const TabsTrigger: react.ForwardRefExoticComponent<TabsTriggerProps & react.RefAttributes<HTMLButtonElement>>;
 declare const TabsContent: react.ForwardRefExoticComponent<RTabs.TabsContentProps & react.RefAttributes<HTMLDivElement>>;
@@ -228,8 +227,10 @@ interface SheetContentProps extends Omit<React.ComponentPropsWithoutRef<typeof R
     side?: SheetSide;
     /** Panel width (left/right) or height (top/bottom). Default: 380px. */
     size?: string | number;
+    /** Show the built-in close button in the top corner. Default: true. */
+    showClose?: boolean;
 }
-declare function SheetContent({ title, description, children, className, side, size, style, ...rest }: SheetContentProps): react_jsx_runtime.JSX.Element;
+declare function SheetContent({ title, description, children, className, side, size, showClose, style, ...rest }: SheetContentProps): react_jsx_runtime.JSX.Element;
 
 interface CommandItem {
     id: string;
@@ -546,6 +547,28 @@ interface DatePickerProps {
 }
 declare const DatePicker: react.ForwardRefExoticComponent<DatePickerProps & react.RefAttributes<HTMLButtonElement>>;
 
+interface CalendarProps {
+    /** Selected date. Controlled. */
+    value?: Date | null;
+    defaultValue?: Date | null;
+    onValueChange?: (date: Date) => void;
+    /** Visible month. Controlled. */
+    month?: Date;
+    defaultMonth?: Date;
+    onMonthChange?: (month: Date) => void;
+    /** Earliest selectable date (inclusive). */
+    min?: Date;
+    /** Latest selectable date (inclusive). */
+    max?: Date;
+    /** Locale for month + weekday labels. Defaults to the browser's locale. */
+    locale?: string;
+    /** 0 = Sunday, 1 = Monday. Default: 1. */
+    weekStartsOn?: 0 | 1;
+    className?: string;
+    "aria-label"?: string;
+}
+declare const Calendar: react.ForwardRefExoticComponent<CalendarProps & react.RefAttributes<HTMLDivElement>>;
+
 declare function TooltipProvider({ children, delayDuration }: {
     children: ReactNode;
     delayDuration?: number;
@@ -697,6 +720,20 @@ declare const Toggle: react.ForwardRefExoticComponent<Omit<RToggle.ToggleProps &
 declare const ToggleGroup: react.ForwardRefExoticComponent<(Omit<RToggleGroup.ToggleGroupSingleProps & react.RefAttributes<HTMLDivElement>, "ref"> | Omit<RToggleGroup.ToggleGroupMultipleProps & react.RefAttributes<HTMLDivElement>, "ref">) & react.RefAttributes<HTMLDivElement>>;
 declare const ToggleGroupItem: react.ForwardRefExoticComponent<Omit<RToggleGroup.ToggleGroupItemProps & react.RefAttributes<HTMLButtonElement>, "ref"> & react.RefAttributes<HTMLButtonElement>>;
 
+declare const Collapsible: react.ForwardRefExoticComponent<RCollapsible.CollapsibleProps & react.RefAttributes<HTMLDivElement>>;
+interface CollapsibleTriggerProps extends React.ComponentPropsWithoutRef<typeof RCollapsible.Trigger> {
+    children?: ReactNode;
+    /** Hide the built-in chevron. Default: false. */
+    hideChevron?: boolean;
+}
+declare const CollapsibleTrigger: react.ForwardRefExoticComponent<CollapsibleTriggerProps & react.RefAttributes<HTMLButtonElement>>;
+declare const CollapsibleContent: react.ForwardRefExoticComponent<Omit<RCollapsible.CollapsibleContentProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+
+interface AspectRatioProps extends React.ComponentPropsWithoutRef<typeof RAspectRatio.Root> {
+}
+/** Holds a consistent width-to-height ratio for media. `ratio={16/9}` is the default. */
+declare const AspectRatio: react.ForwardRefExoticComponent<AspectRatioProps & react.RefAttributes<HTMLDivElement>>;
+
 type Theme = "light" | "dark" | "system";
 interface ThemeProviderProps {
     children: ReactNode;
@@ -764,4 +801,4 @@ interface StaggerListProps {
 }
 declare const StaggerList: react.ForwardRefExoticComponent<StaggerListProps & react.RefAttributes<HTMLDivElement>>;
 
-export { Accordion, AccordionContent, AccordionItem, type AccordionItemProps, AccordionTrigger, type AccordionTriggerProps, Alert, type AlertProps, AppShell, type AppShellContentProps, type AppShellHeaderProps, type AppShellMainProps, type AppShellMobileTriggerProps, type AppShellProps, type AppShellSidebarGroupProps, type AppShellSidebarItemProps, type AppShellSidebarProps, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Card, type CardProps, type CardVariant, Carousel, type CarouselProps, Checkbox, type CheckboxProps, Combobox, type ComboboxOption, type ComboboxProps, type CommandGroup, type CommandItem, CommandPalette, type CommandPaletteProps, Container, type ContainerProps, ContextMenu, ContextMenuContent, type ContextMenuContentProps, ContextMenuItem, type ContextMenuItemProps, ContextMenuLabel, ContextMenuSeparator, ContextMenuTrigger, DatePicker, type DatePickerProps, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, EmptyState, type EmptyStateProps, Field, type FieldProps, type FieldState, FileUpload, type FileUploadProps, Form, type FormProps, Grid, type GridProps, HoverCard, HoverCardContent, type HoverCardContentProps, HoverCardTrigger, Inline, type InlineProps, Input, type InputProps, Kbd, type KbdProps, MonosetProvider, type MonosetProviderProps, MultiCombobox, type MultiComboboxOption, type MultiComboboxProps, NavigationMenu, NavigationMenuContent, type NavigationMenuContentProps, NavigationMenuItem, type NavigationMenuItemProps, NavigationMenuLink, type NavigationMenuLinkProps, NavigationMenuList, NavigationMenuTrigger, type NavigationMenuTriggerProps, NumberInput, type NumberInputProps, Pagination, type PaginationProps, PasswordInput, type PasswordInputProps, PinInput, type PinInputProps, Popover, PopoverClose, PopoverContent, type PopoverContentProps, PopoverTrigger, Progress, type ProgressProps, Radio, RadioGroup, type RadioProps, Reveal, type RevealProps, Select, SelectContent, SelectItem, type SelectItemProps, SelectTrigger, type SelectTriggerProps, Separator, type SeparatorProps, Sheet, SheetClose, SheetContent, type SheetContentProps, type SheetSide, SheetTrigger, Skeleton, type SkeletonProps, Slider, type SliderProps, type SortDirection, Spinner, type SpinnerProps, Stack, type StackProps, StaggerList, type StaggerListProps, Stepper, type StepperProps, type StepperStep, Switch, type SwitchProps, Table, TableHeader, type TableHeaderProps, type TableProps, TableSelectAll, type TableSelectAllProps, TableSelectRow, type TableSelectRowProps, Tabs, TabsContent, TabsList, TabsTrigger, type TabsTriggerProps, Textarea, type TextareaProps, type Theme, ThemeProvider, type ThemeProviderProps, ThemeToggle, Toast, type ToastProps, ToastProvider, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, type TooltipProps, TooltipProvider, type UseFormOptions, type UseFormReturn, type ValidationRule, cx, useAppShellMobile, useMonosetForm, useTheme };
+export { Accordion, AccordionContent, AccordionItem, type AccordionItemProps, AccordionTrigger, type AccordionTriggerProps, Alert, type AlertProps, AppShell, type AppShellContentProps, type AppShellHeaderProps, type AppShellMainProps, type AppShellMobileTriggerProps, type AppShellProps, type AppShellSidebarGroupProps, type AppShellSidebarItemProps, type AppShellSidebarProps, AspectRatio, type AspectRatioProps, Avatar, type AvatarProps, type AvatarSize, Badge, type BadgeProps, type BadgeVariant, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, type ButtonProps, type ButtonSize, type ButtonVariant, Calendar, type CalendarProps, Card, type CardProps, type CardVariant, Carousel, type CarouselProps, Checkbox, type CheckboxProps, Collapsible, CollapsibleContent, CollapsibleTrigger, type CollapsibleTriggerProps, Combobox, type ComboboxOption, type ComboboxProps, type CommandGroup, type CommandItem, CommandPalette, type CommandPaletteProps, Container, type ContainerProps, ContextMenu, ContextMenuContent, type ContextMenuContentProps, ContextMenuItem, type ContextMenuItemProps, ContextMenuLabel, ContextMenuSeparator, ContextMenuTrigger, DatePicker, type DatePickerProps, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, EmptyState, type EmptyStateProps, Field, type FieldProps, type FieldState, FileUpload, type FileUploadProps, Form, type FormProps, Grid, type GridProps, HoverCard, HoverCardContent, type HoverCardContentProps, HoverCardTrigger, Inline, type InlineProps, Input, type InputProps, Kbd, type KbdProps, MonosetProvider, type MonosetProviderProps, MultiCombobox, type MultiComboboxOption, type MultiComboboxProps, NavigationMenu, NavigationMenuContent, type NavigationMenuContentProps, NavigationMenuItem, type NavigationMenuItemProps, NavigationMenuLink, type NavigationMenuLinkProps, NavigationMenuList, NavigationMenuTrigger, type NavigationMenuTriggerProps, NumberInput, type NumberInputProps, Pagination, type PaginationProps, PasswordInput, type PasswordInputProps, PinInput, type PinInputProps, Popover, PopoverClose, PopoverContent, type PopoverContentProps, PopoverTrigger, Progress, type ProgressProps, Radio, RadioGroup, type RadioProps, Reveal, type RevealProps, Select, SelectContent, SelectItem, type SelectItemProps, SelectTrigger, type SelectTriggerProps, Separator, type SeparatorProps, Sheet, SheetClose, SheetContent, type SheetContentProps, type SheetSide, SheetTrigger, Skeleton, type SkeletonProps, Slider, type SliderProps, type SortDirection, Spinner, type SpinnerProps, Stack, type StackProps, StaggerList, type StaggerListProps, Stepper, type StepperProps, type StepperStep, Switch, type SwitchProps, Table, TableHeader, type TableHeaderProps, type TableProps, TableSelectAll, type TableSelectAllProps, TableSelectRow, type TableSelectRowProps, Tabs, TabsContent, TabsList, TabsTrigger, type TabsTriggerProps, Textarea, type TextareaProps, type Theme, ThemeProvider, type ThemeProviderProps, ThemeToggle, Toast, type ToastProps, ToastProvider, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, type TooltipProps, TooltipProvider, type UseFormOptions, type UseFormReturn, type ValidationRule, cx, useAppShellMobile, useMonosetForm, useTheme };

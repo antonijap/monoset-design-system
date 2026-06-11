@@ -1,6 +1,8 @@
 import { forwardRef, type ReactNode } from "react";
 import { View, Text, type ViewProps } from "react-native";
+import { Info, Check, AlertCircle } from "lucide-react-native";
 import { styles } from "./styles";
+import { colors } from "./tokens";
 
 export type AlertVariant = "info" | "success" | "warning" | "danger";
 
@@ -11,13 +13,6 @@ export interface AlertProps extends Omit<ViewProps, "children"> {
   /** Custom icon element. Defaults to a glyph derived from the variant. */
   icon?: ReactNode;
 }
-
-const DEFAULT_GLYPH: Record<AlertVariant, string> = {
-  info:    "i",
-  success: "✓",
-  warning: "!",
-  danger:  "!",
-};
 
 export const Alert = forwardRef<View, AlertProps>(function Alert(
   { variant = "info", title, children, icon, style, ...rest },
@@ -33,16 +28,23 @@ export const Alert = forwardRef<View, AlertProps>(function Alert(
     variant === "warning" ? styles.msAlertIconWrapWarning :
     variant === "danger"  ? styles.msAlertIconWrapDanger :
                             styles.msAlertIconWrapInfo;
-  const iconColorStyle =
-    variant === "success" ? styles.msAlertIconSuccess :
-    variant === "warning" ? styles.msAlertIconWarning :
-    variant === "danger"  ? styles.msAlertIconDanger :
-                            null;
+  const iconColor = colors.fg1;
+  const DefaultIcon =
+    variant === "success" ? Check :
+    variant === "info"    ? Info :
+                            AlertCircle;
+  const accessibilityRole =
+    variant === "danger" || variant === "warning" ? "alert" : "text";
 
   return (
-    <View ref={ref} style={[styles.msAlert, variantStyle, style]} {...rest}>
+    <View
+      ref={ref}
+      accessibilityRole={accessibilityRole}
+      style={[styles.msAlert, variantStyle, style]}
+      {...rest}
+    >
       <View style={[styles.msAlertIconWrap, iconWrapStyle]}>
-        {icon ?? <Text style={[styles.msAlertIcon, iconColorStyle]}>{DEFAULT_GLYPH[variant]}</Text>}
+        {icon ?? <DefaultIcon size={16} color={iconColor} strokeWidth={2} />}
       </View>
       <View style={styles.msAlertBody}>
         {title && <Text style={styles.msAlertTitle}>{title}</Text>}

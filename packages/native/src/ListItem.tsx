@@ -1,6 +1,8 @@
 import { forwardRef, type ReactNode } from "react";
 import { Pressable, View, Text, type PressableProps, type StyleProp, type ViewStyle } from "react-native";
+import { ChevronRight } from "lucide-react-native";
 import { styles } from "./styles";
+import { colors } from "./tokens";
 
 export interface ListItemProps extends Omit<PressableProps, "children" | "style"> {
   /** Primary text. */
@@ -16,7 +18,7 @@ export interface ListItemProps extends Omit<PressableProps, "children" | "style"
   style?: StyleProp<ViewStyle>;
 }
 
-export const ListItem = forwardRef<any, ListItemProps>(function ListItem(
+export const ListItem = forwardRef<View, ListItemProps>(function ListItem(
   { title, subtitle, leading, trailing, chevron, onPress, style, ...rest },
   ref,
 ) {
@@ -43,7 +45,7 @@ export const ListItem = forwardRef<any, ListItemProps>(function ListItem(
           : subtitle)}
       </View>
       {trailing ?? (chevron && tappable
-        ? <Text style={styles.msListItemChevron}>›</Text>
+        ? <ChevronRight size={16} color={colors.fg4} strokeWidth={2} />
         : null)}
     </Pressable>
   );

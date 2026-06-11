@@ -32,7 +32,9 @@ var colors = {
   accentHover: mono[800],
   statusSuccess: "#2e4a33",
   statusWarning: "#7a5a1a",
-  statusDanger: "#a83232"
+  statusDanger: "#a83232",
+  scrim: "rgba(0,0,0,0.4)"
+  // modal / sheet backdrop
 };
 var space = {
   0: 0,
@@ -58,6 +60,7 @@ var radius = {
   md: 6,
   lg: 8,
   xl: 12,
+  "2xl": 14,
   full: 9999
 };
 var fontSize = {
@@ -65,6 +68,8 @@ var fontSize = {
   // iOS Caption 2
   sm: 13,
   // iOS Footnote
+  md: 15,
+  // iOS Subheadline — secondary rows, tab labels
   base: 17,
   // iOS Body — the default for almost every text element
   lg: 20,
@@ -93,24 +98,24 @@ var lineHeight = {
 var shadow = {
   sm: {
     shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 2,
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
     shadowOffset: { width: 0, height: 1 },
     elevation: 1
   },
   md: {
     shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.07,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
     elevation: 3
   },
   lg: {
     shadowColor: "#000",
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 6
+    shadowOpacity: 0.1,
+    shadowRadius: 28,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 8
   }
 };
 var tokens = {
@@ -137,4 +142,4 @@ export {
   tokens,
   tokens_default
 };
-//# sourceMappingURL=chunk-4MC4DKCY.js.map
+//# sourceMappingURL=chunk-HQARWLYL.js.map

@@ -9,6 +9,7 @@ import {
   type ButtonHTMLAttributes,
   type ReactNode,
 } from "react";
+import { Monitor, Moon, Sun } from "lucide-react";
 import { cx } from "./cx";
 
 export type Theme = "light" | "dark" | "system";
@@ -116,39 +117,15 @@ const LABEL: Record<Theme, string> = {
 };
 
 function SunIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <circle cx="8" cy="8" r="3" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        d="M8 1.5v1M8 13.5v1M1.5 8h1M13.5 8h1M3.4 3.4l.7.7M11.9 11.9l.7.7M3.4 12.6l.7-.7M11.9 4.1l.7-.7"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
+  return <Sun size={16} strokeWidth={2} aria-hidden="true" />;
 }
 
 function MoonIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M13.5 9.2A5.5 5.5 0 0 1 6.8 2.5 5.5 5.5 0 1 0 13.5 9.2Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <Moon size={16} strokeWidth={2} aria-hidden="true" />;
 }
 
 function MonitorIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <rect x="2" y="2.5" width="12" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M5.5 13.5h5M8 10.5v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
+  return <Monitor size={16} strokeWidth={2} aria-hidden="true" />;
 }
 
 const ICON: Record<Theme, () => JSX.Element> = {

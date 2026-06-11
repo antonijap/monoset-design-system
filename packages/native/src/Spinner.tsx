@@ -1,7 +1,8 @@
 import { forwardRef, useEffect, useRef } from "react";
-import { Animated, Easing } from "react-native";
+import { Animated, Easing, View } from "react-native";
 import { styles } from "./styles";
 import { colors } from "./tokens";
+import { useReducedMotion } from "./useReducedMotion";
 
 export interface SpinnerProps {
   /** Diameter in pixels. Default: 16. */
@@ -12,22 +13,26 @@ export interface SpinnerProps {
   label?: string;
 }
 
-export const Spinner = forwardRef<any, SpinnerProps>(function Spinner(
+export const Spinner = forwardRef<View, SpinnerProps>(function Spinner(
   { size = 16, color = colors.fg1, label = "Loading" },
-  _ref,
+  ref,
 ) {
   const angle = useRef(new Animated.Value(0)).current;
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    Animated.loop(
+    if (reduceMotion) return;
+    const anim = Animated.loop(
       Animated.timing(angle, {
         toValue: 1,
         duration: 800,
         easing: Easing.linear,
         useNativeDriver: true,
       }),
-    ).start();
-  }, [angle]);
+    );
+    anim.start();
+    return () => anim.stop();
+  }, [angle, reduceMotion]);
 
   const rotate = angle.interpolate({
     inputRange: [0, 1],
@@ -36,6 +41,7 @@ export const Spinner = forwardRef<any, SpinnerProps>(function Spinner(
 
   return (
     <Animated.View
+      ref={ref}
       accessibilityRole="progressbar"
       accessibilityLabel={label}
       style={[

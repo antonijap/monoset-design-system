@@ -1,5 +1,5 @@
 import { forwardRef, type ReactNode } from "react";
-import { Pressable, Text, type PressableProps, type StyleProp, type ViewStyle } from "react-native";
+import { Pressable, Text, View, type PressableProps, type StyleProp, type ViewStyle } from "react-native";
 import { styles } from "./styles";
 
 export interface ChipProps extends Omit<PressableProps, "children" | "style"> {
@@ -11,7 +11,7 @@ export interface ChipProps extends Omit<PressableProps, "children" | "style"> {
   style?: StyleProp<ViewStyle>;
 }
 
-export const Chip = forwardRef<any, ChipProps>(function Chip(
+export const Chip = forwardRef<View, ChipProps>(function Chip(
   { selected, onSelectedChange, leading, trailing, children, onPress, style, ...rest },
   ref,
 ) {

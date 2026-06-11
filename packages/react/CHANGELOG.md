@@ -1,5 +1,24 @@
 # @monoset/react
 
+## 0.7.0
+
+### Minor Changes
+
+- New components: Calendar (a standalone month grid that DatePicker now builds on), Collapsible, and AspectRatio.
+
+  Icons are now consistent across the kit. Every unicode glyph and hand-inlined svg was replaced with lucide-react, which was already a peer dependency.
+
+  Fixes: the Tabs underline now follows the active tab (it never rendered before), the indeterminate Progress animation works again, the Radio checked dot paints, Sheet slides in and ships a built-in close button, MultiCombobox tag removal works from the keyboard, and NumberInput supports uncontrolled use and free typing with clamp on blur.
+
+  Polish: overlays animate in and out and respect reduced motion, focus rings are readable in dark mode, shadows are layered and softer, and a sizing pass tightened buttons, avatars, tables, menus, and the calendar grid.
+
+  New peer dependencies: @radix-ui/react-collapsible and @radix-ui/react-aspect-ratio.
+
+### Patch Changes
+
+- Updated dependencies
+  - @monoset/tokens@0.2.0
+
 ## 0.5.1
 
 ### Patch Changes

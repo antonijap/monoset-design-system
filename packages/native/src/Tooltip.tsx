@@ -1,7 +1,7 @@
 import { useRef, useState, type ReactElement, type ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
 import { Popover } from "./Popover";
-import { colors, fontSize } from "./tokens";
+import { colors, fontSize, mono } from "./tokens";
 
 export interface TooltipProps {
   /** Tooltip body. String renders styled; ReactNode renders raw. */
@@ -28,6 +28,9 @@ export function Tooltip({ content, children, side = "top", width, longPressDelay
     <>
       <Pressable
         ref={triggerRef}
+        accessibilityRole="button"
+        accessibilityLabel={typeof content === "string" ? content : undefined}
+        accessibilityHint="Long press to show the label"
         onLongPress={() => setOpen(true)}
         delayLongPress={longPressDelay}
       >
@@ -38,11 +41,18 @@ export function Tooltip({ content, children, side = "top", width, longPressDelay
         onClose={() => setOpen(false)}
         anchorRef={triggerRef}
         side={side}
-        width={width}
-        contentStyle={{ padding: 10, maxWidth: 240 }}
+        width={width ?? "auto"}
+        contentStyle={{
+          backgroundColor: colors.fg1,
+          borderWidth: 0,
+          borderRadius: 8,
+          paddingVertical: 6,
+          paddingHorizontal: 10,
+          maxWidth: 240,
+        }}
       >
         {typeof content === "string"
-          ? <Text style={{ fontSize: fontSize.sm, color: colors.fg1 }}>{content}</Text>
+          ? <Text style={{ fontSize: fontSize.sm, color: mono[0] }}>{content}</Text>
           : content}
       </Popover>
     </>

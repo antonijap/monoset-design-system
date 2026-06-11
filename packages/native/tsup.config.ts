@@ -10,5 +10,7 @@ export default defineConfig({
   external: [
     "react",
     "react-native",
+    "react-native-svg",
+    "lucide-react-native",
   ],
 });

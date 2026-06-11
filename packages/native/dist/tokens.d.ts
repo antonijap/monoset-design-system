@@ -35,6 +35,7 @@ declare const colors: {
     readonly statusSuccess: "#2e4a33";
     readonly statusWarning: "#7a5a1a";
     readonly statusDanger: "#a83232";
+    readonly scrim: "rgba(0,0,0,0.4)";
 };
 declare const space: {
     readonly 0: 0;
@@ -60,11 +61,13 @@ declare const radius: {
     readonly md: 6;
     readonly lg: 8;
     readonly xl: 12;
+    readonly "2xl": 14;
     readonly full: 9999;
 };
 declare const fontSize: {
     readonly xs: 11;
     readonly sm: 13;
+    readonly md: 15;
     readonly base: 17;
     readonly lg: 20;
     readonly xl: 22;
@@ -88,8 +91,8 @@ declare const lineHeight: {
 declare const shadow: {
     readonly sm: {
         readonly shadowColor: "#000";
-        readonly shadowOpacity: 0.06;
-        readonly shadowRadius: 2;
+        readonly shadowOpacity: 0.05;
+        readonly shadowRadius: 3;
         readonly shadowOffset: {
             readonly width: 0;
             readonly height: 1;
@@ -98,23 +101,23 @@ declare const shadow: {
     };
     readonly md: {
         readonly shadowColor: "#000";
-        readonly shadowOpacity: 0.08;
-        readonly shadowRadius: 6;
+        readonly shadowOpacity: 0.07;
+        readonly shadowRadius: 12;
         readonly shadowOffset: {
             readonly width: 0;
-            readonly height: 2;
+            readonly height: 4;
         };
         readonly elevation: 3;
     };
     readonly lg: {
         readonly shadowColor: "#000";
-        readonly shadowOpacity: 0.12;
-        readonly shadowRadius: 16;
+        readonly shadowOpacity: 0.1;
+        readonly shadowRadius: 28;
         readonly shadowOffset: {
             readonly width: 0;
-            readonly height: 6;
+            readonly height: 10;
         };
-        readonly elevation: 6;
+        readonly elevation: 8;
     };
 };
 declare const tokens: {
@@ -148,6 +151,7 @@ declare const tokens: {
         readonly statusSuccess: "#2e4a33";
         readonly statusWarning: "#7a5a1a";
         readonly statusDanger: "#a83232";
+        readonly scrim: "rgba(0,0,0,0.4)";
     };
     readonly space: {
         readonly 0: 0;
@@ -173,11 +177,13 @@ declare const tokens: {
         readonly md: 6;
         readonly lg: 8;
         readonly xl: 12;
+        readonly "2xl": 14;
         readonly full: 9999;
     };
     readonly fontSize: {
         readonly xs: 11;
         readonly sm: 13;
+        readonly md: 15;
         readonly base: 17;
         readonly lg: 20;
         readonly xl: 22;
@@ -201,8 +207,8 @@ declare const tokens: {
     readonly shadow: {
         readonly sm: {
             readonly shadowColor: "#000";
-            readonly shadowOpacity: 0.06;
-            readonly shadowRadius: 2;
+            readonly shadowOpacity: 0.05;
+            readonly shadowRadius: 3;
             readonly shadowOffset: {
                 readonly width: 0;
                 readonly height: 1;
@@ -211,23 +217,23 @@ declare const tokens: {
         };
         readonly md: {
             readonly shadowColor: "#000";
-            readonly shadowOpacity: 0.08;
-            readonly shadowRadius: 6;
+            readonly shadowOpacity: 0.07;
+            readonly shadowRadius: 12;
             readonly shadowOffset: {
                 readonly width: 0;
-                readonly height: 2;
+                readonly height: 4;
             };
             readonly elevation: 3;
         };
         readonly lg: {
             readonly shadowColor: "#000";
-            readonly shadowOpacity: 0.12;
-            readonly shadowRadius: 16;
+            readonly shadowOpacity: 0.1;
+            readonly shadowRadius: 28;
             readonly shadowOffset: {
                 readonly width: 0;
-                readonly height: 6;
+                readonly height: 10;
             };
-            readonly elevation: 6;
+            readonly elevation: 8;
         };
     };
 };

@@ -46,7 +46,7 @@ export interface RadioProps extends Omit<PressableProps, "children" | "style"> {
   style?: RadioStyleProp;
 }
 
-export const Radio = forwardRef<any, RadioProps>(function Radio(
+export const Radio = forwardRef<View, RadioProps>(function Radio(
   { value, label, disabled: itemDisabled, style, ...rest },
   ref,
 ) {

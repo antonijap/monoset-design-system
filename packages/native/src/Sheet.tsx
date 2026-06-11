@@ -9,6 +9,7 @@ import {
   type ModalProps,
 } from "react-native";
 import { styles } from "./styles";
+import { useReducedMotion } from "./useReducedMotion";
 
 export interface SheetProps extends Omit<ModalProps, "children"> {
   /** Whether the sheet is visible. */
@@ -32,6 +33,7 @@ export const Sheet = forwardRef<View, SheetProps>(function Sheet(
   { open, onClose, title, description, grabber = true, children, ...rest },
   ref,
 ) {
+  const reduceMotion = useReducedMotion();
   const translateY = useRef(new Animated.Value(40)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
@@ -39,18 +41,18 @@ export const Sheet = forwardRef<View, SheetProps>(function Sheet(
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: open ? 1 : 0,
-        duration: open ? 180 : 120,
+        duration: reduceMotion ? 0 : open ? 180 : 120,
         easing: Easing.bezier(0.3, 0, 0, 1),
         useNativeDriver: true,
       }),
       Animated.timing(translateY, {
         toValue: open ? 0 : 40,
-        duration: open ? 280 : 180,
+        duration: reduceMotion ? 0 : open ? 280 : 180,
         easing: Easing.bezier(0.3, 0, 0, 1),
         useNativeDriver: true,
       }),
     ]).start();
-  }, [open, opacity, translateY]);
+  }, [open, opacity, translateY, reduceMotion]);
 
   return (
     <Modal

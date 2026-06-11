@@ -51,9 +51,11 @@ export const PinInput = forwardRef<View, PinInputProps>(function PinInput(
     }
     const ch = raw.slice(-1);
     if (ch && !DIGIT_RE.test(ch)) return;
-    const arr = current.split("");
+    // Fixed-length slot array so a digit lands at its own box instead of
+    // collapsing earlier empty slots and shifting the value left.
+    const arr = Array.from({ length }, (_, k) => current[k] ?? "");
     arr[i] = ch;
-    set(arr.join("").trimEnd());
+    set(arr.join(""));
     if (ch && i < length - 1) inputs.current[i + 1]?.focus();
   };
 
@@ -64,7 +66,7 @@ export const PinInput = forwardRef<View, PinInputProps>(function PinInput(
   };
 
   return (
-    <View ref={ref} accessibilityRole="none" accessibilityLabel={ariaLabel} style={[{ flexDirection: "row", gap: 8 }, style]}>
+    <View ref={ref} accessibilityRole="text" accessibilityLabel={ariaLabel} style={[{ flexDirection: "row", gap: 6 }, style]}>
       {Array.from({ length }, (_, i) => (
         <TextInput
           key={i}
@@ -82,11 +84,11 @@ export const PinInput = forwardRef<View, PinInputProps>(function PinInput(
           autoComplete={i === 0 ? "one-time-code" as any : "off" as any}
           style={{
             width: 44, height: 52, textAlign: "center",
-            fontSize: 20, fontWeight: fontWeight.medium as any, color: colors.fg1,
+            fontSize: fontSize.lg, fontWeight: fontWeight.medium as any, color: colors.fg1,
             backgroundColor: disabled ? colors.bgMuted : colors.bg,
             borderWidth: 1,
             borderColor: focused === i ? colors.fg1 : colors.border,
-            borderRadius: 12,
+            borderRadius: radius.xl,
           }}
           accessibilityLabel={`Digit ${i + 1} of ${length}`}
         />

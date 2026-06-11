@@ -1,4 +1,5 @@
 import * as RNav from "@radix-ui/react-navigation-menu";
+import { ChevronDown } from "lucide-react";
 import { forwardRef, type ReactNode } from "react";
 import { cx } from "./cx";
 
@@ -24,7 +25,9 @@ export const NavigationMenuTrigger = forwardRef<HTMLButtonElement, NavigationMen
     return (
       <RNav.Trigger ref={ref} className={cx("ms-nav-trigger", className)} {...rest}>
         {children}
-        <span className="ms-nav-caret" aria-hidden>▾</span>
+        <span className="ms-nav-caret" aria-hidden>
+          <ChevronDown size={16} strokeWidth={2} />
+        </span>
       </RNav.Trigger>
     );
   },

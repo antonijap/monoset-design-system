@@ -22,3 +22,7 @@ progress.md
 # Local IDE/agent configs
 .claude/
 .cursor/
+
+# Local agent config
+.codex/
+AGENTS.md

@@ -33,18 +33,29 @@ export const Slider = forwardRef<View, SliderProps>(function Slider(
     if (clamped !== value) onValueChange(clamped);
   };
 
+  const stepValue = (delta: number) => {
+    if (disabled) return;
+    const clamped = Math.max(min, Math.min(max, value + delta));
+    if (clamped !== value) onValueChange(clamped);
+  };
+
   return (
     <View
       ref={ref}
       accessibilityRole="adjustable"
       accessibilityValue={{ min, max, now: value }}
+      accessibilityActions={[{ name: "increment" }, { name: "decrement" }]}
+      onAccessibilityAction={(e) => {
+        if (e.nativeEvent.actionName === "increment") stepValue(step);
+        else if (e.nativeEvent.actionName === "decrement") stepValue(-step);
+      }}
       onLayout={(e) => setTrackWidth(e.nativeEvent.layout.width)}
       onStartShouldSetResponder={() => !disabled}
       onMoveShouldSetResponder={() => !disabled}
       onResponderGrant={(e: GestureResponderEvent) => updateFromX(e.nativeEvent.locationX)}
       onResponderMove={(e: GestureResponderEvent) => updateFromX(e.nativeEvent.locationX)}
       style={[
-        { paddingVertical: 16, justifyContent: "center", opacity: disabled ? 0.5 : 1 },
+        { paddingVertical: 20, justifyContent: "center", opacity: disabled ? 0.5 : 1 },
         style,
       ]}
       {...rest}

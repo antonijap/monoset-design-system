@@ -1,7 +1,8 @@
-import { forwardRef, useCallback } from "react";
-import { Pressable, Text, TextInput, View, type StyleProp, type ViewStyle } from "react-native";
+import { forwardRef, useCallback, useState } from "react";
+import { Pressable, TextInput, View, type StyleProp, type ViewStyle } from "react-native";
+import { Minus, Plus } from "lucide-react-native";
 import { Input } from "./Input";
-import { colors, fontSize, fontWeight, radius } from "./tokens";
+import { colors, radius } from "./tokens";
 
 export interface NumberInputProps {
   value?: number;
@@ -20,12 +21,20 @@ export const NumberInput = forwardRef<TextInput, NumberInputProps>(function Numb
   ref,
 ) {
   const isControlled = value !== undefined;
-  const current = isControlled ? value : defaultValue;
+  const [internal, setInternal] = useState<number | undefined>(defaultValue);
+  const current = isControlled ? value : internal;
+  // While the text field is focused, hold the raw string so partial input
+  // ("", "-", "1.") and over-max values can be typed; commit/clamp on blur.
+  const [draft, setDraft] = useState<string | null>(null);
   const clamp = useCallback((n: number) => Math.max(min, Math.min(max, n)), [min, max]);
 
-  const change = (next: number) => {
+  // Clamp and commit (stepper buttons, blur).
+  const commit = (next: number) => {
     if (disabled) return;
-    onValueChange?.(clamp(next));
+    const c = clamp(next);
+    setDraft(null);
+    if (!isControlled) setInternal(c);
+    onValueChange?.(c);
   };
 
   return (
@@ -33,7 +42,7 @@ export const NumberInput = forwardRef<TextInput, NumberInputProps>(function Numb
       style={[
         {
           flexDirection: "row", alignItems: "stretch", alignSelf: "flex-start",
-          borderWidth: 1, borderColor: colors.border, borderRadius: 12,
+          borderWidth: 1, borderColor: colors.border, borderRadius: radius.xl,
           backgroundColor: colors.bg, overflow: "hidden",
           opacity: disabled ? 0.6 : 1,
         },
@@ -41,36 +50,49 @@ export const NumberInput = forwardRef<TextInput, NumberInputProps>(function Numb
       ]}
     >
       <StepperButton
-        label="−"
-        onPress={() => change((current ?? 0) - step)}
+        kind="decrement"
+        onPress={() => commit((current ?? 0) - step)}
         disabled={disabled || (current !== undefined && current <= min)}
       />
       <Input
         ref={ref}
         keyboardType="numeric"
-        value={current === undefined ? "" : String(current)}
+        value={draft !== null ? draft : current === undefined ? "" : String(current)}
         onChangeText={(t) => {
+          setDraft(t);
           if (t === "" || t === "-") return;
           const n = Number(t);
-          if (Number.isFinite(n)) change(n);
+          // Emit the raw number while typing; don't clamp mid-entry.
+          if (Number.isFinite(n)) {
+            if (!isControlled) setInternal(n);
+            onValueChange?.(n);
+          }
+        }}
+        onBlur={() => {
+          if (draft !== null) {
+            const n = Number(draft);
+            if (Number.isFinite(n) && draft !== "" && draft !== "-") commit(n);
+            setDraft(null);
+          }
         }}
         editable={!disabled}
         placeholder={placeholder}
         style={{
-          minWidth: 60, textAlign: "center",
+          width: 44, textAlign: "center",
           borderWidth: 0, borderRadius: 0,
         }}
       />
       <StepperButton
-        label="+"
-        onPress={() => change((current ?? 0) + step)}
+        kind="increment"
+        onPress={() => commit((current ?? 0) + step)}
         disabled={disabled || (current !== undefined && current >= max)}
       />
     </View>
   );
 });
 
-function StepperButton({ label, onPress, disabled }: { label: string; onPress: () => void; disabled?: boolean }) {
+function StepperButton({ kind, onPress, disabled }: { kind: "increment" | "decrement"; onPress: () => void; disabled?: boolean }) {
+  const Icon = kind === "increment" ? Plus : Minus;
   return (
     <Pressable
       onPress={onPress}
@@ -81,9 +103,10 @@ function StepperButton({ label, onPress, disabled }: { label: string; onPress: (
         opacity: disabled ? 0.4 : 1,
       })}
       accessibilityRole="button"
-      accessibilityLabel={label === "+" ? "Increment" : "Decrement"}
+      accessibilityState={{ disabled: !!disabled }}
+      accessibilityLabel={kind === "increment" ? "Increase" : "Decrease"}
     >
-      <Text style={{ fontSize: fontSize.lg, fontWeight: fontWeight.medium, color: colors.fg1 }}>{label}</Text>
+      <Icon size={18} strokeWidth={2} color={colors.fg1} />
     </Pressable>
   );
 }

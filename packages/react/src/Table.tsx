@@ -6,6 +6,7 @@ import {
   type TableHTMLAttributes,
   type ThHTMLAttributes,
 } from "react";
+import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 import { cx } from "./cx";
 
 /* ---------------------------------------------------------------------------
@@ -53,25 +54,19 @@ export type SortDirection = "asc" | "desc" | null;
 
 function SortIcon({ direction }: { direction?: SortDirection }) {
   if (direction === "asc") {
-    return (
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-        <path d="M5 2L8.5 7H1.5L5 2Z" fill="currentColor" />
-      </svg>
-    );
+    return <ChevronUp size={14} strokeWidth={2} aria-hidden="true" />;
   }
   if (direction === "desc") {
-    return (
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-        <path d="M5 8L1.5 3H8.5L5 8Z" fill="currentColor" />
-      </svg>
-    );
+    return <ChevronDown size={14} strokeWidth={2} aria-hidden="true" />;
   }
   // Neutral: both arrows, dimmed
   return (
-    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-      <path d="M5 1L7.5 4.5H2.5L5 1Z" fill="currentColor" opacity="0.4" />
-      <path d="M5 9L2.5 5.5H7.5L5 9Z" fill="currentColor" opacity="0.4" />
-    </svg>
+    <ChevronsUpDown
+      size={14}
+      strokeWidth={2}
+      className="ms-table-header__sort-neutral"
+      aria-hidden="true"
+    />
   );
 }
 
