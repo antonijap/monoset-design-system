@@ -145,7 +145,7 @@ test("public React and Native versions come from their exact package versions", 
   assert.match(versionSource, /export const REACT_VERSION = `v\$\{reactPkg\.version\}`/);
   assert.match(versionSource, /export const NATIVE_VERSION = `v\$\{nativePkg\.version\}`/);
   assert.equal(`v${reactPackage.version}`, "v1.0.2");
-  assert.equal(`v${nativePackage.version}`, "v0.4.0");
+  assert.equal(`v${nativePackage.version}`, "v0.4.1");
 });
 
 test("the docs badge routes each platform to its exact npm package", () => {
@@ -268,7 +268,7 @@ test("the documentation sidebar exposes real navigation semantics", () => {
   assert.match(docs, /setPage\(link\.page\)/);
 });
 
-test("React density is compact without changing Native desktop or mobile tap targets", () => {
+test("desktop documentation is compact on both platforms without shrinking mobile tap targets", () => {
   assert.match(indexCss, /\.ms-docs-layout__body\s*\{[^}]*grid-template-columns:\s*260px 1fr;/);
   assert.match(indexCss, /\.ms-docs-layout__body--compact\s*\{[^}]*grid-template-columns:\s*232px 1fr;/);
   assert.match(indexCss, /\.ms-docs-nav\s*\{[^}]*padding:\s*16px 0;/);
@@ -277,7 +277,8 @@ test("React density is compact without changing Native desktop or mobile tap tar
   assert.match(indexCss, /\.ms-docs-nav--compact\s*\{[^}]*padding:\s*8px 0;/);
   assert.match(indexCss, /\.ms-docs-nav--compact \.ms-docs-nav__item\s*\{[^}]*padding:\s*5px 8px;[^}]*font-size:\s*12px;/);
   assert.match(indexCss, /\.ms-docs-nav--mobile \.ms-docs-nav__item\s*\{[^}]*min-height:\s*44px;/);
-  assert.ok(shell.includes("compact={!isNative} nav={nav}"));
+  assert.ok(shell.includes('className="ms-docs-layout__body ms-docs-layout__body--compact"'));
+  assert.ok(shell.includes("compact nav={nav}"));
   assert.ok(shell.includes("mobile onClose={() => setMobileNavOpen(false)} nav={nav}"));
 });
 

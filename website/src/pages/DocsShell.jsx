@@ -198,11 +198,11 @@ export default function DocsLayout({ page, setPage, onHome }) {
         </div>
       </header>
 
-      <div className={`ms-docs-layout__body${isNative ? "" : " ms-docs-layout__body--compact"}`}
+      <div className="ms-docs-layout__body ms-docs-layout__body--compact"
         style={{ flex:1, overflow:"hidden", minHeight:0 }}>
         <aside data-ms="docs-sidebar" style={{ borderRight:"1px solid var(--border-subtle)", background:"var(--bg-subtle)",
                         overflowY:"auto", flexShrink:0 }}>
-          <Sidebar active={safePage} setPage={p => setPage(p)} compact={!isNative} nav={nav}/>
+          <Sidebar active={safePage} setPage={p => setPage(p)} compact nav={nav}/>
         </aside>
         <div data-ms="docs-content" ref={contentRef} style={{ overflowY:"auto", padding:"32px 48px 80px" }}>
           <div style={{ maxWidth:720 }}>

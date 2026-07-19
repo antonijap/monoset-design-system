@@ -1,5 +1,11 @@
 # @monoset/native
 
+## 0.4.1
+
+### Patch Changes
+
+- Match the Native docs sidebar density, hover, and selected states to the React docs.
+
 ## 0.4.0
 
 ### Minor Changes
