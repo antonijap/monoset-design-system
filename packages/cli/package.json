@@ -1,7 +1,7 @@
 {
   "name": "@monoset/cli",
-  "version": "0.1.0",
-  "description": "Add Monoset components to your project as source files. No npm install, no version drift.",
+  "version": "0.1.1",
+  "description": "Copy Monoset components into your project as source files.",
   "keywords": [
     "monoset",
     "design-system",
@@ -27,5 +27,8 @@
   ],
   "engines": {
     "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
   }
 }

@@ -1,0 +1,57 @@
+/* ==========================================================================
+   Calendar (standalone month grid)
+   ========================================================================== */
+.ms-calendar {
+  display: inline-block; width: 292px; box-sizing: border-box;
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md);
+  padding: 12px; color: var(--fg1);
+}
+.ms-calendar__header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+}
+.ms-calendar__nav {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: none; cursor: pointer;
+  width: 28px; height: 28px; border-radius: var(--radius-sm); color: var(--fg1);
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.ms-calendar__nav:hover { background: var(--bg-muted); }
+.ms-calendar__nav[data-hovered] { background: var(--bg-muted); }
+.ms-calendar__nav[data-disabled] { color: var(--fg4); cursor: not-allowed; }
+.ms-calendar__nav:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.ms-calendar__nav[data-focus-visible] { outline: 2px solid var(--ring); outline-offset: 2px; }
+.ms-calendar__month {
+  margin: 0; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--fg1);
+}
+.ms-calendar__grid {
+  width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 2px;
+}
+.ms-calendar__weekday {
+  font-size: 11px; color: var(--fg3); text-align: center; padding: 4px 0;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.ms-calendar__body > tr { height: 36px; }
+.ms-calendar__body > tr > td { padding: 0; }
+.ms-calendar__cell {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 34px; box-sizing: border-box;
+  background: transparent; border: 1px solid transparent; cursor: pointer;
+  border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 13px; color: var(--fg1);
+  transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
+}
+.ms-calendar__cell[data-hovered]:not([data-disabled]) { background: var(--bg-muted); }
+.ms-calendar__cell:focus-visible { outline: 2px solid var(--ring); outline-offset: -1px; }
+.ms-calendar__cell[data-focus-visible] { outline: 2px solid var(--ring); outline-offset: -1px; }
+.ms-calendar__cell[data-outside-month] { color: var(--fg4); }
+.ms-calendar__cell[data-today] { border-color: var(--border-strong); font-weight: 600; }
+.ms-calendar__cell[data-selected] {
+  background: var(--accent); color: var(--accent-fg); border-color: var(--accent);
+}
+.ms-calendar__cell[data-unavailable] { color: var(--fg3); text-decoration: line-through; }
+.ms-calendar__cell[data-disabled] { color: var(--fg4); cursor: not-allowed; }
+.ms-calendar__cell[data-invalid] { border-color: var(--status-danger); }
+.ms-calendar[data-disabled] { cursor: not-allowed; }
+.ms-calendar[data-readonly] { cursor: default; }
+.ms-calendar[data-readonly] .ms-calendar__cell { cursor: default; }
+.ms-calendar[data-readonly] .ms-calendar__cell[data-hovered] { background: transparent; }

@@ -1,0 +1,34 @@
+/* ==========================================================================
+   Slider
+   ========================================================================== */
+.ms-slider {
+  position: relative;
+  display: flex; align-items: center;
+  user-select: none; touch-action: none;
+  width: 100%;
+  height: 20px;
+}
+.ms-slider__track {
+  background: var(--bg-muted);
+  position: relative;
+  flex: 1;
+  border-radius: 999px;
+  height: 4px;
+}
+.ms-slider__range {
+  position: absolute;
+  background: var(--accent);
+  border-radius: 999px;
+  height: 100%;
+}
+.ms-slider__thumb {
+  display: block;
+  width: 16px; height: 16px;
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+  cursor: grab;
+}
+.ms-slider__thumb:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.ms-slider__thumb:active { cursor: grabbing; }

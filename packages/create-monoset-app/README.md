@@ -22,9 +22,9 @@ npm create monoset-app@latest .
 
 A minimal Vite + React 19 project with:
 
-- `@monoset/tokens` — the CSS variables
-- `@monoset/react` — the component kit
-- `framer-motion` — motion presets
+- `@monoset/tokens`: CSS variables
+- `@monoset/react`: the component kit
+- `framer-motion`: motion presets
 - A working example page with Card, Field, Input, Switch, and Buttons
 
 ## License

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { VERSION } from '../version.js';
+import { useClipboardCopy } from '../ui/useClipboardCopy.js';
 import {
   EASE_STANDARD, EASE_EMPHASIS, DUR,
   hoverLift, pressDown,
@@ -53,7 +54,7 @@ function BentoAuth() {
         Continue <Icon name="arrowRight" size={14}/>
       </motion.button>
       <div style={{ fontSize:12, color:"var(--fg3)", textAlign:"center", marginTop:12 }}>
-        New here? <span style={{ color:"var(--fg1)", fontWeight:500, cursor:"pointer" }}>Create an account</span>
+        New here? <span style={{ color:"var(--fg1)", fontWeight:500 }}>Create an account</span>
       </div>
     </BentoTile>
   );
@@ -107,10 +108,11 @@ function BentoAnalytics() {
           </div>
           <div style={{ fontSize:11, color:"var(--mono-400)", marginTop:4 }}>vs. last month</div>
         </div>
-        <div style={{ display:"inline-flex", padding:2, background:"var(--mono-800)", borderRadius:6 }}>
+        <div role="group" aria-label="Revenue range" style={{ display:"inline-flex", padding:2, background:"var(--mono-800)", borderRadius:6 }}>
           {["7d","30d","12m"].map((s,i) => (
-            <div key={s} onClick={()=>setRange(i)} style={{ position:"relative", display:"inline-flex", alignItems:"center", justifyContent:"center",
+            <button key={s} type="button" aria-pressed={range===i} onClick={()=>setRange(i)} style={{ position:"relative", display:"inline-flex", alignItems:"center", justifyContent:"center",
               padding:"6px 12px", lineHeight:1, borderRadius:4, fontSize:11, fontWeight:500, cursor:"pointer",
+              border:"none", background:"transparent", fontFamily:"inherit",
               color: range===i?"#fff":"var(--mono-400)",
               transition:"color var(--duration-fast) var(--ease-standard)" }}>
               {range===i && (
@@ -119,7 +121,7 @@ function BentoAnalytics() {
                   style={{ position:"absolute", inset:0, background:"var(--mono-600)", borderRadius:4, zIndex:0 }}/>
               )}
               <span style={{ position:"relative", zIndex:1 }}>{s}</span>
-            </div>
+            </button>
           ))}
         </div>
       </div>
@@ -184,17 +186,17 @@ function BentoTypography() {
           Aa
         </motion.div>
       </div>
-      <div style={{ display:"flex", gap:3, marginTop:8 }}>
+      <div role="group" aria-label="Font weight" style={{ display:"flex", gap:3, marginTop:8 }}>
         {weights.map(w => (
-          <div key={w.w} onClick={()=>setWeight(w.w)}
+          <button key={w.w} type="button" aria-pressed={weight===w.w} onClick={()=>setWeight(w.w)}
             style={{ flex:1, padding:"6px 0", textAlign:"center",
                      fontSize:10, fontWeight:500,
                      color: weight===w.w ? "var(--fg1)" : "var(--fg3)",
                      background: weight===w.w ? "var(--bg-muted)" : "transparent",
-                     borderRadius:4, cursor:"pointer",
+                     border:"none", borderRadius:4, cursor:"pointer", fontFamily:"inherit",
                      transition:"background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard)" }}>
             {w.w}
-          </div>
+          </button>
         ))}
       </div>
     </BentoTile>
@@ -227,7 +229,9 @@ function BentoColors() {
       </div>
       <div data-ms="bento-colors-swatches" style={{ display:"flex", gap:3, flex:1 }}>
         {ramp.map(([n, hex]) => (
-          <div key={n}
+          <button key={n} type="button"
+            aria-label={`Use mono-${n} (${hex})`}
+            aria-pressed={active === `--mono-${n}`}
             onClick={()=>setActive(`--mono-${n}`)}
             style={{ flex: 1, background: hex, borderRadius: 6,
                      border: active === `--mono-${n}` ? "1px solid var(--fg1)" : "1px solid var(--border-subtle)",
@@ -250,7 +254,7 @@ function BentoTeam() {
   const activity = [
     { ini:"AT", bg:"var(--mono-900)", action:"edited",       target:"Dashboard.jsx", ago:"2m" },
     { ini:"GH", bg:"var(--mono-800)", action:"commented on", target:"PR #42",        ago:"5m" },
-    { ini:"MC", bg:"var(--mono-600)", action:"shipped",      target:"v1.2.0",        ago:"1h" },
+    { ini:"MC", bg:"var(--mono-600)", action:"published",    target:"Release notes", ago:"1h" },
     { ini:"LT", bg:"var(--mono-700)", action:"merged",       target:"feat/motion",   ago:"3h" },
     { ini:"DK", bg:"var(--mono-500)", action:"opened",       target:"Ticket #218",   ago:"6h" },
   ];
@@ -320,7 +324,7 @@ function BentoTeam() {
         <span style={{ color:"var(--fg3)" }}>
           <span style={{ color:"var(--fg1)", fontWeight:500 }}>24</span> updates today
         </span>
-        <span style={{ color:"var(--fg2)", fontWeight:500, cursor:"pointer",
+        <span style={{ color:"var(--fg2)", fontWeight:500,
                         display:"inline-flex", alignItems:"center", gap:4 }}>
           View all
           <Icon name="arrowRight" size={11}/>
@@ -386,7 +390,7 @@ function BentoPlayer() {
         </div>
 
         <div style={{ marginTop:"auto" }}>
-          <div style={{ position:"relative", height:14, display:"flex", alignItems:"center", cursor:"pointer" }}>
+          <div style={{ position:"relative", height:14, display:"flex", alignItems:"center" }}>
             <div style={{ position:"relative", height:3, width:"100%",
                            background:"var(--mono-800)", borderRadius:2 }}>
               <div style={{ position:"absolute", left:0, top:0, height:"100%", width:`${pct}%`,
@@ -407,14 +411,14 @@ function BentoPlayer() {
         </div>
 
         <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:18 }}>
-          <motion.button whileTap={pressDown}
+          <motion.button type="button" aria-label="Previous track" whileTap={pressDown}
             style={{ background:"transparent", border:"none", cursor:"pointer", color:"var(--mono-400)",
                      padding:0, display:"flex" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
               <polygon points="19,20 9,12 19,4"/><rect x="5" y="4" width="2" height="16"/>
             </svg>
           </motion.button>
-          <motion.button whileTap={pressDown} onClick={()=>setPlaying(p=>!p)}
+          <motion.button type="button" aria-label={playing ? "Pause" : "Play"} whileTap={pressDown} onClick={()=>setPlaying(p=>!p)}
             style={{ width:44, height:44, borderRadius:999, background:"#fff", color:"var(--mono-1000)",
                      border:"none", display:"flex", alignItems:"center", justifyContent:"center",
                      cursor:"pointer", boxShadow:"0 2px 10px rgb(255 255 255 / 0.15)" }}>
@@ -422,7 +426,7 @@ function BentoPlayer() {
               ? <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
               : <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft:2 }}><polygon points="6,4 20,12 6,20"/></svg>}
           </motion.button>
-          <motion.button whileTap={pressDown}
+          <motion.button type="button" aria-label="Next track" whileTap={pressDown}
             style={{ background:"transparent", border:"none", cursor:"pointer", color:"var(--mono-400)",
                      padding:0, display:"flex" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -475,7 +479,7 @@ function BentoCalendar() {
         <div style={{ display:"inline-flex", padding:2, background:"var(--bg-muted)", borderRadius:6 }}>
           {["Day","Week","Month"].map((v,i) => (
             <div key={v} style={{ position:"relative", display:"inline-flex", alignItems:"center", justifyContent:"center",
-              padding:"5px 10px", lineHeight:1, borderRadius:4, fontSize:11, fontWeight:500, cursor:"pointer",
+              padding:"5px 10px", lineHeight:1, borderRadius:4, fontSize:11, fontWeight:500,
               color: i===1?"var(--fg1)":"var(--fg3)",
               background: i===1?"var(--bg)":"transparent",
               boxShadow: i===1?"var(--shadow-xs)":"none" }}>{v}</div>
@@ -529,7 +533,6 @@ function BentoCalendar() {
                   padding:"3px 6px",
                   fontSize:10, fontWeight:500, lineHeight:1.2,
                   overflow:"hidden", whiteSpace:"nowrap", textOverflow:"ellipsis",
-                  cursor:"pointer",
                 }}>
                   {b.title}
                 </div>
@@ -591,10 +594,10 @@ function BentoSettings() {
       </div>
       <div style={{ display:"flex", flexDirection:"column", gap:10, flex:1 }}>
         {rows.map(r => (
-          <div key={r.k} onClick={()=>setS(v=>({ ...v, [r.k]: !v[r.k] }))}
+          <button key={r.k} type="button" aria-pressed={s[r.k]} onClick={()=>setS(v=>({ ...v, [r.k]: !v[r.k] }))}
             style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12,
                      padding:"10px 12px", borderRadius:8, border:"1px solid var(--border-subtle)",
-                     background:"var(--bg-subtle)", cursor:"pointer",
+                     background:"var(--bg-subtle)", cursor:"pointer", fontFamily:"inherit", textAlign:"left",
                      transition:"background var(--duration-fast) var(--ease-standard)" }}>
             <div>
               <div style={{ fontSize:13, fontWeight:500, color:"var(--fg1)", lineHeight:1.2 }}>{r.label}</div>
@@ -610,7 +613,7 @@ function BentoSettings() {
                 style={{ position:"absolute", top:2, left:2, width:14, height:14, borderRadius:"50%",
                          background:"#fff", boxShadow:"0 1px 2px rgb(0 0 0 / 0.2)" }}/>
             </motion.span>
-          </div>
+          </button>
         ))}
       </div>
     </BentoTile>
@@ -635,11 +638,11 @@ function ThemedSurface({ theme }) {
       <div style={{ fontSize:20, fontWeight:600, color:"var(--fg1)", letterSpacing:"-0.01em" }}>Monthly revenue</div>
       <div style={{ fontSize:32, fontWeight:700, color:"var(--fg1)", letterSpacing:"-0.02em" }}>$24,310</div>
       <div style={{ display:"flex", gap:6 }}>
-        <button style={{ background:"var(--accent)", color:"var(--accent-fg)", border:"none", borderRadius:6,
+        <button type="button" style={{ background:"var(--accent)", color:"var(--accent-fg)", border:"none", borderRadius:6,
                          padding:"7px 14px", fontSize:12, fontWeight:500, fontFamily:"inherit", cursor:"pointer" }}>
           View report
         </button>
-        <button style={{ background:"var(--bg)", color:"var(--fg1)", border:"1px solid var(--border)",
+        <button type="button" style={{ background:"var(--bg)", color:"var(--fg1)", border:"1px solid var(--border)",
                          borderRadius:6, padding:"7px 14px", fontSize:12, fontWeight:500, fontFamily:"inherit", cursor:"pointer" }}>
           Export
         </button>
@@ -665,7 +668,7 @@ function BentoShortcuts() {
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
         <div>
           <div style={{ fontSize:13, fontWeight:600, color:"var(--fg1)" }}>Shortcuts</div>
-          <div style={{ fontSize:11, color:"var(--fg3)", marginTop:2 }}>Every surface, keyboard-first</div>
+          <div style={{ fontSize:11, color:"var(--fg3)", marginTop:2 }}>Five common actions</div>
         </div>
       </div>
       <div style={{ display:"flex", flexDirection:"column", gap:8, flex:1 }}>
@@ -691,10 +694,10 @@ function BentoShortcuts() {
 
 function BentoChangelog() {
   const items = [
-    { tag:"v1.2.0", kind:"New",   title:"Slider, Toggle group, Kbd, Spinner"   },
-    { tag:"v1.1.4", kind:"Fixed", title:"Mobile drawer slides in from the right" },
-    { tag:"v1.1.3", kind:"Docs",  title:"LLM semantic naming prompt"           },
-    { tag:"v1.1.0", kind:"New",   title:"Framer Motion presets"                },
+    { tag:"Today", kind:"New",   title:"Saved views for the whole team" },
+    { tag:"Tue",   kind:"Fixed", title:"Mobile drawer navigation" },
+    { tag:"Mon",   kind:"Docs",  title:"Keyboard shortcut reference" },
+    { tag:"Fri",   kind:"New",   title:"Motion preferences" },
   ];
   const kindColor = { New:"var(--fg1)", Fixed:"var(--fg2)", Docs:"var(--fg3)" };
   return (
@@ -705,10 +708,10 @@ function BentoChangelog() {
                boxShadow:"var(--shadow-sm)" }}>
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
         <div>
-          <div style={{ fontSize:13, fontWeight:600, color:"var(--fg1)" }}>Changelog</div>
-          <div style={{ fontSize:11, color:"var(--fg3)", marginTop:2 }}>Shipped last 30 days</div>
+          <div style={{ fontSize:13, fontWeight:600, color:"var(--fg1)" }}>Product updates</div>
+          <div style={{ fontSize:11, color:"var(--fg3)", marginTop:2 }}>Example interface</div>
         </div>
-        <span style={{ fontSize:10, fontFamily:"var(--font-mono)", color:"var(--fg3)" }}>4 releases</span>
+        <span style={{ fontSize:10, fontFamily:"var(--font-mono)", color:"var(--fg3)" }}>Sample data</span>
       </div>
       <div style={{ display:"flex", flexDirection:"column", gap:0, flex:1 }}>
         {items.map((it, i) => (
@@ -733,7 +736,7 @@ function BentoActivity() {
     { who:"GH", text:"commented on", target:"PR #42",      time:"4m" },
     { who:"MC", text:"merged",      target:"feat/kbd",     time:"22m" },
     { who:"LT", text:"opened",      target:"Ticket #218",  time:"1h" },
-    { who:"DK", text:"released",    target:"v1.2.0",       time:"3h" },
+    { who:"DK", text:"published",   target:"Release notes", time:"3h" },
   ];
   return (
     <div
@@ -807,9 +810,8 @@ function BentoTokens() {
 
 /* ─── HERO (default export) ──────────────────────────────────────── */
 export default function Hero({ onStart }) {
-  const [copied, setCopied] = useState(false);
-  const cmd = "npm install monoset";
-  const copy = () => { navigator.clipboard?.writeText(cmd).catch(()=>{}); setCopied(true); setTimeout(()=>setCopied(false),2000); };
+  const cmd = "npm install @monoset/react @monoset/tokens";
+  const { copy, copyStatus } = useClipboardCopy(cmd);
   return (
     <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column" }}>
       <header data-ms="hero-header" style={{ position:"sticky", top:0, zIndex:100, background:"rgba(255,255,255,0.9)",
@@ -821,7 +823,7 @@ export default function Hero({ onStart }) {
         </div>
         <nav data-ms="hero-nav" style={{ display:"flex", gap:4, marginLeft:8 }}>
           {[["Docs",()=>onStart("introduction")],["Components",()=>onStart("buttons")],["Foundations",()=>onStart("colors")]].map(([l,fn])=>(
-            <button key={l} onClick={fn} style={{ background:"none", border:"none", cursor:"pointer",
+            <button key={l} type="button" onClick={fn} style={{ background:"none", border:"none", cursor:"pointer",
               fontSize:13, color:"var(--fg2)", padding:"6px 10px", borderRadius:5, fontFamily:"inherit",
               transition:"color 120ms, background 120ms" }}
               onMouseEnter={e=>{e.currentTarget.style.color="var(--fg1)";e.currentTarget.style.background="var(--bg-muted)";}}
@@ -832,7 +834,7 @@ export default function Hero({ onStart }) {
           <span style={{ fontSize:12, fontWeight:500, color:"var(--fg3)", background:"var(--bg-muted)",
                          border:"1px solid var(--border-subtle)", padding:"0 12px", borderRadius:6,
                          height:32, display:"inline-flex", alignItems:"center", boxSizing:"border-box" }}>{VERSION}</span>
-          <button onClick={()=>onStart("introduction")} style={{ background:"var(--mono-1000)", color:"#fff",
+          <button type="button" onClick={()=>onStart("introduction")} style={{ background:"var(--mono-1000)", color:"#fff",
             fontSize:13, fontWeight:500, border:"none", borderRadius:6, padding:"0 16px", cursor:"pointer",
             height:32, display:"inline-flex", alignItems:"center", fontFamily:"inherit", boxSizing:"border-box" }}>
             Get started
@@ -857,7 +859,7 @@ export default function Hero({ onStart }) {
           <span style={{ color:"var(--fg3)" }}>Nothing extra.</span>
         </h1>
         <p data-ms="hero-lead" style={{ fontSize:18, color:"var(--fg3)", lineHeight:1.65, maxWidth:520, margin:"0 0 36px" }}>
-          A minimal monotone design system. One neutral ramp, one typeface, all the components you'd build anyway, and nothing that tries to upstage the product you're putting it inside.
+          A minimal, monotone React system built on one neutral ramp. Finished behavior without a house style.
         </p>
         <div data-ms="hero-ctas" style={{ display:"flex", gap:10, alignItems:"center", flexWrap:"wrap", justifyContent:"center" }}>
           <motion.button onClick={()=>onStart("introduction")}
@@ -867,14 +869,18 @@ export default function Hero({ onStart }) {
             display:"flex", alignItems:"center", gap:8, fontFamily:"inherit", boxSizing:"border-box" }}>
             Read the docs
           </motion.button>
-          <motion.div onClick={copy}
+          <motion.button type="button" data-ms="install-copy" onClick={copy}
             whileHover={hoverLift} whileTap={pressDown}
             style={{ display:"flex", alignItems:"center", gap:10, padding:"0 18px", height:44,
                background:"var(--bg-subtle)", border:"1px solid var(--border)", borderRadius:7,
                cursor:"pointer", fontSize:13, fontFamily:"var(--font-mono)", color:"var(--fg2)", boxSizing:"border-box" }}>
             $ {cmd}
-            <Icon name={copied?"check":"copy"} size={14} style={{ color:"var(--fg3)" }}/>
-          </motion.div>
+            <span aria-live="polite" style={{ color:"var(--fg3)", display:"inline-flex", alignItems:"center" }}>
+              {copyStatus === "idle" && <Icon name="copy" size={14}/>}
+              {copyStatus === "copied" && "Copied"}
+              {copyStatus === "failed" && "Copy failed"}
+            </span>
+          </motion.button>
         </div>
 
       </div>
@@ -944,7 +950,7 @@ export default function Hero({ onStart }) {
           <img src="/assets/monoset-mark.svg" width="16" height="16" alt=""/>
           <span style={{ fontSize:12, color:"var(--fg3)" }}>Monoset {VERSION}</span>
         </div>
-        <div style={{ fontSize:12, color:"var(--fg4)" }}>MIT license · No opinions supplied.</div>
+        <div style={{ fontSize:12, color:"var(--fg4)" }}>MIT license · Brand-neutral by design.</div>
       </footer>
     </div>
   );

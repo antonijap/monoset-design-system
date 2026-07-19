@@ -1,0 +1,17 @@
+/* ==========================================================================
+   Empty state
+   ========================================================================== */
+.ms-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 48px 24px; gap: 8px;
+  color: var(--fg2);
+}
+.ms-empty__icon {
+  width: 40px; height: 40px; border-radius: var(--radius-md);
+  background: var(--bg-muted); color: var(--fg2);
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 8px;
+}
+.ms-empty__title { margin: 0; font-size: 14px; font-weight: 600; color: var(--fg1); }
+.ms-empty__body  { font-size: 13px; color: var(--fg3); max-width: 36ch; }
+.ms-empty__action { margin-top: 8px; }

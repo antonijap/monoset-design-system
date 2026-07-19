@@ -17,32 +17,49 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.2
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
       - name: Install
-        run: npm ci
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify workflow policy
+        run: pnpm test:workflows
 
       - name: Build packages
         run: |
-          npm run build --workspace=@monoset/tokens --if-present
-          npm run build --workspace=@monoset/motion
-          npm run build --workspace=@monoset/react
+          pnpm --filter @monoset/tokens build
+          pnpm --filter @monoset/motion build
+          pnpm --filter @monoset/react build
+
+      - name: Verify packed React package
+        run: pnpm --filter @monoset/react verify:package
+
+      - name: Run React browser gates
+        run: pnpm --filter @monoset/react test:e2e
+        env:
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
+
+      - name: Test website
+        run: pnpm --filter website test
 
       - name: Build website
-        run: npm run build --workspace=website
+        run: pnpm --filter website build
 
       - name: size-limit
-        run: npm run -w website -- size-limit
+        run: pnpm --filter website size-limit
         continue-on-error: false
 
       - name: Lighthouse CI
-        run: |
-          cd website
-          npx -y @lhci/cli autorun
+        run: pnpm --dir website exec lhci autorun
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
         continue-on-error: true
@@ -52,9 +69,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.2
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm test --workspace=@monoset/react
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @monoset/react test
+      - run: pnpm --filter @monoset/react test:contracts:types

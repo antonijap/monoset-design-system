@@ -99,7 +99,7 @@ export default function Dashboard() {
             onChange={(e) => setSearch(e.target.value)}
             style={{ maxWidth: 280 }}
           />
-          <Avatar initials="AJ" size="sm" />
+          <Avatar name="Avery Johnson" size="sm" />
         </header>
 
         {/* Content */}
@@ -188,7 +188,7 @@ export default function Dashboard() {
                 <tr key={user.email}>
                   <td>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <Avatar initials={user.name.split(" ").map((n) => n[0]).join("")} size="sm" />
+                      <Avatar name={user.name} size="sm" />
                       {user.name}
                     </div>
                   </td>

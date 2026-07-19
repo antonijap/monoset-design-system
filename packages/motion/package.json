@@ -1,7 +1,7 @@
 {
   "name": "@monoset/motion",
-  "version": "0.2.0",
-  "description": "Monoset motion presets for framer-motion. Easings, durations, reusable variants.",
+  "version": "0.2.1",
+  "description": "Motion presets and shared timing values for Framer Motion.",
   "keywords": [
     "design-system",
     "motion",
@@ -18,9 +18,14 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
   "scripts": {

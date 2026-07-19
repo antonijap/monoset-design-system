@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 // Build-time search index for the Cmd+K palette.
-// Reads website/src/pages/docs.jsx, pulls <Lead>, <H2 id="...">, <H3 id="...">,
-// <P> text per page component, and emits website/public/search-index.json.
+// Reads the mapped React docs route groups, pulls <Lead>, <H2 id="...">,
+// <H3 id="...">, and <P> text per page component, then emits the search index.
 
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { REACT_DOC_ROUTES } from "../src/pages/react-docs/routes.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const rootWebsite = resolve(here, "..");
-const source = resolve(rootWebsite, "src/pages/docs.jsx");
+const routeRoot = resolve(rootWebsite, "src/pages/react-docs");
 const meta = resolve(rootWebsite, "src/pages/docs-meta.js");
 const out = resolve(rootWebsite, "public/search-index.json");
 
-const src = readFileSync(source, "utf8");
 const metaSrc = readFileSync(meta, "utf8");
 
 // ---- parse PAGE_META (title, desc) per slug ------------------------------
@@ -24,19 +24,26 @@ for (const m of metaSrc.matchAll(metaRe)) {
   pageMeta[m[1]] = { title: m[2].replace(/\\"/g, '"'), desc: m[3].replace(/\\"/g, '"') };
 }
 
-// ---- map slug <-> Page component name via PAGES in docs.jsx --------------
-const slugToFn = {};
-// e.g.: `  introduction: PageIntroduction,`
-const pagesBlock = src.match(/const PAGES\s*=\s*\{([\s\S]*?)\};/);
-if (pagesBlock) {
-  for (const line of pagesBlock[1].split("\n")) {
-    const m = line.match(/(\w+):\s*(Page\w+)/);
-    if (m) slugToFn[m[1]] = m[2];
-  }
+// ---- load each unique group once in stable route-map order ---------------
+const groupSources = new Map();
+for (const modulePath of new Set(Object.values(REACT_DOC_ROUTES))) {
+  const sourcePath = resolve(routeRoot, modulePath);
+  groupSources.set(modulePath, readFileSync(sourcePath, "utf8"));
+}
+
+const slugToPage = new Map();
+for (const [slug, modulePath] of Object.entries(REACT_DOC_ROUTES)) {
+  const src = groupSources.get(modulePath);
+  const pagesBlock = src.match(/export const PAGES\s*=\s*\{([\s\S]*?)\};/);
+  if (!pagesBlock) throw new Error(`Missing PAGES export in ${modulePath}`);
+  const owner = pagesBlock[1].match(new RegExp(`(?:^|\\n)\\s*${slug}:\\s*(Page\\w+),?`));
+  if (!owner) throw new Error(`Missing page owner for ${slug} in ${modulePath}`);
+  if (!pageMeta[slug]) throw new Error(`Missing metadata for ${slug}`);
+  slugToPage.set(slug, { fn: owner[1], src });
 }
 
 // ---- extract each Page* function body -----------------------------------
-function findFunctionBody(name) {
+function findFunctionBody(src, name) {
   const i = src.indexOf(`function ${name}(`);
   if (i < 0) return null;
   // find the opening { of the function body (skip param-destructure braces)
@@ -85,10 +92,10 @@ function extractHeadings(body) {
 const records = [];
 let docId = 0;
 
-for (const [slug, fn] of Object.entries(slugToFn)) {
-  const body = findFunctionBody(fn);
-  if (!body) continue;
-  const m = pageMeta[slug] || { title: slug, desc: "" };
+for (const [slug, { fn, src }] of slugToPage) {
+  const body = findFunctionBody(src, fn);
+  if (!body) throw new Error(`Missing ${fn} function body for ${slug}`);
+  const m = pageMeta[slug];
 
   // page-level record
   const leads = extractTagged(body, "Lead").join(" ");

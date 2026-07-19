@@ -1,5 +1,11 @@
 # @monoset/motion
 
+## 0.2.1
+
+### Patch Changes
+
+- Ship CommonJS declarations that match the runtime.
+
 ## 0.2.0
 
 ### Minor Changes
@@ -10,4 +16,4 @@
 
 ### Minor Changes
 
-- Initial public release. Monoset is a minimal, monotone, unopinionated design system: tokens, Framer Motion presets, and a React component kit wrapping Radix primitives. See [monoset.design](https://monoset.design) for docs.
+- Initial public release. Monoset is a minimal, monotone, brand-neutral design system: tokens, Framer Motion presets, and a React component kit wrapping Radix primitives. See [monoset.design](https://monoset.design) for docs.

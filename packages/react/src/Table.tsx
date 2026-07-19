@@ -88,37 +88,45 @@ export const TableHeader = forwardRef<HTMLTableCellElement, TableHeaderProps>(
     { sortable, sortDirection, onSort, className, children, ...rest },
     ref,
   ) {
-    const handleClick = sortable && onSort ? onSort : undefined;
-    const ariaSort =
-      sortDirection === "asc"
+    const ariaSort = !sortable
+      ? undefined
+      : sortDirection === "asc"
         ? ("ascending" as const)
         : sortDirection === "desc"
           ? ("descending" as const)
-          : undefined;
+          : sortable
+            ? ("none" as const)
+            : undefined;
 
     return (
       <th
+        {...rest}
         ref={ref}
         className={cx(
           "ms-table-header",
           sortable && "ms-table-header--sortable",
           className,
         )}
-        onClick={handleClick}
         aria-sort={ariaSort}
-        {...rest}
       >
-        {children}
-        {sortable && (
-          <span
-            className={cx(
-              "ms-table-header__sort",
-              sortDirection != null && "ms-table-header__sort--active",
-            )}
+        {sortable ? (
+          <button
+            type="button"
+            className="ms-table-header__sort-button"
+            onClick={onSort}
+            disabled={!onSort}
           >
-            <SortIcon direction={sortDirection} />
-          </span>
-        )}
+            <span className="ms-table-header__label">{children}</span>
+            <span
+              className={cx(
+                "ms-table-header__sort",
+                sortDirection != null && "ms-table-header__sort--active",
+              )}
+            >
+              <SortIcon direction={sortDirection} />
+            </span>
+          </button>
+        ) : children}
       </th>
     );
   },

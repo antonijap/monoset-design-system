@@ -1,0 +1,29 @@
+/* ==========================================================================
+   Collapsible
+   ========================================================================== */
+.ms-collapsible__trigger {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%; padding: 12px 0;
+  background: none; border: none; cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 500; color: var(--fg1);
+  text-align: left;
+}
+.ms-collapsible__label { min-width: 0; }
+.ms-collapsible__chevron {
+  color: var(--fg3); flex-shrink: 0;
+  transition: transform var(--duration-base) var(--ease-standard);
+}
+.ms-collapsible__trigger[data-state="open"] .ms-collapsible__chevron { transform: rotate(180deg); }
+.ms-collapsible__trigger:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: var(--radius-xs); }
+.ms-collapsible__content { overflow: hidden; }
+.ms-collapsible__content[data-state="open"]   { animation: ms-collapsible-down var(--duration-base) var(--ease-standard); }
+.ms-collapsible__content[data-state="closed"] { animation: ms-collapsible-up   var(--duration-base) var(--ease-standard); }
+.ms-collapsible__inner { padding-bottom: 12px; font-size: 13px; color: var(--fg2); line-height: 1.6; }
+@keyframes ms-collapsible-down {
+  from { height: 0; }
+  to   { height: var(--radix-collapsible-content-height); }
+}
+@keyframes ms-collapsible-up {
+  from { height: var(--radix-collapsible-content-height); }
+  to   { height: 0; }
+}

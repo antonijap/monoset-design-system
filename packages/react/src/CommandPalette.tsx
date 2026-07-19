@@ -1,26 +1,26 @@
 import * as RDialog from "@radix-ui/react-dialog";
 import {
-  type ReactNode,
-  type KeyboardEvent,
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
   forwardRef,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
 } from "react";
 import { Search } from "lucide-react";
+import { useMonosetPortalContainer } from "./PortalContext";
 import { cx } from "./cx";
-
-/* ─── Types ─────────────────────────────────────────────────────── */
 
 export interface CommandItem {
   id: string;
   label: string;
   description?: string;
   icon?: ReactNode;
-  /** Called when the item is selected. */
+  /** Called when the action is selected. */
   onSelect?: () => void;
-  /** Keywords for search matching (not shown in the UI). */
+  /** Extra search terms that are not rendered. */
   keywords?: string[];
   disabled?: boolean;
 }
@@ -31,43 +31,63 @@ export interface CommandGroup {
 }
 
 export interface CommandPaletteProps {
-  /** Controlled open state. */
-  open?: boolean;
-  /** Called when the palette wants to open or close. */
-  onOpenChange?: (open: boolean) => void;
-  /** Flat list of items or grouped items. */
+  /** CommandPalette is explicitly controlled. */
+  open: boolean;
+  /** Called when an action or dialog interaction requests dismissal. */
+  onOpenChange: (open: boolean) => void;
   items?: CommandItem[] | CommandGroup[];
-  /** Placeholder text for the search input. Default: "Search..." */
   placeholder?: string;
-  /** Text shown when no items match. Default: "No results." */
   emptyMessage?: string;
-  /** Custom filter function. Receives the query and an item, return true to keep. */
   filter?: (query: string, item: CommandItem) => boolean;
-  /** Footer content (keyboard hints, etc). */
   footer?: ReactNode;
   className?: string;
 }
 
-/* ─── Helpers ───────────────────────────────────────────────────── */
+interface IndexedItem {
+  item: CommandItem;
+  index: number;
+}
+
+interface IndexedGroup {
+  heading?: string;
+  groupIndex: number;
+  entries: IndexedItem[];
+}
 
 function isGrouped(items: CommandItem[] | CommandGroup[]): items is CommandGroup[] {
   return items.length > 0 && "items" in items[0];
 }
 
-function flatten(items: CommandItem[] | CommandGroup[]): CommandItem[] {
-  if (isGrouped(items)) return items.flatMap((g) => g.items);
-  return items;
+function indexItems(items: CommandItem[] | CommandGroup[]): {
+  entries: IndexedItem[];
+  groups: IndexedGroup[] | null;
+} {
+  if (!isGrouped(items)) {
+    return {
+      entries: items.map((item, index) => ({ item, index })),
+      groups: null,
+    };
+  }
+
+  let index = 0;
+  const groups = items.map((group, groupIndex) => ({
+    heading: group.heading,
+    groupIndex,
+    entries: group.items.map((item) => ({ item, index: index++ })),
+  }));
+  return { entries: groups.flatMap((group) => group.entries), groups };
 }
 
 function defaultFilter(query: string, item: CommandItem): boolean {
-  const q = query.toLowerCase();
-  if (item.label.toLowerCase().includes(q)) return true;
-  if (item.description?.toLowerCase().includes(q)) return true;
-  if (item.keywords?.some((k) => k.toLowerCase().includes(q))) return true;
-  return false;
+  const normalizedQuery = query.toLocaleLowerCase();
+  return (
+    item.label.toLocaleLowerCase().includes(normalizedQuery) ||
+    !!item.description?.toLocaleLowerCase().includes(normalizedQuery) ||
+    !!item.keywords?.some((keyword) =>
+      keyword.toLocaleLowerCase().includes(normalizedQuery),
+    )
+  );
 }
-
-/* ─── Component ─────────────────────────────────────────────────── */
 
 export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
   function CommandPalette(
@@ -75,7 +95,7 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
       open,
       onOpenChange,
       items = [],
-      placeholder = "Search\u2026",
+      placeholder = "Search…",
       emptyMessage = "No results.",
       filter = defaultFilter,
       footer,
@@ -83,128 +103,165 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
     },
     ref,
   ) {
-    const [query, setQuery] = useState("");
-    const [cursor, setCursor] = useState(0);
+    const portalContainer = useMonosetPortalContainer();
+    const instanceId = useId();
+    const listId = `${instanceId}-listbox`;
     const inputRef = useRef<HTMLInputElement>(null);
-    const listRef = useRef<HTMLDivElement>(null);
+    const returnFocusRef = useRef<HTMLElement | null>(null);
+    const wasOpen = useRef(false);
+    const [query, setQuery] = useState("");
+    const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-    // Flatten items for keyboard navigation
-    const allItems = flatten(items);
-    const filtered = query.trim()
-      ? allItems.filter((item) => filter(query, item))
-      : allItems;
+    const indexed = useMemo(() => indexItems(items), [items]);
+    const normalizedQuery = query.trim();
+    const matches = (entry: IndexedItem) =>
+      normalizedQuery.length === 0 || filter(normalizedQuery, entry.item);
+    const filteredEntries = indexed.entries.filter(matches);
+    const enabledEntries = filteredEntries.filter((entry) => !entry.item.disabled);
+    const activeEntry =
+      enabledEntries.find((entry) => entry.index === activeIndex) ??
+      enabledEntries[0] ??
+      null;
 
-    // Reset state when opened/closed
+    const optionId = (entry: IndexedItem) =>
+      `${instanceId}-option-${entry.index}`;
+
     useEffect(() => {
-      if (open) {
+      if (open && !wasOpen.current) {
         setQuery("");
-        setCursor(0);
-        // Focus the input after the portal mounts
-        requestAnimationFrame(() => inputRef.current?.focus());
+        setActiveIndex(indexed.entries.find((entry) => !entry.item.disabled)?.index ?? null);
       }
-    }, [open]);
+      wasOpen.current = open;
+    }, [indexed.entries, open]);
 
-    // Keep cursor in bounds
     useEffect(() => {
-      setCursor((c) => Math.min(c, Math.max(0, filtered.length - 1)));
-    }, [filtered.length]);
+      if (!activeEntry) return;
+      const option = document.getElementById(
+        `${instanceId}-option-${activeEntry.index}`,
+      );
+      option?.scrollIntoView({ block: "nearest" });
+    }, [activeEntry, instanceId]);
 
-    // Scroll active item into view
-    useEffect(() => {
-      const el = listRef.current?.querySelector("[data-active]");
-      el?.scrollIntoView({ block: "nearest" });
-    }, [cursor]);
+    const moveActive = (direction: 1 | -1) => {
+      if (enabledEntries.length === 0) return;
+      const currentIndex = activeEntry
+        ? enabledEntries.findIndex((entry) => entry.index === activeEntry.index)
+        : -1;
+      const nextIndex =
+        currentIndex < 0
+          ? direction === 1
+            ? 0
+            : enabledEntries.length - 1
+          : (currentIndex + direction + enabledEntries.length) % enabledEntries.length;
+      setActiveIndex(enabledEntries[nextIndex].index);
+    };
 
-    const close = useCallback(() => onOpenChange?.(false), [onOpenChange]);
+    const select = (item: CommandItem) => {
+      if (item.disabled) return;
+      item.onSelect?.();
+      onOpenChange(false);
+    };
 
-    const select = useCallback(
-      (item: CommandItem) => {
-        if (item.disabled) return;
-        item.onSelect?.();
-        close();
-      },
-      [close],
-    );
-
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        setCursor((c) => (c + 1) % Math.max(1, filtered.length));
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        setCursor((c) => (c - 1 + filtered.length) % Math.max(1, filtered.length));
-      } else if (e.key === "Enter") {
-        e.preventDefault();
-        const item = filtered[cursor];
-        if (item) select(item);
+    const onInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        moveActive(1);
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        moveActive(-1);
+      } else if (event.key === "Enter" && activeEntry) {
+        event.preventDefault();
+        select(activeEntry.item);
       }
     };
 
-    // Build rendered groups
-    const renderItems = () => {
-      if (filtered.length === 0) {
+    const renderItem = (entry: IndexedItem) => {
+      const { item } = entry;
+      const active = entry.index === activeEntry?.index;
+      return (
+        <button
+          key={`${entry.index}-${item.id}`}
+          id={optionId(entry)}
+          type="button"
+          role="option"
+          aria-selected={active}
+          aria-disabled={item.disabled || undefined}
+          disabled={item.disabled}
+          data-active={active ? "" : undefined}
+          className={cx("ms-cmd__item", active && "ms-cmd__item--active")}
+          onMouseEnter={() => {
+            if (!item.disabled) setActiveIndex(entry.index);
+          }}
+          onClick={() => select(item)}
+          tabIndex={-1}
+        >
+          {item.icon && <span className="ms-cmd__item-icon">{item.icon}</span>}
+          <span className="ms-cmd__item-text">
+            <span className="ms-cmd__item-label">{item.label}</span>
+            {item.description && (
+              <span className="ms-cmd__item-desc">{item.description}</span>
+            )}
+          </span>
+        </button>
+      );
+    };
+
+    const renderResults = () => {
+      if (filteredEntries.length === 0) {
         return <div className="ms-cmd__empty">{emptyMessage}</div>;
       }
+      if (!indexed.groups) return filteredEntries.map(renderItem);
 
-      if (!isGrouped(items) || query.trim()) {
-        // Flat list (ungrouped or searching -- groups don't matter during search)
-        let idx = 0;
-        return filtered.map((item) => {
-          const i = idx++;
-          return renderItem(item, i);
-        });
-      }
-
-      // Grouped, no search active
-      let idx = 0;
-      return items.map((group, gi) => {
-        const groupFiltered = group.items.filter((item) => filter(query, item));
-        if (groupFiltered.length === 0) return null;
+      return indexed.groups.map((group) => {
+        const visibleEntries = group.entries.filter(matches);
+        if (visibleEntries.length === 0) return null;
+        const headingId = `${instanceId}-group-${group.groupIndex}`;
         return (
-          <div key={gi} role="group" aria-label={group.heading}>
+          <div
+            key={group.groupIndex}
+            role="group"
+            aria-label={group.heading ? undefined : "Commands"}
+            aria-labelledby={group.heading ? headingId : undefined}
+          >
             {group.heading && (
-              <div className="ms-cmd__group-heading">{group.heading}</div>
+              <div id={headingId} className="ms-cmd__group-heading">
+                {group.heading}
+              </div>
             )}
-            {groupFiltered.map((item) => {
-              const i = idx++;
-              return renderItem(item, i);
-            })}
+            {visibleEntries.map(renderItem)}
           </div>
         );
       });
     };
 
-    const renderItem = (item: CommandItem, idx: number) => (
-      <button
-        key={item.id}
-        role="option"
-        aria-selected={idx === cursor}
-        aria-disabled={item.disabled || undefined}
-        data-active={idx === cursor ? "" : undefined}
-        className={cx("ms-cmd__item", idx === cursor && "ms-cmd__item--active")}
-        onMouseEnter={() => setCursor(idx)}
-        onClick={() => select(item)}
-        tabIndex={-1}
-      >
-        {item.icon && <span className="ms-cmd__item-icon">{item.icon}</span>}
-        <span className="ms-cmd__item-text">
-          <span className="ms-cmd__item-label">{item.label}</span>
-          {item.description && (
-            <span className="ms-cmd__item-desc">{item.description}</span>
-          )}
-        </span>
-      </button>
-    );
-
     return (
       <RDialog.Root open={open} onOpenChange={onOpenChange}>
-        <RDialog.Portal>
+        <RDialog.Portal container={portalContainer ?? undefined}>
           <RDialog.Overlay className="ms-cmd-scrim" />
           <RDialog.Content
             ref={ref}
             className={cx("ms-cmd", className)}
             aria-label="Command palette"
-            onKeyDown={onKey}
+            aria-describedby={undefined}
+            onOpenAutoFocus={(event) => {
+              event.preventDefault();
+              const activeElement = document.activeElement;
+              const content = inputRef.current?.closest(".ms-cmd");
+              returnFocusRef.current =
+                activeElement instanceof HTMLElement &&
+                activeElement !== document.body &&
+                !content?.contains(activeElement)
+                  ? activeElement
+                  : null;
+              inputRef.current?.focus();
+            }}
+            onCloseAutoFocus={(event) => {
+              const returnFocusTo = returnFocusRef.current;
+              returnFocusRef.current = null;
+              if (!returnFocusTo?.isConnected) return;
+              event.preventDefault();
+              returnFocusTo.focus();
+            }}
           >
             <RDialog.Title className="ms-sr-only">Command palette</RDialog.Title>
             <div className="ms-cmd__input-wrap">
@@ -216,24 +273,28 @@ export const CommandPalette = forwardRef<HTMLDivElement, CommandPaletteProps>(
               />
               <input
                 ref={inputRef}
+                role="combobox"
                 className="ms-cmd__input"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(event) => setQuery(event.target.value)}
+                onKeyDown={onInputKeyDown}
                 placeholder={placeholder}
-                aria-label="Search"
+                aria-label="Search commands"
                 aria-autocomplete="list"
-                aria-controls="ms-cmd-list"
+                aria-expanded={open}
+                aria-controls={listId}
+                aria-activedescendant={activeEntry ? optionId(activeEntry) : undefined}
                 autoComplete="off"
                 spellCheck={false}
               />
             </div>
             <div
-              ref={listRef}
-              id="ms-cmd-list"
+              id={listId}
               role="listbox"
+              aria-label="Commands"
               className="ms-cmd__list"
             >
-              {renderItems()}
+              {renderResults()}
             </div>
             {footer && <div className="ms-cmd__footer">{footer}</div>}
           </RDialog.Content>

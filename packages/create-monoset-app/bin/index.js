@@ -42,7 +42,7 @@ async function confirmOverwrite(rl, dir) {
 // -- main ---------------------------------------------------------------
 const rl = createInterface({ input: stdin, output: stdout });
 
-console.log(`\n${bold("Monoset")} ${dim("— scaffolding a new project")}\n`);
+console.log(`\n${bold("Monoset")}${dim(": scaffolding a new project")}\n`);
 
 if (!target) target = await promptName(rl);
 

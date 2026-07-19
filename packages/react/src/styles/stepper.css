@@ -1,0 +1,25 @@
+/* ==========================================================================
+   Stepper (multi-step indicator)
+   ========================================================================== */
+.ms-stepper { display: flex; align-items: flex-start; gap: 0; padding: 0; margin: 0; list-style: none; }
+.ms-stepper__step { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 0 8px; }
+.ms-stepper__dot {
+  width: 28px; height: 28px; border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600;
+  background: var(--bg-muted); color: var(--fg3); border: 1px solid var(--border-subtle);
+  z-index: 1;
+}
+.ms-stepper__step--current .ms-stepper__dot { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.ms-stepper__step--done .ms-stepper__dot { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.ms-stepper__body { text-align: center; }
+.ms-stepper__label { font-size: 12px; font-weight: 500; color: var(--fg1); }
+.ms-stepper__step--pending .ms-stepper__label { color: var(--fg3); }
+.ms-stepper__step--current .ms-stepper__label { font-weight: 600; }
+.ms-stepper__step--done .ms-stepper__label { color: var(--fg2); }
+.ms-stepper__desc { font-size: 11px; color: var(--fg3); margin-top: 2px; }
+.ms-stepper__connector {
+  position: absolute; top: 13px; left: calc(50% + 18px); right: calc(-50% + 18px);
+  height: 1px; background: var(--border-subtle);
+}
+.ms-stepper__step--done .ms-stepper__connector { background: var(--accent); }

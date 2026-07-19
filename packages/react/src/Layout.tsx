@@ -3,6 +3,45 @@ import { cx } from "./cx";
 
 type SpaceScale = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14;
 
+const DEFAULT_GRID_MIN_WIDTH = "240px";
+const CSS_LENGTH = /^(?:0|(?:\d+(?:\.\d+)?|\.\d+)(?:px|rem|em|ch|ex|cap|ic|lh|rlh|vw|vh|vi|vb|vmin|vmax|svw|svh|lvw|lvh|dvw|dvh|cm|mm|q|in|pc|pt|%))$/i;
+const CSS_SIZE_KEYWORD = /^(?:auto|min-content|max-content)$/i;
+const CSS_SIZE_FUNCTION = /^(?:var|calc|min|max|clamp|fit-content)\(.+\)$/i;
+
+function normalizeColumns(columns: number | undefined) {
+  if (columns === undefined || !Number.isFinite(columns)) return undefined;
+  return Math.max(1, Math.trunc(columns));
+}
+
+function hasBalancedParentheses(value: string) {
+  let depth = 0;
+  for (const character of value) {
+    if (character === "(") depth += 1;
+    if (character === ")") depth -= 1;
+    if (depth < 0) return false;
+  }
+  return depth === 0;
+}
+
+function normalizeMinWidth(minWidth: number | string) {
+  if (typeof minWidth === "number") {
+    return Number.isFinite(minWidth) && minWidth >= 0
+      ? `${minWidth}px`
+      : DEFAULT_GRID_MIN_WIDTH;
+  }
+
+  const value = minWidth.trim();
+  if (
+    value.length === 0 ||
+    /[;{}]/.test(value) ||
+    !hasBalancedParentheses(value) ||
+    (!CSS_LENGTH.test(value) && !CSS_SIZE_KEYWORD.test(value) && !CSS_SIZE_FUNCTION.test(value))
+  ) {
+    return DEFAULT_GRID_MIN_WIDTH;
+  }
+  return value;
+}
+
 /* ---------------------------------------------------------------------------
  * Stack
  * -------------------------------------------------------------------------*/
@@ -69,10 +108,11 @@ export interface GridProps extends HTMLAttributes<HTMLDivElement> {
 export const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
   { columns, minWidth = 240, gap = 4, style, className, ...rest }, ref
 ) {
-  const min = typeof minWidth === "number" ? `${minWidth}px` : minWidth;
-  const template = columns
-    ? `repeat(${columns}, 1fr)`
-    : `repeat(auto-fit, minmax(${min}, 1fr))`;
+  const normalizedColumns = normalizeColumns(columns);
+  const min = normalizeMinWidth(minWidth);
+  const template = normalizedColumns === undefined
+    ? `repeat(auto-fit, minmax(${min}, 1fr))`
+    : `repeat(${normalizedColumns}, 1fr)`;
 
   return (
     <div

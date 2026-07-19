@@ -1,0 +1,52 @@
+/* ==========================================================================
+   Table
+   ========================================================================== */
+.ms-table-wrapper {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow-x: auto;  /* narrow viewports scroll sideways instead of clipping */
+}
+.ms-table-wrapper--scroll {
+  overflow-y: auto;
+  position: relative;
+}
+.ms-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ms-table thead th {
+  background: var(--bg-subtle);
+  padding: 8px 16px; text-align: left;
+  font-weight: 500; font-size: 11px; color: var(--fg3);
+  letter-spacing: 0.04em; text-transform: uppercase;
+  border-bottom: 1px solid var(--border-subtle);
+}
+/* Sticky header when the wrapper is a vertical scroller */
+.ms-table-wrapper--scroll .ms-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.ms-table tbody td { padding: 12px 16px; color: var(--fg2); }
+.ms-table tbody tr + tr td { border-top: 1px solid var(--border-subtle); }
+.ms-table tbody tr:hover td { background: var(--bg-subtle); }
+/* Table: sortable header */
+.ms-table-header--sortable { user-select: none; }
+.ms-table-header__sort-button {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+.ms-table-header__sort-button:hover:not(:disabled) { color: var(--fg1); }
+.ms-table-header__sort-button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.ms-table-header__sort-button:disabled { cursor: default; }
+.ms-table-header__sort {
+  display: inline-flex; margin-left: 4px; vertical-align: middle;
+  color: var(--fg4); transition: color var(--duration-fast) var(--ease-standard);
+}
+.ms-table-header__sort-button:hover:not(:disabled) .ms-table-header__sort,
+.ms-table-header__sort--active { color: var(--fg1); }
+.ms-table-header__sort-neutral { opacity: 0.4; }
+/* Table: selection checkbox */
+.ms-table-select { width: 40px; text-align: center; padding: 0 !important; }
+.ms-table-select input[type="checkbox"] { accent-color: var(--accent); cursor: pointer; }

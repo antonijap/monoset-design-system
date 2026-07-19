@@ -1,0 +1,80 @@
+/* ==========================================================================
+   NavigationMenu
+   ========================================================================== */
+.ms-nav { position: relative; display: inline-block; }
+.ms-nav-list {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.ms-nav-item { list-style: none; }
+.ms-nav-trigger {
+  background: transparent; border: none; cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 500; color: var(--fg2);
+  padding: 8px 12px; border-radius: var(--radius-md);
+  display: inline-flex; align-items: center; gap: 4px;
+  transition: color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
+}
+.ms-nav-trigger:hover, .ms-nav-trigger[data-state="open"] { color: var(--fg1); background: var(--bg-muted); }
+.ms-nav-caret { font-size: 10px; opacity: 0.7; transition: transform var(--duration-fast) var(--ease-standard); }
+.ms-nav-trigger[data-state="open"] .ms-nav-caret { transform: rotate(180deg); }
+.ms-nav-content {
+  position: absolute; top: 100%; left: 0; margin-top: 6px;
+  background: var(--bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md); padding: 6px; min-width: 240px;
+  z-index: var(--z-dropdown);
+}
+.ms-nav-viewport {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: var(--z-dropdown);
+  margin-top: 6px;
+  width: var(--radix-navigation-menu-viewport-width);
+  height: var(--radix-navigation-menu-viewport-height);
+  max-width: min(90vw, 720px);
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+.ms-nav-viewport .ms-nav-content {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 100%;
+  min-width: 0;
+  margin-top: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.ms-nav-indicator {
+  position: absolute;
+  top: 100%;
+  z-index: calc(var(--z-dropdown) + 1);
+  display: flex;
+  height: 8px;
+  align-items: end;
+  justify-content: center;
+}
+.ms-nav-indicator::after {
+  width: 8px;
+  height: 8px;
+  content: "";
+  background: var(--bg);
+  border-top: 1px solid var(--border-subtle);
+  border-left: 1px solid var(--border-subtle);
+  transform: translateY(50%) rotate(45deg);
+}
+.ms-nav-link {
+  display: block; padding: 7px 10px; border-radius: var(--radius-sm);
+  color: var(--fg1); text-decoration: none; font-size: 13px;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.ms-nav-link:hover { background: var(--bg-muted); }
+.ms-nav-link:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }

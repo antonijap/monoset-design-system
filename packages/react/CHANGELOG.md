@@ -1,5 +1,16 @@
 # @monoset/react
 
+## 1.0.0
+
+### Major Changes
+
+- Ship stable React 1.0 APIs with tested keyboard behavior. ESM builds tree-shake cleanly, ESM and CommonJS declarations match their runtimes, and components have separate CSS entries.
+
+### Patch Changes
+
+- Updated dependencies [e712b65]
+  - @monoset/motion@0.2.1
+
 ## 0.7.0
 
 ### Minor Changes
@@ -68,4 +79,4 @@
 
 ### Minor Changes
 
-- Initial public release. Monoset is a minimal, monotone, unopinionated design system: tokens, Framer Motion presets, and a React component kit wrapping Radix primitives. See [monoset.design](https://monoset.design) for docs.
+- Initial public release. Monoset is a minimal, monotone, brand-neutral design system: tokens, Framer Motion presets, and a React component kit wrapping Radix primitives. See [monoset.design](https://monoset.design) for docs.

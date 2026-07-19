@@ -1,0 +1,45 @@
+/* ==========================================================================
+   Carousel
+   ========================================================================== */
+.ms-carousel { position: relative; }
+.ms-carousel__viewport { position: relative; }
+.ms-carousel__track {
+  display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.ms-carousel__track::-webkit-scrollbar { display: none; }
+.ms-carousel__slide { flex: 0 0 100%; scroll-snap-align: start; display: flex; }
+.ms-carousel__slide > * { flex: 1; min-width: 0; }
+.ms-carousel__arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 36px; height: 36px; border-radius: 999px;
+  background: var(--bg); border: 1px solid var(--border);
+  cursor: pointer; font-size: 18px; color: var(--fg1);
+  box-shadow: var(--shadow-sm);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.ms-carousel__arrow:hover:not([disabled]) { background: var(--bg-muted); }
+.ms-carousel__arrow[disabled] { opacity: 0.4; cursor: not-allowed; }
+.ms-carousel__arrow--prev { left: 12px; }
+.ms-carousel__arrow--next { right: 12px; }
+.ms-carousel__controls {
+  display: flex; align-items: center; gap: 12px; min-height: 30px; margin-top: 12px;
+}
+.ms-carousel__dots {
+  display: flex; flex: 1; gap: 6px; justify-content: center;
+}
+.ms-carousel__dot {
+  width: 6px; height: 6px; border-radius: 999px;
+  background: var(--border); border: none; cursor: pointer; padding: 0;
+  transition: background var(--duration-fast) var(--ease-standard), width var(--duration-fast) var(--ease-standard);
+}
+.ms-carousel__dot--active { background: var(--fg1); width: 18px; }
+.ms-carousel__autoplay {
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  min-height: 30px; padding: 0 9px; margin-left: auto;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--bg); color: var(--fg1); cursor: pointer;
+  font: inherit; font-size: 12px; line-height: 1;
+}
+.ms-carousel__autoplay:hover { background: var(--bg-muted); }
+.ms-carousel__autoplay:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }

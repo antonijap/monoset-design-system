@@ -1,0 +1,21 @@
+/* ==========================================================================
+   Dialog / Modal
+   ========================================================================== */
+.ms-dialog-scrim {
+  position: fixed; inset: 0; background: color-mix(in srgb, var(--mono-1000) 40%, transparent);
+  z-index: var(--z-overlay);
+}
+.ms-dialog {
+  position: fixed; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  padding: 24px;
+  width: min(480px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px); overflow: auto;
+  z-index: var(--z-modal);
+}
+.ms-dialog__title { font-size: 16px; font-weight: 600; margin: 0 0 4px; color: var(--fg1); }
+.ms-dialog__desc  { font-size: 13px; color: var(--fg3); margin: 0 0 16px; line-height: 1.55; }

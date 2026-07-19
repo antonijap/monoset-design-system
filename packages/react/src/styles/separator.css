@@ -1,0 +1,6 @@
+/* ==========================================================================
+   Separator
+   ========================================================================== */
+.ms-separator { border: 0; background: var(--border-subtle); }
+.ms-separator[data-orientation="horizontal"] { height: 1px; width: 100%; margin: 16px 0; }
+.ms-separator[data-orientation="vertical"]   { width: 1px; height: 100%; margin: 0 8px; }

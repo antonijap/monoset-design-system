@@ -1,91 +1,183 @@
-import * as RPopover from "@radix-ui/react-popover";
-import { forwardRef, useState, useId } from "react";
+import {
+  forwardRef,
+  type AriaAttributes,
+  type ReactNode,
+} from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { Calendar } from "./Calendar";
+import { CalendarDate } from "@internationalized/date";
+import {
+  Button,
+  DateInput,
+  DatePicker as AriaDatePicker,
+  DateSegment,
+  Dialog,
+  Group,
+  I18nProvider,
+  Popover,
+} from "react-aria-components";
+import { Calendar, type FirstDayOfWeek } from "./Calendar";
+import { useMonosetPortalContainer } from "./PortalContext";
 import { cx } from "./cx";
 
 export interface DatePickerProps {
-  /** Currently selected date. Controlled. */
-  value?: Date | null;
-  defaultValue?: Date | null;
-  onValueChange?: (value: Date | null) => void;
-  /** Earliest selectable date (inclusive). */
-  min?: Date;
-  /** Latest selectable date (inclusive). */
-  max?: Date;
-  /** Locale for month/weekday labels. Defaults to the browser's locale. */
-  locale?: string;
-  placeholder?: string;
+  [dataAttribute: `data-${string}`]: string | number | boolean | undefined;
+  value?: CalendarDate | null;
+  defaultValue?: CalendarDate | null;
+  onValueChange?: (value: CalendarDate | null) => void;
+  min?: CalendarDate | null;
+  max?: CalendarDate | null;
+  isDateUnavailable?: (date: CalendarDate) => boolean;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
   disabled?: boolean;
+  readOnly?: boolean;
+  required?: boolean;
+  invalid?: boolean;
   id?: string;
+  "aria-label"?: AriaAttributes["aria-label"];
+  "aria-labelledby"?: AriaAttributes["aria-labelledby"];
+  "aria-describedby"?: AriaAttributes["aria-describedby"];
+  "aria-invalid"?: AriaAttributes["aria-invalid"];
+  "aria-live"?: AriaAttributes["aria-live"];
+  "aria-required"?: AriaAttributes["aria-required"];
+  title?: string;
+  name?: string;
+  form?: string;
+  autoComplete?: string;
+  locale?: string;
+  firstDayOfWeek?: FirstDayOfWeek;
+  weeksInMonth?: number;
+  clearable?: boolean;
+  clearLabel?: string;
   className?: string;
-  "aria-label"?: string;
-  "aria-labelledby"?: string;
-  /** Format function for the trigger label. Default: locale-aware short date. */
-  format?: (date: Date) => string;
+  triggerClassName?: string;
 }
 
-function defaultFormat(d: Date, locale?: string) {
-  return d.toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric" });
+function DatePickerLocale({ locale, children }: { locale?: string; children: ReactNode }) {
+  return locale ? <I18nProvider locale={locale}>{children}</I18nProvider> : children;
 }
 
-export const DatePicker = forwardRef<HTMLButtonElement, DatePickerProps>(
-  function DatePicker({ value, defaultValue, onValueChange, min, max, locale, placeholder = "Pick a date", disabled, id, className, format = (d) => defaultFormat(d, locale), ...ariaProps }, ref) {
-    const isControlled = value !== undefined;
-    const [internal, setInternal] = useState<Date | null>(defaultValue ?? null);
-    const selected = isControlled ? value ?? null : internal;
-
-    const [open, setOpen] = useState(false);
-    const [view, setView] = useState<Date>(() => selected || new Date());
-    const popId = useId();
-
-    const set = (d: Date | null) => {
-      if (!isControlled) setInternal(d);
-      onValueChange?.(d);
-    };
-
-    return (
-      <RPopover.Root open={open} onOpenChange={setOpen}>
-        <RPopover.Trigger asChild disabled={disabled}>
-          <button
-            ref={ref}
-            id={id}
-            type="button"
-            disabled={disabled}
-            className={cx("ms-combobox__trigger", "ms-datepicker__trigger", className)}
-            {...ariaProps}
-          >
-            <span className={cx("ms-combobox__value", !selected && "ms-combobox__value--placeholder")}>
-              {selected ? format(selected) : placeholder}
-            </span>
-            <CalendarIcon size={14} strokeWidth={2} aria-hidden />
-          </button>
-        </RPopover.Trigger>
-        <RPopover.Portal>
-          <RPopover.Content
-            id={popId}
-            sideOffset={6}
-            align="start"
-            className="ms-datepicker__panel"
-            onOpenAutoFocus={(e) => e.preventDefault()}
-          >
-            <Calendar
-              value={selected}
-              month={view}
-              onMonthChange={setView}
-              onValueChange={(d) => { set(d); setOpen(false); }}
-              min={min}
-              max={max}
-              locale={locale}
-            />
-            {selected && (
-              <div className="ms-datepicker__footer">
-                <button type="button" onClick={() => { set(null); setOpen(false); }} className="ms-datepicker__clear">Clear</button>
-              </div>
-            )}
-          </RPopover.Content>
-        </RPopover.Portal>
-      </RPopover.Root>
-    );
+export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(function DatePicker(
+  {
+    value,
+    defaultValue,
+    onValueChange,
+    min,
+    max,
+    isDateUnavailable,
+    open,
+    defaultOpen,
+    onOpenChange,
+    disabled,
+    readOnly,
+    required,
+    invalid,
+    name,
+    form,
+    autoComplete,
+    locale,
+    firstDayOfWeek,
+    weeksInMonth = 6,
+    clearable = true,
+    clearLabel = "Clear date",
+    className,
+    triggerClassName,
+    id,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
+    "aria-describedby": ariaDescribedBy,
+    "aria-invalid": ariaInvalid,
+    "aria-required": ariaRequired,
+    "aria-live": ariaLive,
+    title,
+    ...dataProps
   },
-);
+  ref,
+) {
+  const portalContainer = useMonosetPortalContainer();
+  const label = ariaLabel ?? (ariaLabelledBy ? undefined : "Date");
+  const isInvalid = invalid || ariaInvalid === true || ariaInvalid === "true";
+  const isRequired = required || ariaRequired === true || ariaRequired === "true";
+  return (
+    <DatePickerLocale locale={locale}>
+      <AriaDatePicker<CalendarDate>
+        {...dataProps}
+        ref={ref}
+        value={value}
+        defaultValue={defaultValue}
+        onChange={onValueChange}
+        minValue={min}
+        maxValue={max}
+        isDateUnavailable={
+          isDateUnavailable ? (date) => isDateUnavailable(date as CalendarDate) : undefined
+        }
+        isOpen={open}
+        defaultOpen={defaultOpen}
+        onOpenChange={onOpenChange}
+        isDisabled={disabled}
+        isReadOnly={readOnly}
+        isRequired={isRequired}
+        isInvalid={isInvalid}
+        granularity="day"
+        name={name}
+        form={form}
+        autoComplete={autoComplete}
+        aria-label={label}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        className={cx("ms-datepicker", className)}
+      >
+        {({ state }) => (
+          <>
+            <Group
+              id={id}
+              title={title}
+              aria-live={ariaLive}
+              aria-describedby={ariaDescribedBy}
+              aria-invalid={isInvalid || undefined}
+              aria-required={isRequired || undefined}
+              className={cx("ms-datepicker__trigger", triggerClassName)}
+            >
+              <DateInput className="ms-datepicker__input" aria-label={label}>
+                {(segment) => (
+                  <DateSegment segment={segment} className="ms-datepicker__segment" />
+                )}
+              </DateInput>
+              <Button className="ms-datepicker__button">
+                <CalendarIcon size={15} strokeWidth={2} aria-hidden />
+              </Button>
+            </Group>
+            <Popover
+              UNSTABLE_portalContainer={portalContainer ?? undefined}
+              placement="bottom start"
+              offset={6}
+              className="ms-datepicker__panel"
+            >
+              <Dialog className="ms-datepicker__dialog">
+                <Calendar
+                  locale={locale}
+                  firstDayOfWeek={firstDayOfWeek}
+                  weeksInMonth={weeksInMonth}
+                />
+                {clearable && state.value && (
+                  <div className="ms-datepicker__footer">
+                    <Button
+                      className="ms-datepicker__clear"
+                      onPress={() => {
+                        state.setValue(null);
+                        state.setOpen(false);
+                      }}
+                    >
+                      {clearLabel}
+                    </Button>
+                  </div>
+                )}
+              </Dialog>
+            </Popover>
+          </>
+        )}
+      </AriaDatePicker>
+    </DatePickerLocale>
+  );
+});

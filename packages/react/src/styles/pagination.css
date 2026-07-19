@@ -1,0 +1,16 @@
+/* ==========================================================================
+   Pagination
+   ========================================================================== */
+.ms-pagination { display: inline-flex; align-items: center; gap: 2px; }
+.ms-pagination__btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 32px; height: 32px; padding: 0 10px;
+  background: transparent; color: var(--fg2);
+  border: 1px solid transparent; border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 500; font-family: inherit;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.ms-pagination__btn:hover:not([disabled]) { background: var(--bg-muted); }
+.ms-pagination__btn[aria-current="page"] { background: var(--bg-inverse); color: var(--fg-inverse); }
+.ms-pagination__btn[disabled] { color: var(--fg4); cursor: not-allowed; }

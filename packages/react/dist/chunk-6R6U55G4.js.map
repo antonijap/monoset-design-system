@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/ReducedMotionContext.ts"],"sourcesContent":["import { createContext } from \"react\";\n\nexport type ReducedMotionPreference = \"always\" | \"never\" | \"user\";\n\nexport const ReducedMotionPreferenceContext =\n  createContext<ReducedMotionPreference>(\"user\");\n"],"mappings":";AAAA,SAAS,qBAAqB;AAIvB,IAAM,iCACX,cAAuC,MAAM;","names":[]}

@@ -1,92 +1,154 @@
-import { forwardRef, useCallback, useState } from "react";
+import {
+  forwardRef,
+  type AriaAttributes,
+  type FocusEventHandler,
+} from "react";
 import { Minus, Plus } from "lucide-react";
-import { Input, type InputProps } from "./Input";
+import {
+  Button as AriaButton,
+  I18nProvider,
+  Input as AriaInput,
+  NumberField,
+} from "react-aria-components";
 import { cx } from "./cx";
 
-export interface NumberInputProps extends Omit<InputProps, "type" | "value" | "onChange" | "defaultValue"> {
-  value?: number;
-  defaultValue?: number;
-  onValueChange?: (value: number) => void;
+export interface NumberInputProps {
+  [dataAttribute: `data-${string}`]: string | number | boolean | undefined;
+  value?: number | null;
+  defaultValue?: number | null;
+  onValueChange?: (value: number | null) => void;
   min?: number;
   max?: number;
   step?: number;
-  /** Hide the +/- buttons. Default: false. */
+  formatOptions?: Intl.NumberFormatOptions;
+  /** Hide the increment and decrement buttons. Default: false. */
   hideStepper?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+  required?: boolean;
+  invalid?: boolean;
+  /** Locale used to parse and format the editable value. */
+  locale?: string;
+  /** Class applied to the NumberInput wrapper. */
+  className?: string;
+  /** Class applied to the editable input. */
+  inputClassName?: string;
+  name?: string;
+  form?: string;
+  autoComplete?: string;
+  id?: string;
+  title?: string;
+  "aria-label"?: AriaAttributes["aria-label"];
+  "aria-labelledby"?: AriaAttributes["aria-labelledby"];
+  "aria-describedby"?: AriaAttributes["aria-describedby"];
+  "aria-errormessage"?: AriaAttributes["aria-errormessage"];
+  "aria-invalid"?: AriaAttributes["aria-invalid"];
+  "aria-required"?: AriaAttributes["aria-required"];
+  onFocus?: FocusEventHandler<HTMLInputElement>;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
 }
 
 export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
-  function NumberInput({ value, defaultValue, onValueChange, min = -Infinity, max = Infinity, step = 1, hideStepper, className, disabled, onBlur: onBlurProp, ...rest }, ref) {
-    const isControlled = value !== undefined;
-    const [internal, setInternal] = useState<number | undefined>(defaultValue);
-    const current = isControlled ? value : internal;
-
-    const clamp = useCallback((n: number) => Math.max(min, Math.min(max, n)), [min, max]);
-
-    // Commit a clamped value (used by the stepper buttons and on blur).
-    const commit = (next: number) => {
-      const c = clamp(next);
-      if (!isControlled) setInternal(c);
-      onValueChange?.(c);
-    };
-
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const raw = e.target.value;
-      // Allow an empty field or a lone "-" while the user is mid-typing a
-      // negative number; don't discard it.
-      if (raw === "" || raw === "-") return;
-      const n = Number(raw);
-      // Don't clamp mid-type so values like "150" can be entered when max is
-      // lower; clamping happens on blur. Emit the raw finite number as the user types.
-      if (Number.isFinite(n)) {
-        if (!isControlled) setInternal(n);
-        onValueChange?.(n);
-      }
-    };
-
-    const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      if (current !== undefined) commit(current);
-      onBlurProp?.(e);
-    };
-
-    return (
-      <div className={cx("ms-numberinput", disabled && "ms-numberinput--disabled", className)}>
+  function NumberInput(
+    {
+      value,
+      defaultValue,
+      onValueChange,
+      min,
+      max,
+      step,
+      formatOptions,
+      hideStepper = false,
+      disabled = false,
+      readOnly = false,
+      required = false,
+      invalid = false,
+      locale,
+      className,
+      inputClassName,
+      name,
+      form,
+      id,
+      title,
+      autoComplete,
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledBy,
+      "aria-describedby": ariaDescribedBy,
+      "aria-errormessage": ariaErrorMessage,
+      "aria-invalid": ariaInvalid,
+      "aria-required": ariaRequired,
+      onFocus,
+      onBlur,
+      ...dataAttributes
+    },
+    ref,
+  ) {
+    const isInvalid = invalid || ariaInvalid === true || ariaInvalid === "true";
+    const isRequired = required || ariaRequired === true || ariaRequired === "true";
+    const effectiveAriaInvalid = isInvalid ? true : ariaInvalid;
+    const effectiveAriaRequired = isRequired ? true : ariaRequired;
+    const numberField = (
+      <NumberField
+        {...dataAttributes}
+        id={id}
+        name={name}
+        form={form}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-errormessage={ariaErrorMessage}
+        aria-invalid={effectiveAriaInvalid}
+        aria-required={effectiveAriaRequired}
+        value={value === null ? Number.NaN : value}
+        defaultValue={defaultValue === null ? Number.NaN : defaultValue}
+        onChange={(nextValue) => {
+          onValueChange?.(Number.isNaN(nextValue) ? null : nextValue);
+        }}
+        minValue={min}
+        maxValue={max}
+        step={step}
+        formatOptions={formatOptions}
+        isDisabled={disabled}
+        isReadOnly={readOnly}
+        isRequired={isRequired}
+        isInvalid={isInvalid}
+        className={({ isDisabled }) =>
+          cx(
+            "ms-numberinput",
+            isDisabled && "ms-numberinput--disabled",
+            className,
+          )
+        }
+        render={(rootProps) => <div {...rootProps} title={title} />}
+      >
         {!hideStepper && (
-          <button
-            type="button"
-            aria-label="Decrease"
-            disabled={disabled || (current !== undefined && current <= min)}
-            onClick={() => commit((current ?? 0) - step)}
-            className="ms-numberinput__btn"
-          >
+          <AriaButton slot="decrement" className="ms-numberinput__btn">
             <Minus size={16} strokeWidth={2} aria-hidden />
-          </button>
+          </AriaButton>
         )}
-        <Input
+        <AriaInput
           ref={ref}
-          type="number"
-          inputMode="numeric"
-          value={current === undefined ? "" : String(current)}
-          onChange={onChange}
+          autoComplete={autoComplete}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+          aria-errormessage={ariaErrorMessage}
+          aria-invalid={effectiveAriaInvalid}
+          aria-required={effectiveAriaRequired}
+          onFocus={onFocus}
           onBlur={onBlur}
-          min={Number.isFinite(min) ? min : undefined}
-          max={Number.isFinite(max) ? max : undefined}
-          step={step}
-          disabled={disabled}
-          className="ms-numberinput__input"
-          {...rest}
+          className={cx("ms-numberinput__input", inputClassName)}
         />
         {!hideStepper && (
-          <button
-            type="button"
-            aria-label="Increase"
-            disabled={disabled || (current !== undefined && current >= max)}
-            onClick={() => commit((current ?? 0) + step)}
-            className="ms-numberinput__btn"
-          >
+          <AriaButton slot="increment" className="ms-numberinput__btn">
             <Plus size={16} strokeWidth={2} aria-hidden />
-          </button>
+          </AriaButton>
         )}
-      </div>
+      </NumberField>
     );
+
+    return locale
+      ? <I18nProvider locale={locale}>{numberField}</I18nProvider>
+      : numberField;
   },
 );

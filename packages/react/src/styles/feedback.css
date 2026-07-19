@@ -1,0 +1,342 @@
+/* ==========================================================================
+   Toast
+   ========================================================================== */
+.ms-toast-viewport {
+  position: fixed; bottom: 20px; right: 20px;
+  display: flex; flex-direction: column; gap: 8px;
+  width: min(320px, calc(100vw - 40px));
+  max-height: calc(100dvh - 40px);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  outline: none;
+  z-index: var(--z-toast);
+}
+.ms-toast {
+  display: flex; gap: 10px; align-items: center;
+  padding: 12px 16px;
+  background: var(--bg-inverse); color: var(--fg-inverse);
+  border-radius: var(--radius-lg);
+  font-size: 13px;
+  box-shadow: var(--shadow-lg);
+  list-style: none;
+  touch-action: none;
+}
+.ms-toast[data-kind="error"] { background: var(--status-danger); }
+.ms-toast__icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--status-info);
+  background: var(--fg-inverse);
+  border-radius: var(--radius-full);
+}
+.ms-toast[data-kind="success"] .ms-toast__icon { color: var(--status-success); }
+.ms-toast[data-kind="error"] .ms-toast__icon { color: var(--status-danger); }
+.ms-toast__content { flex: 1; min-width: 0; }
+.ms-toast__title { font-weight: 600; line-height: 1.35; }
+.ms-toast__description { margin-top: 2px; color: inherit; opacity: 0.8; line-height: 1.45; }
+.ms-toast__action,
+.ms-toast__close {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  opacity: 0.72;
+}
+.ms-toast__action { padding-inline: 6px; font-size: 12px; font-weight: 600; }
+.ms-toast__action:hover,
+.ms-toast__close:hover { background: color-mix(in srgb, currentColor 12%, transparent); opacity: 1; }
+.ms-toast__action:focus-visible,
+.ms-toast__close:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; opacity: 1; }
+.ms-toast[data-swipe="move"] { transform: translateX(var(--radix-toast-swipe-move-x)); }
+.ms-toast[data-swipe="cancel"] { transform: translateX(0); transition: transform var(--duration-fast) var(--ease-standard); }
+
+/* ==========================================================================
+   Motion — enter/exit animations (Radix data-state driven)
+   ========================================================================== */
+
+/* Progress: indeterminate sweep (the bar has width:40%, this slides it across) */
+@keyframes ms-indeterminate {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(320%); }
+}
+
+@keyframes ms-fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ms-fade-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* Dialog — fade + subtle scale, preserving the centering translate */
+@keyframes ms-dialog-in {
+  from { opacity: 0; transform: translate(-50%, -48%) scale(0.97); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes ms-dialog-out {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to   { opacity: 0; transform: translate(-50%, -48%) scale(0.97); }
+}
+.ms-dialog[data-state="open"], .ms-cmd[data-state="open"] { animation: ms-dialog-in var(--duration-base) var(--ease-emphasis); }
+.ms-dialog[data-state="closed"], .ms-cmd[data-state="closed"] { animation: ms-dialog-out var(--duration-fast) var(--ease-standard); }
+.ms-dialog-scrim[data-state="open"], .ms-sheet-scrim[data-state="open"], .ms-cmd-scrim[data-state="open"] { animation: ms-fade-in var(--duration-base) var(--ease-standard); }
+.ms-dialog-scrim[data-state="closed"], .ms-sheet-scrim[data-state="closed"], .ms-cmd-scrim[data-state="closed"] { animation: ms-fade-out var(--duration-fast) var(--ease-standard); }
+.ms-app-shell__drawer-scrim[data-state="open"] { animation: ms-fade-in var(--duration-base) var(--ease-standard); }
+.ms-app-shell__drawer[data-state="open"] { animation: ms-slide-in-left var(--duration-base) var(--ease-emphasis); }
+
+/* Popover / menu / select content / combobox panel — pop in */
+@keyframes ms-pop-in  { from { opacity: 0; transform: translateY(-4px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes ms-pop-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-4px) scale(0.98); } }
+.ms-popover[data-state="open"], .ms-menu[data-state="open"], .ms-combobox__panel[data-state="open"], .ms-combobox__panel[data-entering] { animation: ms-pop-in var(--duration-fast) var(--ease-emphasis); }
+.ms-popover[data-state="closed"], .ms-menu[data-state="closed"], .ms-combobox__panel[data-state="closed"], .ms-combobox__panel[data-exiting] { animation: ms-pop-out var(--duration-fast) var(--ease-standard); }
+
+/* Sheet — slide from its edge */
+@keyframes ms-slide-in-right  { from { transform: translateX(100%); }  to { transform: translateX(0); } }
+@keyframes ms-slide-out-right { from { transform: translateX(0); }     to { transform: translateX(100%); } }
+@keyframes ms-slide-in-left   { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes ms-slide-out-left  { from { transform: translateX(0); }     to { transform: translateX(-100%); } }
+@keyframes ms-slide-in-top    { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+@keyframes ms-slide-out-top   { from { transform: translateY(0); }     to { transform: translateY(-100%); } }
+@keyframes ms-slide-in-bottom { from { transform: translateY(100%); }  to { transform: translateY(0); } }
+@keyframes ms-slide-out-bottom{ from { transform: translateY(0); }     to { transform: translateY(100%); } }
+.ms-sheet--right[data-state="open"]  { animation: ms-slide-in-right  var(--duration-base) var(--ease-emphasis); }
+.ms-sheet--right[data-state="closed"]{ animation: ms-slide-out-right var(--duration-base) var(--ease-standard); }
+.ms-sheet--left[data-state="open"]   { animation: ms-slide-in-left   var(--duration-base) var(--ease-emphasis); }
+.ms-sheet--left[data-state="closed"] { animation: ms-slide-out-left  var(--duration-base) var(--ease-standard); }
+.ms-sheet--top[data-state="open"]    { animation: ms-slide-in-top    var(--duration-base) var(--ease-emphasis); }
+.ms-sheet--top[data-state="closed"]  { animation: ms-slide-out-top   var(--duration-base) var(--ease-standard); }
+.ms-sheet--bottom[data-state="open"] { animation: ms-slide-in-bottom var(--duration-base) var(--ease-emphasis); }
+.ms-sheet--bottom[data-state="closed"]{ animation: ms-slide-out-bottom var(--duration-base) var(--ease-standard); }
+
+/* Toast — slide up + fade */
+@keyframes ms-toast-in  { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes ms-toast-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(12px); } }
+@keyframes ms-toast-swipe-out { from { transform: translateX(var(--radix-toast-swipe-end-x)); } to { transform: translateX(calc(100% + 20px)); } }
+.ms-toast[data-state="open"]   { animation: ms-toast-in var(--duration-base) var(--ease-emphasis); }
+.ms-toast[data-state="closed"] { animation: ms-toast-out var(--duration-fast) var(--ease-standard); }
+.ms-toast[data-swipe="end"] { animation: ms-toast-swipe-out var(--duration-fast) var(--ease-standard); }
+
+/* ==========================================================================
+   Accessibility and narrow viewports
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .ms-skeleton,
+  .ms-spinner,
+  .ms-dialog,
+  .ms-cmd,
+  .ms-dialog-scrim,
+  .ms-sheet-scrim,
+  .ms-cmd-scrim,
+  .ms-popover,
+  .ms-menu,
+  .ms-combobox__panel,
+  .ms-sheet,
+  .ms-toast,
+  .ms-app-shell__drawer,
+  .ms-app-shell__drawer-scrim,
+  .ms-accordion__content,
+  .ms-collapsible__content,
+  .ms-progress__indicator {
+    animation: none !important;
+  }
+
+  .ms-check__visual,
+  .ms-switch__thumb,
+  .ms-tabs__indicator,
+  .ms-select__chevron,
+  .ms-accordion__chevron,
+  .ms-collapsible__chevron,
+  .ms-carousel__dot {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .ms-btn,
+  .ms-input,
+  .ms-check__box,
+  .ms-switch__track,
+  .ms-radio__dot,
+  .ms-select,
+  .ms-slider__track,
+  .ms-slider__thumb,
+  .ms-toggle,
+  .ms-numberinput,
+  .ms-pininput__cell,
+  .ms-fileupload__dropzone,
+  .ms-datepicker__trigger,
+  .ms-calendar__cell,
+  .ms-carousel__arrow,
+  .ms-carousel__autoplay,
+  .ms-carousel__dot {
+    border-color: ButtonText !important;
+  }
+
+  .ms-check__box,
+  .ms-switch__track,
+  .ms-radio__dot,
+  .ms-slider__track,
+  .ms-slider__thumb,
+  .ms-toggle,
+  .ms-carousel__dot {
+    background: Canvas !important;
+    color: CanvasText !important;
+  }
+
+  .ms-check__box[data-state="checked"],
+  .ms-check__box[data-state="indeterminate"],
+  .ms-switch__track[data-state="checked"],
+  .ms-radio__dot[data-state="checked"],
+  .ms-toggle[data-state="on"],
+  .ms-pagination__btn[aria-current="page"],
+  .ms-multicombobox__check--on,
+  .ms-datepicker__segment[data-focused],
+  .ms-calendar__cell[data-selected],
+  .ms-carousel__dot--active {
+    background: Highlight !important;
+    border-color: Highlight !important;
+    color: HighlightText !important;
+  }
+
+  .ms-menu__item[data-highlighted],
+  .ms-cmd__item--active,
+  .ms-combobox__option--active {
+    background: Highlight !important;
+    color: HighlightText !important;
+    forced-color-adjust: none !important;
+    outline: 2px solid Highlight !important;
+    outline-offset: -2px !important;
+  }
+
+  .ms-radio__dot[data-state="checked"]::after,
+  .ms-slider__range,
+  .ms-progress__indicator,
+  .ms-stepper__step--current .ms-stepper__dot,
+  .ms-stepper__step--done .ms-stepper__dot {
+    background: Highlight !important;
+  }
+
+  .ms-btn[disabled],
+  .ms-check__box[data-disabled],
+  .ms-switch__track[data-disabled],
+  .ms-radio__dot[data-disabled],
+  .ms-select[data-disabled],
+  .ms-slider__thumb[data-disabled],
+  .ms-toggle[disabled],
+  .ms-carousel__arrow[disabled] {
+    border-color: GrayText !important;
+    color: GrayText !important;
+  }
+
+  .ms-check:focus-within .ms-check__box,
+  .ms-switch:focus-within .ms-switch__track,
+  .ms-radio__dot:focus-visible,
+  .ms-slider__thumb:focus-visible,
+  .ms-toggle:focus-visible,
+  .ms-carousel__autoplay:focus-visible,
+  .ms-datepicker__button[data-focus-visible],
+  .ms-calendar__cell[data-focus-visible] {
+    outline-color: Highlight !important;
+  }
+
+  .ms-input:focus-visible,
+  .ms-select:focus-visible,
+  .ms-numberinput:focus-within,
+  .ms-pininput__cell:focus-visible,
+  .ms-fileupload__dropzone:focus-within,
+  .ms-combobox__group[data-focus-within],
+  .ms-cmd__input-wrap:focus-within,
+  .ms-datepicker__trigger[data-focus-within] {
+    outline: 2px solid Highlight !important;
+    outline-offset: 2px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .ms-container--padded {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .ms-tabs__list,
+  .ms-pagination,
+  .ms-nav-list {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+  }
+
+  .ms-tabs__list,
+  .ms-nav-list {
+    padding-bottom: 2px;
+  }
+
+  .ms-pagination {
+    display: flex;
+  }
+
+  .ms-breadcrumb__list {
+    flex-wrap: wrap;
+  }
+
+  .ms-stepper {
+    width: 100%;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ms-stepper__step {
+    width: 100%;
+    box-sizing: border-box;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  .ms-stepper__body {
+    padding-top: 5px;
+    text-align: left;
+  }
+
+  .ms-stepper__connector {
+    top: 32px;
+    bottom: -12px;
+    left: 13px;
+    right: auto;
+    width: 1px;
+    height: auto;
+  }
+
+  .ms-datepicker {
+    max-width: 100%;
+  }
+
+  .ms-datepicker__trigger {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .ms-calendar {
+    width: 100%;
+    max-width: 292px;
+  }
+
+  .ms-fileupload__dropzone {
+    padding: 24px 16px;
+  }
+
+  .ms-toast-viewport {
+    right: 12px;
+    bottom: 12px;
+    width: calc(100vw - 24px);
+    max-height: calc(100dvh - 24px);
+  }
+}

@@ -1,0 +1,62 @@
+/* ==========================================================================
+   DatePicker
+   ========================================================================== */
+.ms-datepicker { display: inline-block; color: var(--fg1); }
+.ms-datepicker__trigger {
+  display: inline-flex; align-items: stretch; min-width: 200px; min-height: 36px;
+  box-sizing: border-box; overflow: hidden;
+  background: var(--bg); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md); color: var(--fg1);
+  transition: border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
+}
+.ms-datepicker__trigger[data-hovered] { border-color: var(--fg3); }
+.ms-datepicker__trigger[data-focus-within] {
+  border-color: var(--ring); box-shadow: var(--focus-ring);
+}
+.ms-datepicker[data-invalid] .ms-datepicker__trigger { border-color: var(--status-danger); }
+.ms-datepicker[data-disabled] .ms-datepicker__trigger {
+  background: var(--bg-muted); border-color: var(--border); color: var(--fg4); cursor: not-allowed;
+}
+.ms-datepicker[data-readonly] .ms-datepicker__trigger { background: var(--bg-subtle); }
+.ms-datepicker__input {
+  display: flex; align-items: center; flex: 1; min-width: 0;
+  padding: 0 8px; font-family: inherit; font-size: 13px; line-height: 1;
+}
+.ms-datepicker__segment {
+  box-sizing: border-box; border-radius: var(--radius-xs); padding: 3px 1px;
+  color: inherit; font: inherit; outline: none;
+}
+.ms-datepicker__segment[data-type="literal"] { padding-inline: 0; color: var(--fg3); }
+.ms-datepicker__segment[data-placeholder] { color: var(--fg3); }
+.ms-datepicker__segment[data-focused] {
+  background: var(--accent); color: var(--accent-fg);
+}
+.ms-datepicker__segment[data-disabled] { color: var(--fg4); cursor: not-allowed; }
+.ms-datepicker__segment[data-readonly] { cursor: default; }
+.ms-datepicker__button {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; flex: 0 0 34px; margin: 0; padding: 0;
+  background: transparent; border: 0; border-left: 1px solid var(--border);
+  color: var(--fg3); cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
+}
+.ms-datepicker__button[data-hovered] { background: var(--bg-muted); color: var(--fg1); }
+.ms-datepicker__button[data-focus-visible] { outline: 2px solid var(--ring); outline-offset: -3px; }
+.ms-datepicker__button[data-disabled] { color: var(--fg4); cursor: not-allowed; }
+.ms-datepicker__panel {
+  width: min(316px, calc(100vw - 24px)); box-sizing: border-box;
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg); padding: 12px;
+  overflow-y: auto; overscroll-behavior: contain;
+  z-index: var(--z-dropdown);
+}
+.ms-datepicker__dialog { outline: none; }
+.ms-datepicker__panel .ms-calendar { width: 100%; border: 0; padding: 0; }
+.ms-datepicker__footer { display: flex; justify-content: flex-end; padding-top: 8px; margin-top: 4px; border-top: 1px solid var(--border-subtle); }
+.ms-datepicker__clear {
+  background: transparent; border: 0; border-radius: var(--radius-sm); cursor: pointer;
+  font-family: inherit; font-size: 12px; color: var(--fg3); padding: 5px 8px;
+  transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
+}
+.ms-datepicker__clear[data-hovered] { background: var(--bg-muted); color: var(--fg1); }
+.ms-datepicker__clear[data-focus-visible] { outline: 2px solid var(--ring); outline-offset: 2px; }

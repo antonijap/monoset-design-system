@@ -1,4 +1,4 @@
-// Monoset design tokens — generated, keep in sync with colors_and_type.css.
+// Generated from tokens.json. Keep shared values aligned with variables.css.
 // These are the raw values. Consumer apps that want to use tokens in JS
 // (inline styles, color picker previews, Canvas, etc.) can import from here.
 

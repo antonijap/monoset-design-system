@@ -22,8 +22,6 @@ export default defineConfig({
       // Bundle the live workspace build of @monoset/native (pnpm materializes "*"
       // workspace deps as a cached copy that can go stale after a local rebuild).
       { find: '@monoset/native', replacement: liveDist('../packages/native/dist/index.js') },
-      // Same staleness fix for the tokens CSS (it ships as source, no build step).
-      { find: '@monoset/tokens/css', replacement: liveDist('../packages/tokens/src/colors_and_type.css') },
       // Exact 'react-native' goes through our shim so Modal portals into the
       // PhonePreview frame instead of covering the whole site.
       { find: /^react-native$/, replacement: liveDist('./src/shims/react-native.js') },
@@ -39,6 +37,7 @@ export default defineConfig({
     'process.env.JEST_WORKER_ID': 'undefined',
   },
   build: {
+    manifest: true,
     target: 'es2022',
     sourcemap: false,
     cssMinify: 'lightningcss',

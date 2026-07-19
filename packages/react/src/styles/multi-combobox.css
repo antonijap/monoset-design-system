@@ -1,0 +1,56 @@
+/* ==========================================================================
+   MultiCombobox  (extends combobox styles)
+   ========================================================================== */
+.ms-multicombobox__group {
+  min-height: 38px;
+  height: auto;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 3px 0 3px 6px;
+}
+.ms-multicombobox__tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.ms-multicombobox__tag {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  min-height: 24px;
+  padding: 0 0 0 7px;
+  border-radius: 4px;
+  background: var(--bg-muted);
+  font-size: 12px;
+  color: var(--fg1);
+}
+.ms-multicombobox__tag-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ms-multicombobox__tag-remove {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: var(--radius-xs);
+  background: transparent; border: none; padding: 0;
+  cursor: pointer; color: var(--fg3); line-height: 1;
+  transition: color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
+}
+.ms-multicombobox__tag-remove:hover { color: var(--fg1); background: var(--bg-subtle); }
+.ms-multicombobox__tag-remove:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+.ms-multicombobox__tag-remove:disabled { cursor: default; }
+.ms-combobox__group > .ms-multicombobox__input {
+  flex: 1 1 96px;
+  min-width: 72px;
+  width: auto;
+  padding: 6px 4px;
+}
+.ms-multicombobox__button { align-self: stretch; }
+.ms-multicombobox__check {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 11px; font-weight: 600; color: transparent;
+  flex-shrink: 0;
+}
+.ms-multicombobox__check--on { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }

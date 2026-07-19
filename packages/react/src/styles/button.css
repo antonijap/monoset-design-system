@@ -1,0 +1,43 @@
+/* ==========================================================================
+   Button
+   ========================================================================== */
+.ms-btn {
+  --_ring: var(--ring);
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    filter var(--duration-fast) var(--ease-standard);
+  -webkit-tap-highlight-color: transparent;
+}
+.ms-btn:focus-visible { outline: 2px solid var(--_ring); outline-offset: 2px; }
+.ms-btn:active:not([disabled]) { filter: brightness(0.88); }
+.ms-btn[disabled] { cursor: not-allowed; }
+.ms-btn[aria-busy="true"] { cursor: progress; }
+
+/* sizes */
+.ms-btn--sm { font-size: 12px; padding: 5px 10px; height: 28px; }
+.ms-btn--md { font-size: 13px; padding: 8px 14px; height: 34px; }
+.ms-btn--lg { font-size: 14px; padding: 0 16px; height: 40px; }
+
+/* variants */
+.ms-btn--primary   { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.ms-btn--primary:hover:not([disabled])   { background: var(--accent-hover); border-color: var(--accent-hover); }
+.ms-btn--secondary { background: var(--bg); color: var(--fg1); border-color: var(--border); }
+.ms-btn--secondary:hover:not([disabled]) { background: var(--bg-subtle); }
+.ms-btn--ghost     { background: transparent; color: var(--fg1); }
+.ms-btn--ghost:hover:not([disabled])     { background: var(--bg-muted); }
+.ms-btn--danger    { background: var(--status-danger); color: var(--fg-inverse); border-color: var(--status-danger); }
+
+.ms-btn[disabled] { background: var(--bg-muted); color: var(--fg4); border-color: transparent; }

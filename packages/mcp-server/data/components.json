@@ -1,142 +1,592 @@
 [
   {
     "name": "Accordion",
-    "description": "",
+    "description": "Disclosure panels. Keyboard and screen reader behavior from Radix.",
+    "docUrl": "https://monoset.design/accordion"
+  },
+  {
+    "name": "AccordionContent",
+    "description": "Renders one Accordion panel.",
+    "docUrl": "https://monoset.design/accordion"
+  },
+  {
+    "name": "AccordionItem",
+    "description": "Groups one Accordion trigger and panel.",
+    "docUrl": "https://monoset.design/accordion"
+  },
+  {
+    "name": "AccordionTrigger",
+    "description": "Toggles one Accordion panel.",
     "docUrl": "https://monoset.design/accordion"
   },
   {
     "name": "Alert",
-    "description": "If true, applies `role=\"alert\"` instead of `role=\"status\"`.",
+    "description": "Shows persistent status or error feedback within the page.",
     "docUrl": "https://monoset.design/alerts"
   },
   {
+    "name": "AppShell",
+    "description": "A responsive application shell with one sidebar tree and a mobile drawer.",
+    "docUrl": "https://monoset.design/appshell"
+  },
+  {
+    "name": "AspectRatio",
+    "description": "Hold media at a fixed width-to-height ratio while it loads.",
+    "docUrl": "https://monoset.design/aspectratio"
+  },
+  {
     "name": "Avatar",
-    "description": "Initials shown when no image, or if image fails.",
+    "description": "Shows a user image with a named fallback, or a decorative avatar.",
     "docUrl": "https://monoset.design/avatars"
   },
   {
     "name": "Badge",
-    "description": "",
+    "description": "Small labels for status, counts, and category tags.",
     "docUrl": "https://monoset.design/badges"
   },
   {
     "name": "Breadcrumb",
-    "description": "The final crumb — marked aria-current",
-    "docUrl": "https://monoset.design/tabs"
+    "description": "Show where the current page sits in the hierarchy.",
+    "docUrl": "https://monoset.design/breadcrumb"
   },
   {
     "name": "Button",
-    "description": "Left-slot icon (rendered before children).",
+    "description": "Four variants, three sizes, four states. A React Button component.",
     "docUrl": "https://monoset.design/buttons"
   },
   {
+    "name": "Calendar",
+    "description": "Standalone month grid. Inline, always visible. DatePicker is built on it.",
+    "docUrl": "https://monoset.design/calendar"
+  },
+  {
     "name": "Card",
-    "description": "Render as a different element (useful for article, section).",
+    "description": "Surface containers: outline, elevated, and inset variants.",
     "docUrl": "https://monoset.design/cards"
+  },
+  {
+    "name": "Carousel",
+    "description": "Horizontal slider with arrows and pagination dots.",
+    "docUrl": "https://monoset.design/carousel"
   },
   {
     "name": "Checkbox",
-    "description": "",
+    "description": "A form control for checked, unchecked, or indeterminate choices.",
     "docUrl": "https://monoset.design/toggles"
   },
   {
+    "name": "Collapsible",
+    "description": "A single open-or-closed disclosure for one optional region.",
+    "docUrl": "https://monoset.design/collapsible"
+  },
+  {
+    "name": "CollapsibleContent",
+    "description": "Renders the optional Collapsible region.",
+    "docUrl": "https://monoset.design/collapsible"
+  },
+  {
+    "name": "CollapsibleTrigger",
+    "description": "Toggles the Collapsible region.",
+    "docUrl": "https://monoset.design/collapsible"
+  },
+  {
+    "name": "Combobox",
+    "description": "A searchable select for picking one option from a long list.",
+    "docUrl": "https://monoset.design/combobox"
+  },
+  {
+    "name": "CommandPalette",
+    "description": "A searchable action menu for commands and navigation.",
+    "docUrl": "https://monoset.design/command"
+  },
+  {
+    "name": "Container",
+    "description": "Centers content within a responsive maximum width.",
+    "docUrl": "https://monoset.design/layout"
+  },
+  {
+    "name": "ContextMenu",
+    "description": "Right-click menu with items, labels, and separators.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "ContextMenuCheckboxItem",
+    "description": "Right-click menu with items, labels, and separators.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "ContextMenuContent",
+    "description": "Renders the ContextMenu panel.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "ContextMenuGroup",
+    "description": "Right-click menu with items, labels, and separators.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "ContextMenuItem",
+    "description": "Renders one ContextMenu action.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "ContextMenuItemIndicator",
+    "description": "Right-click menu with items, labels, and separators.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "ContextMenuLabel",
+    "description": "Labels a group of ContextMenu items.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "ContextMenuRadioGroup",
+    "description": "Right-click menu with items, labels, and separators.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "ContextMenuRadioItem",
+    "description": "Right-click menu with items, labels, and separators.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "ContextMenuSeparator",
+    "description": "Separates groups of ContextMenu items.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "ContextMenuSub",
+    "description": "Right-click menu with items, labels, and separators.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "ContextMenuSubContent",
+    "description": "Right-click menu with items, labels, and separators.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "ContextMenuSubTrigger",
+    "description": "Right-click menu with items, labels, and separators.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "ContextMenuTrigger",
+    "description": "Defines the right-click target for a ContextMenu.",
+    "docUrl": "https://monoset.design/contextmenu"
+  },
+  {
+    "name": "DatePicker",
+    "description": "Calendar in a popover for picking a single date.",
+    "docUrl": "https://monoset.design/datepicker"
+  },
+  {
     "name": "Dialog",
-    "description": "",
-    "docUrl": "https://monoset.design/alerts"
+    "description": "A modal that interrupts the user. Confirmations, simple forms, alerts.",
+    "docUrl": "https://monoset.design/dialog"
+  },
+  {
+    "name": "DialogClose",
+    "description": "Closes the nearest Dialog.",
+    "docUrl": "https://monoset.design/dialog"
+  },
+  {
+    "name": "DialogContent",
+    "description": "Renders the Dialog overlay and panel.",
+    "docUrl": "https://monoset.design/dialog"
+  },
+  {
+    "name": "DialogTrigger",
+    "description": "Opens a Dialog.",
+    "docUrl": "https://monoset.design/dialog"
   },
   {
     "name": "DropdownMenu",
-    "description": "",
-    "docUrl": "https://monoset.design/alerts"
+    "description": "A vertical list of actions triggered by a button.",
+    "docUrl": "https://monoset.design/dropdown"
+  },
+  {
+    "name": "DropdownMenuCheckboxItem",
+    "description": "A vertical list of actions triggered by a button.",
+    "docUrl": "https://monoset.design/dropdown"
+  },
+  {
+    "name": "DropdownMenuContent",
+    "description": "Renders the DropdownMenu panel.",
+    "docUrl": "https://monoset.design/dropdown"
+  },
+  {
+    "name": "DropdownMenuGroup",
+    "description": "A vertical list of actions triggered by a button.",
+    "docUrl": "https://monoset.design/dropdown"
+  },
+  {
+    "name": "DropdownMenuItem",
+    "description": "Renders one DropdownMenu action.",
+    "docUrl": "https://monoset.design/dropdown"
+  },
+  {
+    "name": "DropdownMenuItemIndicator",
+    "description": "A vertical list of actions triggered by a button.",
+    "docUrl": "https://monoset.design/dropdown"
+  },
+  {
+    "name": "DropdownMenuLabel",
+    "description": "Labels a group of DropdownMenu items.",
+    "docUrl": "https://monoset.design/dropdown"
+  },
+  {
+    "name": "DropdownMenuRadioGroup",
+    "description": "A vertical list of actions triggered by a button.",
+    "docUrl": "https://monoset.design/dropdown"
+  },
+  {
+    "name": "DropdownMenuRadioItem",
+    "description": "A vertical list of actions triggered by a button.",
+    "docUrl": "https://monoset.design/dropdown"
+  },
+  {
+    "name": "DropdownMenuSeparator",
+    "description": "Separates groups of DropdownMenu items.",
+    "docUrl": "https://monoset.design/dropdown"
+  },
+  {
+    "name": "DropdownMenuSub",
+    "description": "A vertical list of actions triggered by a button.",
+    "docUrl": "https://monoset.design/dropdown"
+  },
+  {
+    "name": "DropdownMenuSubContent",
+    "description": "A vertical list of actions triggered by a button.",
+    "docUrl": "https://monoset.design/dropdown"
+  },
+  {
+    "name": "DropdownMenuSubTrigger",
+    "description": "A vertical list of actions triggered by a button.",
+    "docUrl": "https://monoset.design/dropdown"
+  },
+  {
+    "name": "DropdownMenuTrigger",
+    "description": "Opens a DropdownMenu.",
+    "docUrl": "https://monoset.design/dropdown"
   },
   {
     "name": "EmptyState",
-    "description": "",
-    "docUrl": "https://monoset.design/cards"
+    "description": "A friendly message and CTA when there's nothing to show.",
+    "docUrl": "https://monoset.design/empty"
+  },
+  {
+    "name": "Field",
+    "description": "Connects one control to its label, description, error, and required state.",
+    "docUrl": "https://monoset.design/inputs"
+  },
+  {
+    "name": "FileUpload",
+    "description": "Drop zone with click-to-pick fallback and accessible keyboard handling.",
+    "docUrl": "https://monoset.design/fileupload"
+  },
+  {
+    "name": "Grid",
+    "description": "Lays out children in a responsive CSS grid.",
+    "docUrl": "https://monoset.design/layout"
+  },
+  {
+    "name": "HoverCard",
+    "description": "A rich tooltip shown on hover. For previewing what's behind a link or mention.",
+    "docUrl": "https://monoset.design/hovercard"
+  },
+  {
+    "name": "HoverCardContent",
+    "description": "Renders the HoverCard preview panel.",
+    "docUrl": "https://monoset.design/hovercard"
+  },
+  {
+    "name": "HoverCardTrigger",
+    "description": "Defines the element that opens a HoverCard.",
+    "docUrl": "https://monoset.design/hovercard"
+  },
+  {
+    "name": "Inline",
+    "description": "Lays out children horizontally with token-based spacing.",
+    "docUrl": "https://monoset.design/layout"
   },
   {
     "name": "Input",
-    "description": "The control — Input, Textarea, or any element that accepts `id`.",
+    "description": "Styles a native input and integrates it with Field.",
     "docUrl": "https://monoset.design/inputs"
   },
   {
     "name": "Kbd",
-    "description": "",
+    "description": "Keyboard shortcut chips for menus and tooltips.",
     "docUrl": "https://monoset.design/kbd"
   },
   {
+    "name": "MonosetProvider",
+    "description": "Sets up shared theme, tooltip, toast, and motion behavior.",
+    "docUrl": "https://monoset.design/theming"
+  },
+  {
+    "name": "MultiCombobox",
+    "description": "Searchable Combobox that selects multiple values.",
+    "docUrl": "https://monoset.design/multicombobox"
+  },
+  {
+    "name": "NavigationMenu",
+    "description": "Header dropdown nav with rich content panes.",
+    "docUrl": "https://monoset.design/navmenu"
+  },
+  {
+    "name": "NavigationMenuContent",
+    "description": "Renders one NavigationMenu content panel.",
+    "docUrl": "https://monoset.design/navmenu"
+  },
+  {
+    "name": "NavigationMenuIndicator",
+    "description": "Header dropdown nav with rich content panes.",
+    "docUrl": "https://monoset.design/navmenu"
+  },
+  {
+    "name": "NavigationMenuItem",
+    "description": "Groups one NavigationMenu trigger, link, or panel.",
+    "docUrl": "https://monoset.design/navmenu"
+  },
+  {
+    "name": "NavigationMenuLink",
+    "description": "Renders a link within a NavigationMenu.",
+    "docUrl": "https://monoset.design/navmenu"
+  },
+  {
+    "name": "NavigationMenuList",
+    "description": "Groups the top-level NavigationMenu items.",
+    "docUrl": "https://monoset.design/navmenu"
+  },
+  {
+    "name": "NavigationMenuTrigger",
+    "description": "Opens one NavigationMenu content panel.",
+    "docUrl": "https://monoset.design/navmenu"
+  },
+  {
+    "name": "NavigationMenuViewport",
+    "description": "Header dropdown nav with rich content panes.",
+    "docUrl": "https://monoset.design/navmenu"
+  },
+  {
+    "name": "NumberInput",
+    "description": "Text input with +/- stepper buttons for numeric fields.",
+    "docUrl": "https://monoset.design/numberinput"
+  },
+  {
     "name": "Pagination",
-    "description": "Max numbered buttons shown — defaults to 7. Ellipsis fills gaps.",
-    "docUrl": "https://monoset.design/tabs"
+    "description": "Page-by-page navigation for tables and long lists.",
+    "docUrl": "https://monoset.design/paging"
+  },
+  {
+    "name": "PasswordInput",
+    "description": "Input with a show/hide toggle.",
+    "docUrl": "https://monoset.design/password"
+  },
+  {
+    "name": "PinInput",
+    "description": "Multi-cell input for OTP and short codes. Auto-advance, paste support.",
+    "docUrl": "https://monoset.design/pininput"
   },
   {
     "name": "Popover",
-    "description": "",
-    "docUrl": "https://monoset.design/alerts"
+    "description": "A floating panel anchored to a trigger. Inline forms, filter controls, color pickers.",
+    "docUrl": "https://monoset.design/popover"
+  },
+  {
+    "name": "PopoverClose",
+    "description": "Closes the nearest Popover.",
+    "docUrl": "https://monoset.design/popover"
+  },
+  {
+    "name": "PopoverContent",
+    "description": "Renders the Popover panel.",
+    "docUrl": "https://monoset.design/popover"
+  },
+  {
+    "name": "PopoverTrigger",
+    "description": "Opens a Popover.",
+    "docUrl": "https://monoset.design/popover"
   },
   {
     "name": "Progress",
-    "description": "If no value is given, renders indeterminate animation.",
-    "docUrl": "https://monoset.design/cards"
+    "description": "A bar that fills as a measurable task makes progress.",
+    "docUrl": "https://monoset.design/progress"
+  },
+  {
+    "name": "Radio",
+    "description": "Renders one option in a RadioGroup.",
+    "docUrl": "https://monoset.design/radio"
   },
   {
     "name": "RadioGroup",
-    "description": "",
-    "docUrl": "https://monoset.design/toggles"
+    "description": "Pick one from a few. Use Select for longer lists.",
+    "docUrl": "https://monoset.design/radio"
   },
   {
     "name": "Select",
-    "description": "",
-    "docUrl": "https://monoset.design/inputs"
+    "description": "A dropdown for picking one option from a list. Wraps Radix UI Select.",
+    "docUrl": "https://monoset.design/select"
+  },
+  {
+    "name": "SelectContent",
+    "description": "Renders the Select options panel.",
+    "docUrl": "https://monoset.design/select"
+  },
+  {
+    "name": "SelectItem",
+    "description": "Renders one Select option.",
+    "docUrl": "https://monoset.design/select"
+  },
+  {
+    "name": "SelectTrigger",
+    "description": "Opens a Select and displays its current value.",
+    "docUrl": "https://monoset.design/select"
   },
   {
     "name": "Separator",
-    "description": "",
-    "docUrl": "https://monoset.design/cards"
+    "description": "A horizontal or vertical hairline. Use sparingly.",
+    "docUrl": "https://monoset.design/separator"
+  },
+  {
+    "name": "Sheet",
+    "description": "A slide-over panel from any edge. Built on Radix Dialog.",
+    "docUrl": "https://monoset.design/sheet"
+  },
+  {
+    "name": "SheetClose",
+    "description": "Closes the nearest Sheet.",
+    "docUrl": "https://monoset.design/sheet"
+  },
+  {
+    "name": "SheetContent",
+    "description": "Renders the Sheet overlay and sliding panel.",
+    "docUrl": "https://monoset.design/sheet"
+  },
+  {
+    "name": "SheetTrigger",
+    "description": "Opens a Sheet.",
+    "docUrl": "https://monoset.design/sheet"
   },
   {
     "name": "Skeleton",
-    "description": "Pixel or percent width (default 100%).",
-    "docUrl": "https://monoset.design/cards"
+    "description": "A placeholder shape while real content loads.",
+    "docUrl": "https://monoset.design/skeleton"
   },
   {
     "name": "Slider",
-    "description": "",
+    "description": "A range input for continuous values like volume or opacity.",
     "docUrl": "https://monoset.design/slider"
   },
   {
     "name": "Spinner",
-    "description": "",
+    "description": "A monotone loading indicator for waits over 400ms.",
     "docUrl": "https://monoset.design/spinner"
   },
   {
+    "name": "Stack",
+    "description": "Lays out children vertically with token-based spacing.",
+    "docUrl": "https://monoset.design/layout"
+  },
+  {
+    "name": "Stepper",
+    "description": "Horizontal multi-step indicator for wizards.",
+    "docUrl": "https://monoset.design/stepper"
+  },
+  {
     "name": "Switch",
-    "description": "",
+    "description": "An on or off control for settings that take effect right away.",
     "docUrl": "https://monoset.design/toggles"
   },
   {
     "name": "Table",
-    "description": "",
+    "description": "Table markup with button-based sortable headers and optional row selection.",
+    "docUrl": "https://monoset.design/table"
+  },
+  {
+    "name": "TableHeader",
+    "description": "Renders a sortable table header cell.",
+    "docUrl": "https://monoset.design/table"
+  },
+  {
+    "name": "TableSelectAll",
+    "description": "Renders the table select-all checkbox.",
+    "docUrl": "https://monoset.design/table"
+  },
+  {
+    "name": "TableSelectRow",
+    "description": "Renders a checkbox for one table row.",
     "docUrl": "https://monoset.design/table"
   },
   {
     "name": "Tabs",
-    "description": "Shared layoutId for the sliding underline.",
+    "description": "Underline tabs for switching between related panels.",
     "docUrl": "https://monoset.design/tabs"
   },
   {
+    "name": "TabsContent",
+    "description": "Renders one Tabs panel.",
+    "docUrl": "https://monoset.design/tabs"
+  },
+  {
+    "name": "TabsList",
+    "description": "Groups the Tabs triggers.",
+    "docUrl": "https://monoset.design/tabs"
+  },
+  {
+    "name": "TabsTrigger",
+    "description": "Selects one Tabs panel.",
+    "docUrl": "https://monoset.design/tabs"
+  },
+  {
+    "name": "Textarea",
+    "description": "Styles a native textarea and integrates it with Field.",
+    "docUrl": "https://monoset.design/inputs"
+  },
+  {
+    "name": "ThemeProvider",
+    "description": "Provides light, dark, and system theme state.",
+    "docUrl": "https://monoset.design/theming"
+  },
+  {
+    "name": "ThemeToggle",
+    "description": "Cycles through the available themes.",
+    "docUrl": "https://monoset.design/theming"
+  },
+  {
     "name": "Toast",
-    "description": "Wrap your app in <ToastProvider>…</ToastProvider> to enable toasts.",
+    "description": "Shows brief feedback in the shared Toast viewport.",
     "docUrl": "https://monoset.design/alerts"
   },
   {
+    "name": "ToastProvider",
+    "description": "Provides the shared Toast viewport and timing context.",
+    "docUrl": "https://monoset.design/alerts"
+  },
+  {
+    "name": "Toggle",
+    "description": "A standalone button with pressed and unpressed states.",
+    "docUrl": "https://monoset.design/toggle"
+  },
+  {
     "name": "ToggleGroup",
-    "description": "",
+    "description": "Groups related toggles with single or multiple selection.",
+    "docUrl": "https://monoset.design/toggle"
+  },
+  {
+    "name": "ToggleGroupItem",
+    "description": "Renders one option in a ToggleGroup.",
     "docUrl": "https://monoset.design/toggle"
   },
   {
     "name": "Tooltip",
-    "description": "",
-    "docUrl": "https://monoset.design/alerts"
+    "description": "A short label shown on hover or focus. Two or three words, max.",
+    "docUrl": "https://monoset.design/tooltip"
+  },
+  {
+    "name": "TooltipProvider",
+    "description": "Shares Tooltip delay settings across an application.",
+    "docUrl": "https://monoset.design/tooltip"
   }
 ]

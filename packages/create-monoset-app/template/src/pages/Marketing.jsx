@@ -22,11 +22,11 @@ const features = [
 ];
 
 const avatars = [
-  { initials: "EV" },
-  { initials: "JH" },
-  { initials: "PN" },
-  { initials: "MR" },
-  { initials: "SL" },
+  { name: "Elena Voss" },
+  { name: "James Harlow" },
+  { name: "Priya Nair" },
+  { name: "Marcus Reid" },
+  { name: "Sofia Lund" },
 ];
 
 export default function Marketing() {
@@ -172,14 +172,14 @@ export default function Marketing() {
         >
           {avatars.map((a, i) => (
             <div
-              key={a.initials}
+              key={a.name}
               style={{
                 marginLeft: i === 0 ? 0 : -8,
                 border: "2px solid var(--bg)",
                 borderRadius: "50%",
               }}
             >
-              <Avatar initials={a.initials} size="sm" />
+              <Avatar name={a.name} size="sm" />
             </div>
           ))}
         </div>

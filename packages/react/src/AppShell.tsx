@@ -1,97 +1,330 @@
 import {
-  type ReactNode,
   createContext,
-  useContext,
-  useState,
   forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ButtonHTMLAttributes,
+  type HTMLAttributes,
+  type KeyboardEvent,
+  type MutableRefObject,
+  type ReactNode,
 } from "react";
-import * as RDialog from "@radix-ui/react-dialog";
+import { createPortal } from "react-dom";
 import { Menu } from "lucide-react";
+import { useMonosetPortalContainer } from "./PortalContext";
 import { cx } from "./cx";
 
-/* ─── Context ───────────────────────────────────────────────────── */
-
-interface AppShellContext {
+interface AppShellContextValue {
   mobileOpen: boolean;
-  setMobileOpen: (open: boolean) => void;
+  sidebarId: string;
+  sidebarRef: MutableRefObject<HTMLDivElement | null>;
+  setMobileOpen: (open: boolean, returnFocusTo?: HTMLElement | null) => void;
 }
 
-const Ctx = createContext<AppShellContext | null>(null);
+const Ctx = createContext<AppShellContextValue | null>(null);
 
-function useAppShell(): AppShellContext {
-  const ctx = useContext(Ctx);
-  if (!ctx) throw new Error("AppShell sub-components must be used inside <AppShell>.");
-  return ctx;
+const focusableSelector = [
+  "a[href]:not([tabindex='-1'])",
+  "button:not([disabled]):not([tabindex='-1'])",
+  "input:not([disabled]):not([type='hidden']):not([tabindex='-1'])",
+  "select:not([disabled]):not([tabindex='-1'])",
+  "textarea:not([disabled]):not([tabindex='-1'])",
+  "[contenteditable]:not([contenteditable='false']):not([tabindex='-1'])",
+  "[tabindex]:not([tabindex='-1'])",
+].join(", ");
+
+function isHiddenFromFocus(element: HTMLElement, boundary: HTMLElement) {
+  let current: HTMLElement | null = element;
+
+  while (current && boundary.contains(current)) {
+    if (
+      current.hidden ||
+      current.inert ||
+      current.getAttribute("aria-hidden") === "true"
+    ) {
+      return true;
+    }
+    const style = window.getComputedStyle(current);
+    if (style.display === "none" || style.visibility === "hidden") return true;
+    if (current === boundary) break;
+    current = current.parentElement;
+  }
+
+  return false;
 }
 
-/* ─── Root ──────────────────────────────────────────────────────── */
+function getFocusableElements(container: HTMLElement) {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(focusableSelector),
+  ).filter(
+    (element) =>
+      !element.matches(":disabled, input[type='hidden']") &&
+      !(
+        element.hasAttribute("tabindex") &&
+        Number(element.getAttribute("tabindex")) < 0
+      ) &&
+      !isHiddenFromFocus(element, container),
+  );
+}
 
-export interface AppShellProps {
+let pageScrollLockCount = 0;
+let previousBodyOverflow = "";
+let previousDocumentOverflow = "";
+
+function lockPageScroll(): () => void {
+  if (typeof document === "undefined") return () => {};
+
+  if (pageScrollLockCount === 0) {
+    previousBodyOverflow = document.body.style.overflow;
+    previousDocumentOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+  }
+  pageScrollLockCount += 1;
+
+  let released = false;
+  return () => {
+    if (released) return;
+    released = true;
+    pageScrollLockCount = Math.max(0, pageScrollLockCount - 1);
+    if (pageScrollLockCount === 0) {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousDocumentOverflow;
+      previousBodyOverflow = "";
+      previousDocumentOverflow = "";
+    }
+  };
+}
+
+function useAppShell(): AppShellContextValue {
+  const value = useContext(Ctx);
+  if (!value) {
+    throw new Error("AppShell sub-components must be used inside <AppShell>.");
+  }
+  return value;
+}
+
+export interface AppShellProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
   children: ReactNode;
-  /** Sidebar width in px. Default: 240. */
   sidebarWidth?: number;
   className?: string;
+  /** Controlled mobile drawer state. */
+  mobileOpen?: boolean;
+  /** Initial mobile drawer state when uncontrolled. */
+  defaultMobileOpen?: boolean;
+  onMobileOpenChange?: (open: boolean) => void;
+  /** Changing this value closes an open drawer after client-side navigation. */
+  navigationSignal?: string | number;
 }
 
-const AppShellRoot = forwardRef<HTMLDivElement, AppShellProps>(
-  function AppShellRoot({ children, sidebarWidth = 240, className }, ref) {
-    const [mobileOpen, setMobileOpen] = useState(false);
-    const value: AppShellContext = { mobileOpen, setMobileOpen };
-    return (
-      <Ctx.Provider value={value}>
-        <div
-          ref={ref}
-          className={cx("ms-app-shell", className)}
-          style={{ ["--ms-sidebar-w" as string]: `${sidebarWidth}px` }}
-        >
-          {children}
-        </div>
-      </Ctx.Provider>
-    );
+const AppShellRoot = forwardRef<HTMLDivElement, AppShellProps>(function AppShellRoot(
+  {
+    children,
+    sidebarWidth = 240,
+    className,
+    mobileOpen: controlledOpen,
+    defaultMobileOpen = false,
+    onMobileOpenChange,
+    navigationSignal,
+    style,
+    ...rootProps
   },
-);
+  ref,
+) {
+  const portalContainer = useMonosetPortalContainer();
+  const sidebarId = `${useId()}-sidebar`;
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+  const previousOpen = useRef(false);
+  const previousNavigationSignal = useRef(navigationSignal);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultMobileOpen);
+  const isControlled = controlledOpen !== undefined;
+  const mobileOpen = isControlled ? controlledOpen : uncontrolledOpen;
 
-/* ─── Sidebar ───────────────────────────────────────────────────── */
+  const setMobileOpen = useCallback(
+    (nextOpen: boolean, returnFocusTo?: HTMLElement | null) => {
+      if (nextOpen === mobileOpen) return;
+      if (nextOpen && !mobileOpen) {
+        returnFocusRef.current =
+          returnFocusTo ??
+          (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+      }
+      if (!isControlled) setUncontrolledOpen(nextOpen);
+      onMobileOpenChange?.(nextOpen);
+    },
+    [isControlled, mobileOpen, onMobileOpenChange],
+  );
 
-export interface AppShellSidebarProps {
+  useEffect(() => {
+    let frame = 0;
+    if (mobileOpen && !previousOpen.current) {
+      if (!returnFocusRef.current?.isConnected) {
+        const activeElement = document.activeElement;
+        returnFocusRef.current =
+          activeElement instanceof HTMLElement &&
+          !sidebarRef.current?.contains(activeElement)
+            ? activeElement
+            : null;
+      }
+      frame = requestAnimationFrame(() => {
+        const sidebar = sidebarRef.current;
+        const target = sidebar ? getFocusableElements(sidebar)[0] : undefined;
+        (target ?? sidebar)?.focus();
+      });
+    } else if (!mobileOpen && previousOpen.current) {
+      const returnFocusTo = returnFocusRef.current;
+      frame = requestAnimationFrame(() => {
+        returnFocusTo?.focus();
+        returnFocusRef.current = null;
+      });
+    }
+    previousOpen.current = mobileOpen;
+    return () => cancelAnimationFrame(frame);
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    return lockPageScroll();
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    let frame = 0;
+    if (previousNavigationSignal.current !== navigationSignal) {
+      previousNavigationSignal.current = navigationSignal;
+      if (mobileOpen) {
+        frame = requestAnimationFrame(() => setMobileOpen(false));
+      }
+    }
+    return () => cancelAnimationFrame(frame);
+  }, [mobileOpen, navigationSignal, setMobileOpen]);
+
+  const normalizedWidth =
+    Number.isFinite(sidebarWidth) && sidebarWidth > 0 ? sidebarWidth : 240;
+  const contextValue: AppShellContextValue = {
+    mobileOpen,
+    sidebarId,
+    sidebarRef,
+    setMobileOpen,
+  };
+  const portalTarget =
+    portalContainer ?? (typeof document !== "undefined" ? document.body : null);
+
+  return (
+    <Ctx.Provider value={contextValue}>
+      <div
+        {...rootProps}
+        ref={ref}
+        className={cx("ms-app-shell", className)}
+        style={{
+          ...style,
+          ["--ms-sidebar-w" as string]: `${normalizedWidth}px`,
+        }}
+      >
+        {children}
+      </div>
+      {mobileOpen && portalTarget
+        ? createPortal(
+            <div
+              className="ms-app-shell__drawer-scrim"
+              data-state="open"
+              aria-hidden="true"
+              onPointerDown={() => setMobileOpen(false)}
+            />,
+            portalTarget,
+          )
+        : null}
+    </Ctx.Provider>
+  );
+});
+
+export interface AppShellSidebarProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "id" | "role"> {
   children: ReactNode;
-  /** Optional brand block rendered at the top. */
   brand?: ReactNode;
-  /** Optional footer block rendered at the bottom. */
   footer?: ReactNode;
   className?: string;
 }
 
-function AppShellSidebar({ children, brand, footer, className }: AppShellSidebarProps) {
-  const { mobileOpen, setMobileOpen } = useAppShell();
+const AppShellSidebar = forwardRef<HTMLDivElement, AppShellSidebarProps>(
+  function AppShellSidebar(
+    {
+      children,
+      brand,
+      footer,
+      className,
+      onKeyDown,
+      tabIndex,
+      "aria-label": ariaLabel,
+      ...rest
+    },
+    forwardedRef,
+  ) {
+    const { mobileOpen, setMobileOpen, sidebarId, sidebarRef } = useAppShell();
 
-  const inner = (
-    <div className={cx("ms-app-shell__sidebar-inner", className)}>
-      {brand && <div className="ms-app-shell__brand">{brand}</div>}
-      <nav className="ms-app-shell__nav">{children}</nav>
-      {footer && <div className="ms-app-shell__sidebar-footer">{footer}</div>}
-    </div>
-  );
+    const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+      onKeyDown?.(event);
+      if (event.defaultPrevented) return;
+      if (!mobileOpen) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        setMobileOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
 
-  return (
-    <>
-      <aside className="ms-app-shell__sidebar" data-ms="app-shell-sidebar">
-        {inner}
-      </aside>
-      <RDialog.Root open={mobileOpen} onOpenChange={setMobileOpen}>
-        <RDialog.Portal>
-          <RDialog.Overlay className="ms-app-shell__drawer-scrim" />
-          <RDialog.Content className="ms-app-shell__drawer">
-            <RDialog.Title className="ms-sr-only">Navigation</RDialog.Title>
-            {inner}
-          </RDialog.Content>
-        </RDialog.Portal>
-      </RDialog.Root>
-    </>
-  );
-}
+      const focusable = getFocusableElements(event.currentTarget);
+      if (focusable.length === 0) {
+        event.preventDefault();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
 
-/* ─── Sidebar group ─────────────────────────────────────────────── */
+    return (
+      <div
+        {...rest}
+        ref={(node) => {
+          sidebarRef.current = node;
+          if (typeof forwardedRef === "function") forwardedRef(node);
+          else if (forwardedRef) forwardedRef.current = node;
+        }}
+        id={sidebarId}
+        className={cx(
+          "ms-app-shell__sidebar",
+          mobileOpen && "ms-app-shell__drawer",
+          className,
+        )}
+        data-ms="app-shell-sidebar"
+        data-state={mobileOpen ? "open" : "closed"}
+        role={mobileOpen ? "dialog" : "complementary"}
+        aria-modal={mobileOpen ? true : undefined}
+        aria-label={mobileOpen ? (ariaLabel ?? "Navigation") : ariaLabel}
+        tabIndex={mobileOpen ? -1 : tabIndex}
+        onKeyDown={handleKeyDown}
+      >
+        <div className="ms-app-shell__sidebar-inner">
+          {brand && <div className="ms-app-shell__brand">{brand}</div>}
+          <nav className="ms-app-shell__nav">{children}</nav>
+          {footer && <div className="ms-app-shell__sidebar-footer">{footer}</div>}
+        </div>
+      </div>
+    );
+  },
+);
 
 export interface AppShellSidebarGroupProps {
   label?: ReactNode;
@@ -99,7 +332,11 @@ export interface AppShellSidebarGroupProps {
   className?: string;
 }
 
-function AppShellSidebarGroup({ label, children, className }: AppShellSidebarGroupProps) {
+function AppShellSidebarGroup({
+  label,
+  children,
+  className,
+}: AppShellSidebarGroupProps) {
   return (
     <div className={cx("ms-app-shell__group", className)}>
       {label && <div className="ms-app-shell__group-label">{label}</div>}
@@ -108,29 +345,34 @@ function AppShellSidebarGroup({ label, children, className }: AppShellSidebarGro
   );
 }
 
-/* ─── Sidebar item ──────────────────────────────────────────────── */
-
 export interface AppShellSidebarItemProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
   icon?: ReactNode;
   active?: boolean;
   children: ReactNode;
 }
 
 const AppShellSidebarItem = forwardRef<HTMLButtonElement, AppShellSidebarItemProps>(
-  function AppShellSidebarItem({ icon, active, children, className, onClick, ...rest }, ref) {
+  function AppShellSidebarItem(
+    { icon, active, children, className, onClick, ...rest },
+    ref,
+  ) {
     const { setMobileOpen } = useAppShell();
     return (
       <button
+        {...rest}
         ref={ref}
         type="button"
         aria-current={active ? "page" : undefined}
-        className={cx("ms-app-shell__item", active && "ms-app-shell__item--active", className)}
-        onClick={(e) => {
-          onClick?.(e);
-          setMobileOpen(false);
+        className={cx(
+          "ms-app-shell__item",
+          active && "ms-app-shell__item--active",
+          className,
+        )}
+        onClick={(event) => {
+          onClick?.(event);
+          if (!event.defaultPrevented) setMobileOpen(false);
         }}
-        {...rest}
       >
         {icon && <span className="ms-app-shell__item-icon">{icon}</span>}
         <span className="ms-app-shell__item-label">{children}</span>
@@ -139,77 +381,101 @@ const AppShellSidebarItem = forwardRef<HTMLButtonElement, AppShellSidebarItemPro
   },
 );
 
-/* ─── Main column ───────────────────────────────────────────────── */
-
-export interface AppShellMainProps {
+export interface AppShellMainProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
-  className?: string;
 }
 
-function AppShellMain({ children, className }: AppShellMainProps) {
-  return <div className={cx("ms-app-shell__main", className)}>{children}</div>;
-}
+const AppShellMain = forwardRef<HTMLDivElement, AppShellMainProps>(function AppShellMain(
+  {
+    children,
+    className,
+    "aria-hidden": ariaHidden,
+    ...rest
+  },
+  ref,
+) {
+  const { mobileOpen } = useAppShell();
+  return (
+    <div
+      {...rest}
+      {...(mobileOpen ? { inert: "" } : {})}
+      ref={ref}
+      aria-hidden={mobileOpen ? true : ariaHidden}
+      className={cx("ms-app-shell__main", className)}
+    >
+      {children}
+    </div>
+  );
+});
 
-/* ─── Header ────────────────────────────────────────────────────── */
-
-export interface AppShellHeaderProps {
+export interface AppShellHeaderProps extends HTMLAttributes<HTMLElement> {
   children?: ReactNode;
-  className?: string;
 }
 
-function AppShellHeader({ children, className }: AppShellHeaderProps) {
-  return <header className={cx("ms-app-shell__header", className)}>{children}</header>;
-}
-
-/* ─── Mobile trigger ────────────────────────────────────────────── */
+const AppShellHeader = forwardRef<HTMLElement, AppShellHeaderProps>(function AppShellHeader(
+  { children, className, ...rest },
+  ref,
+) {
+  return (
+    <header {...rest} ref={ref} className={cx("ms-app-shell__header", className)}>
+      {children}
+    </header>
+  );
+});
 
 export interface AppShellMobileTriggerProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Visually hidden label for the button. Default: "Open navigation". */
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
   label?: string;
 }
 
-const AppShellMobileTrigger = forwardRef<HTMLButtonElement, AppShellMobileTriggerProps>(
-  function AppShellMobileTrigger({ label = "Open navigation", className, ...rest }, ref) {
-    const { mobileOpen, setMobileOpen } = useAppShell();
+const AppShellMobileTrigger = forwardRef<
+  HTMLButtonElement,
+  AppShellMobileTriggerProps
+>(function AppShellMobileTrigger(
+  { label = "Open navigation", className, onClick, ...rest },
+  ref,
+) {
+  const { mobileOpen, setMobileOpen, sidebarId } = useAppShell();
+  return (
+    <button
+      {...rest}
+      ref={ref}
+      type="button"
+      aria-label={label}
+      aria-expanded={mobileOpen}
+      aria-controls={sidebarId}
+      className={cx("ms-app-shell__mobile-trigger", className)}
+      onClick={(event) => {
+        onClick?.(event);
+        if (!event.defaultPrevented) setMobileOpen(true, event.currentTarget);
+      }}
+    >
+      <Menu size={20} strokeWidth={2} aria-hidden />
+    </button>
+  );
+});
+
+export interface AppShellContentProps extends HTMLAttributes<HTMLElement> {
+  children?: ReactNode;
+}
+
+const AppShellContent = forwardRef<HTMLElement, AppShellContentProps>(
+  function AppShellContent({ children, className, ...rest }, ref) {
     return (
-      <button
-        ref={ref}
-        type="button"
-        aria-label={label}
-        aria-expanded={mobileOpen}
-        className={cx("ms-app-shell__mobile-trigger", className)}
-        onClick={() => setMobileOpen(true)}
-        {...rest}
-      >
-        <Menu size={20} strokeWidth={2} aria-hidden />
-      </button>
+      <main {...rest} ref={ref} className={cx("ms-app-shell__content", className)}>
+        {children}
+      </main>
     );
   },
 );
 
-/* ─── Content ───────────────────────────────────────────────────── */
-
-export interface AppShellContentProps {
-  children?: ReactNode;
-  className?: string;
-}
-
-function AppShellContent({ children, className }: AppShellContentProps) {
-  return (
-    <main className={cx("ms-app-shell__content", className)}>{children}</main>
-  );
-}
-
-/* ─── Hook ──────────────────────────────────────────────────────── */
-
-/** Read or update the AppShell's mobile drawer state from anywhere inside. */
-export function useAppShellMobile(): { open: boolean; setOpen: (open: boolean) => void } {
+export function useAppShellMobile(): {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+} {
   const { mobileOpen, setMobileOpen } = useAppShell();
   return { open: mobileOpen, setOpen: setMobileOpen };
 }
-
-/* ─── Compound export ───────────────────────────────────────────── */
 
 type AppShellComponent = typeof AppShellRoot & {
   Sidebar: typeof AppShellSidebar;

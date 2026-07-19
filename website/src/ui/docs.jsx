@@ -1,20 +1,15 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useState, useEffect, forwardRef } from 'react';
-import { motion } from 'framer-motion';
+import { useClipboardCopy } from './useClipboardCopy.js';
 
-/* ─── MONOSET MOTION PRESETS ──────────────────────────────────────────── */
-export const EASE_STANDARD = [0.2, 0, 0, 1];
-export const EASE_EMPHASIS = [0.3, 0, 0, 1];
-export const EASE_EXIT     = [0.4, 0, 1, 1];
-export const DUR = { fast: 0.12, base: 0.18, slow: 0.28 };
-
-export const fadeUp = {
-  hidden:  { opacity: 0, y: 8 },
-  visible: { opacity: 1, y: 0, transition: { duration: DUR.slow, ease: EASE_EMPHASIS } },
-};
-export const hoverLift = { transition: { duration: DUR.fast, ease: EASE_STANDARD } };
-// Monoset press: shade one step, no scale, no translate. Brightness works on any color.
-export const pressDown = { filter: "brightness(0.88)", transition: { duration: DUR.fast, ease: EASE_STANDARD } };
+export {
+  DUR,
+  EASE_EMPHASIS,
+  EASE_EXIT,
+  EASE_STANDARD,
+  fadeUp,
+  hoverLift,
+  pressDown,
+} from '@monoset/react/motion';
 
 
 /* ─── ICONS ──────────────────────────────────────────────────────────── */
@@ -49,63 +44,21 @@ export function Icon({ name, size=16, strokeWidth=2, style, className }) {
 
 /* ─── COPY BUTTON ─────────────────────────────────────────────────────── */
 export function CopyButton({ text, style }) {
-  const [copied, setCopied] = useState(false);
-  const copy = () => {
-    navigator.clipboard?.writeText(text).catch(()=>{});
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const { copy, copyStatus } = useClipboardCopy(text);
+  const copied = copyStatus === "copied";
+  const copyLabel = copied ? "Copied" : copyStatus === "failed" ? "Copy failed" : "Copy";
   return (
-    <button onClick={copy} style={{ background:"transparent", border:"none", cursor:"pointer",
-      color: copied ? "#4ade80" : "var(--mono-400)", padding:"4px", display:"flex",
+    <button type="button" onClick={copy} style={{ background:"transparent", border:"none", cursor:"pointer",
+      color: copied ? "#4ade80" : copyStatus === "failed" ? "#f87171" : "var(--mono-400)", padding:"4px", display:"flex",
       alignItems:"center", gap:4, fontSize:11, transition:"color 120ms", ...style }}>
       <Icon name={copied?"check":"copy"} size={13}/>
-      {copied ? "Copied" : "Copy"}
+      <span aria-live="polite">{copyLabel}</span>
     </button>
   );
 }
 
 /* ─── CODE BLOCK ──────────────────────────────────────────────────────── */
-/* Lazy singleton highlighter: only the grammars the docs use, JS regex engine,
-   loaded on first code block so the initial bundle stays lean. */
-let _shiki = null;
-function getHighlighter() {
-  if (!_shiki) {
-    _shiki = Promise.all([
-      import('shiki/core'),
-      import('shiki/engine/javascript'),
-      import('shiki/themes/github-dark.mjs'),
-      import('shiki/langs/tsx.mjs'),
-      import('shiki/langs/bash.mjs'),
-      import('shiki/langs/css.mjs'),
-    ]).then(([core, engine, theme, tsx, bash, css]) =>
-      core.createHighlighterCore({
-        themes: [theme.default],
-        langs: [tsx.default, bash.default, css.default],
-        engine: engine.createJavaScriptRegexEngine(),
-      })
-    );
-  }
-  return _shiki;
-}
-
-const SHIKI_LANG = {
-  jsx: 'tsx', tsx: 'tsx', js: 'tsx', javascript: 'tsx', ts: 'tsx', typescript: 'tsx',
-  bash: 'bash', css: 'css',
-};
-
-export function Code({ children, language = 'jsx', filename }) {
-  const [html, setHtml] = useState(null);
-  const lang = SHIKI_LANG[language];
-  useEffect(() => {
-    if (!lang) return;
-    let on = true;
-    getHighlighter()
-      .then((h) => { if (on) setHtml(h.codeToHtml(String(children), { lang, theme: 'github-dark' })); })
-      .catch(() => {});
-    return () => { on = false; };
-  }, [children, lang]);
-
+export function Code({ children, filename }) {
   return (
     <div style={{ background:"var(--mono-1000)", borderRadius:8, overflow:"hidden", fontSize:13, marginBottom:18 }}>
       {filename && (
@@ -117,12 +70,8 @@ export function Code({ children, language = 'jsx', filename }) {
       )}
       <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between",
                     padding: filename ? "14px 16px" : "14px 16px" }}>
-        {html ? (
-          <div className="ms-docs-code" style={{ flex:1, minWidth:0 }} dangerouslySetInnerHTML={{ __html: html }}/>
-        ) : (
-          <pre style={{ margin:0, color:"var(--mono-200)", fontFamily:"var(--font-mono)",
-                        overflowX:"auto", lineHeight:1.7, fontSize:13, flex:1 }}>{children}</pre>
-        )}
+        <pre style={{ margin:0, color:"var(--mono-200)", fontFamily:"var(--font-mono)",
+                      overflowX:"auto", lineHeight:1.7, fontSize:13, flex:1 }}>{children}</pre>
         {!filename && <CopyButton text={children} style={{ flexShrink:0, marginLeft:8, marginTop:0 }}/>}
       </div>
     </div>
@@ -272,34 +221,6 @@ export function Step({ n, title, children }) {
       </div>
     </div>
   );
-}
-
-/* ─── DEMO COMPONENTS ─────────────────────────────────────────────────── */
-export const DemoButton = forwardRef(function DemoButton({ variant="secondary", size, disabled, children, style, ...rest }, ref) {
-  const [hover, setHover] = useState(false);
-  const base = { fontFamily:"inherit", fontWeight:500, lineHeight:1, borderRadius:6,
-                  border:"1px solid transparent", cursor:disabled?"not-allowed":"pointer",
-                  display:"inline-flex", alignItems:"center", justifyContent:"center", gap:6, transition:"background 120ms, border-color 120ms" };
-  const sz = size==="sm" ? {fontSize:12,padding:"5px 10px"}
-           : size==="lg" ? {fontSize:15,padding:"11px 20px"}
-           : {fontSize:13,padding:"8px 14px"};
-  const v = variant==="primary" ? { background: hover?"#27272b":"#09090b", color:"#fff" }
-          : variant==="danger"  ? { background: hover?"#8f2a2a":"var(--status-danger)", color:"#fff" }
-          : variant==="ghost"   ? { background: hover?"var(--bg-muted)":"transparent", color:"var(--fg1)" }
-          : { background: hover?"var(--bg-subtle)":"var(--bg)", color:"var(--fg1)", borderColor:"var(--border)" };
-  const dis = disabled ? { background:"var(--bg-muted)", color:"var(--fg4)", borderColor:"transparent" } : {};
-  return <motion.button ref={ref} whileTap={disabled ? undefined : pressDown}
-           style={{...base,...sz,...v,...dis,...style}} onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} disabled={disabled} {...rest}>{children}</motion.button>;
-});
-
-export function DemoBadge({ variant="neutral", children }) {
-  const v = {
-    neutral: { background:"var(--bg-muted)", color:"var(--fg2)" },
-    solid:   { background:"var(--mono-1000)", color:"#fff" },
-    outline: { background:"var(--bg)", color:"var(--fg2)", border:"1px solid var(--border)" },
-  }[variant] || { background:"var(--bg-muted)", color:"var(--fg2)" };
-  return <span style={{ ...v, fontSize:11, fontWeight:500, padding:"3px 9px", borderRadius:999,
-                         display:"inline-flex", alignItems:"center", lineHeight:1 }}>{children}</span>;
 }
 
 export function PropsTable({ rows = [] }) {

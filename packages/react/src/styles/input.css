@@ -1,0 +1,20 @@
+.ms-input {
+  font-family: inherit; font-size: 13px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg); color: var(--fg1);
+  outline: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+  width: 100%;
+  box-sizing: border-box;
+}
+.ms-input:focus-visible {
+  border-color: var(--fg1);
+  box-shadow: var(--focus-ring);
+}
+.ms-input::placeholder { color: var(--fg4); }
+.ms-input[disabled] { background: var(--bg-muted); color: var(--fg4); cursor: not-allowed; }
+.ms-input[aria-invalid="true"] { border-color: var(--status-danger); }

@@ -1,0 +1,60 @@
+/* ==========================================================================
+   FileUpload
+   ========================================================================== */
+.ms-fileupload {
+  display: flex; flex-direction: column; gap: 8px; min-width: 0;
+}
+.ms-fileupload__dropzone {
+  display: flex; align-items: center; justify-content: center;
+  box-sizing: border-box; min-height: 112px;
+  padding: 32px 24px; border: 1px dashed var(--border); border-radius: var(--radius-md);
+  background: var(--bg-subtle); cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard);
+  text-align: center;
+}
+.ms-fileupload:not(.ms-fileupload--disabled) .ms-fileupload__dropzone:hover {
+  background: var(--bg-muted); border-color: var(--fg3);
+}
+.ms-fileupload__dropzone:focus-within {
+  border-color: var(--fg1); box-shadow: var(--focus-ring);
+}
+.ms-fileupload--over .ms-fileupload__dropzone {
+  background: var(--bg-muted); border-color: var(--fg1);
+}
+.ms-fileupload--invalid .ms-fileupload__dropzone { border-color: var(--status-danger); }
+.ms-fileupload--disabled { opacity: 0.6; }
+.ms-fileupload--disabled .ms-fileupload__dropzone { cursor: not-allowed; }
+.ms-fileupload__input {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.ms-fileupload__hint { display: flex; flex-direction: column; gap: 4px; }
+.ms-fileupload__title { font-size: 13px; font-weight: 500; color: var(--fg1); }
+.ms-fileupload__sub { font-size: 12px; color: var(--fg3); }
+.ms-fileupload__files {
+  display: flex; flex-direction: column; gap: 4px;
+  margin: 0; padding: 0; list-style: none;
+}
+.ms-fileupload__file {
+  display: flex; align-items: center; gap: 12px; min-width: 0;
+  padding: 6px 8px 6px 12px;
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+  background: var(--bg);
+}
+.ms-fileupload__filename {
+  min-width: 0; flex: 1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 13px; color: var(--fg1);
+}
+.ms-fileupload__remove {
+  min-width: 32px; min-height: 32px; padding: 0 8px;
+  border: 0; border-radius: var(--radius-sm);
+  color: var(--fg3); background: transparent;
+  font: inherit; font-size: 12px; cursor: pointer;
+}
+.ms-fileupload__remove:hover:not(:disabled) { color: var(--fg1); background: var(--bg-muted); }
+.ms-fileupload__remove:focus-visible {
+  outline: 2px solid var(--ring); outline-offset: 1px;
+}
+.ms-fileupload__remove:disabled { cursor: not-allowed; }

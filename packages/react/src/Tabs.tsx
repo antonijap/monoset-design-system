@@ -1,6 +1,6 @@
 import * as RTabs from "@radix-ui/react-tabs";
 import { forwardRef, useEffect, useRef, useState, type ReactNode } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotionConfig } from "framer-motion";
 import { DUR, EASE_EMPHASIS } from "@monoset/motion";
 import { cx } from "./cx";
 
@@ -19,29 +19,72 @@ export const TabsList = forwardRef<
   const [rect, setRect] = useState<{ left: number; width: number } | null>(null);
   // left/width are layout values that MotionConfig reducedMotion does not suppress,
   // so honor the preference explicitly: jump the indicator instead of sliding it.
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionConfig();
 
   useEffect(() => {
     const list = listRef.current;
-    if (!list) return;
+    if (!list || typeof MutationObserver === "undefined" || typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    let cancelled = false;
     const update = () => {
+      if (cancelled) return;
       const active = list.querySelector<HTMLElement>('[role="tab"][data-state="active"]');
-      if (active) setRect({ left: active.offsetLeft, width: active.offsetWidth });
+      if (!active) {
+        setRect(null);
+        return;
+      }
+
+      const next = { left: active.offsetLeft, width: active.offsetWidth };
+      setRect((previous) =>
+        previous?.left === next.left && previous.width === next.width ? previous : next,
+      );
     };
-    update();
-    const mo = new MutationObserver(update);
-    mo.observe(list, { attributes: true, subtree: true, attributeFilter: ["data-state"] });
+
     // Observe every trigger, not just the list: when the web font swaps in, a
     // trigger's width changes even if the list's total width does not, and the
     // indicator must re-measure to stay aligned with the label.
     const ro = new ResizeObserver(update);
-    ro.observe(list);
-    list.querySelectorAll('[role="tab"]').forEach((t) => ro.observe(t));
+    const observed = new Set<Element>();
+    const syncResizeObservers = () => {
+      const next = new Set<Element>([list, ...list.querySelectorAll('[role="tab"]')]);
+
+      observed.forEach((element) => {
+        if (!next.has(element)) {
+          ro.unobserve(element);
+          observed.delete(element);
+        }
+      });
+
+      next.forEach((element) => {
+        if (!observed.has(element)) {
+          ro.observe(element);
+          observed.add(element);
+        }
+      });
+    };
+
+    const mo = new MutationObserver(() => {
+      syncResizeObservers();
+      update();
+    });
+    mo.observe(list, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+      attributeFilter: ["data-state"],
+    });
+
+    syncResizeObservers();
+    update();
+
     // Re-measure once fonts finish loading (initial measure uses the fallback font).
     if (typeof document !== "undefined" && "fonts" in document) {
       document.fonts.ready.then(update).catch(() => {});
     }
     return () => {
+      cancelled = true;
       mo.disconnect();
       ro.disconnect();
     };
@@ -57,15 +100,23 @@ export const TabsList = forwardRef<
       {...rest}
     >
       {children}
-      {rect && (
-        <motion.span
-          aria-hidden
-          className="ms-tabs__indicator"
-          initial={false}
-          animate={{ left: rect.left, width: rect.width }}
-          transition={reduceMotion ? { duration: 0 } : { duration: DUR.base, ease: EASE_EMPHASIS }}
-        />
-      )}
+      {rect &&
+        (reduceMotion ? (
+          <span
+            aria-hidden
+            className="ms-tabs__indicator"
+            data-reduced-motion="true"
+            style={{ left: rect.left, width: rect.width }}
+          />
+        ) : (
+          <motion.span
+            aria-hidden
+            className="ms-tabs__indicator"
+            initial={false}
+            animate={{ left: rect.left, width: rect.width }}
+            transition={{ duration: DUR.base, ease: EASE_EMPHASIS }}
+          />
+        ))}
     </RTabs.List>
   );
 });

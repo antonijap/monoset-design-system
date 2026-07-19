@@ -1,0 +1,73 @@
+/* ==========================================================================
+   Popover / Tooltip / DropdownMenu shared
+   ========================================================================== */
+.ms-popover {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-popover);
+}
+.ms-menu {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-popover);
+  min-width: 200px;
+  padding: 4px;
+  font-size: 13px;
+}
+.ms-popover {
+  max-width: min(360px, calc(100vw - 24px));
+  max-height: min(480px, var(--radix-popover-content-available-height, calc(100vh - 24px)));
+  overflow: auto;
+  padding: 14px;
+}
+.ms-tooltip {
+  background: var(--mono-1000); color: var(--mono-0);
+  font-size: 11px; padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  z-index: var(--z-popover);
+  max-width: 240px; line-height: 1.4;
+}
+
+.ms-menu__item {
+  position: relative;
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px var(--_ms-menu-item-padding-right, 10px) 7px 10px; border-radius: var(--radius-sm);
+  font-size: 13px; color: var(--fg1);
+  cursor: pointer; user-select: none;
+  outline: none;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.ms-menu__item[data-highlighted] { background: var(--bg-muted); outline: none; }
+.ms-menu__item[data-disabled]    { color: var(--fg4); cursor: not-allowed; }
+.ms-menu__item > svg { color: var(--fg3); flex-shrink: 0; }
+.ms-menu__shortcut {
+  margin-left: auto; padding-left: 20px;
+  font-size: 11px; color: var(--fg4); font-family: var(--font-mono);
+}
+.ms-menu__label    { padding: 8px 10px 4px; font-size: 11px; color: var(--fg3); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+.ms-menu__separator { height: 1px; background: var(--border-subtle); margin: 4px 0; }
+.ms-menu__item--checkbox,
+.ms-menu__item--radio { padding-left: 30px; }
+.ms-menu__indicator {
+  position: absolute;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  color: var(--fg2);
+}
+.ms-menu__sub-trigger { padding-right: 28px; }
+.ms-menu__sub-trigger::after {
+  position: absolute;
+  right: 10px;
+  content: "›";
+  color: var(--fg3);
+  font-size: 15px;
+  line-height: 1;
+}
+.ms-menu__sub-content { min-width: 180px; }

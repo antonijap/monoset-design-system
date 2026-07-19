@@ -1,9 +1,12 @@
 {
   "name": "create-monoset-app",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Scaffold a new app pre-configured with Monoset tokens and components.",
   "license": "MIT",
   "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
   "bin": {
     "create-monoset-app": "./bin/index.js"
   },
@@ -12,7 +15,12 @@
     "template",
     "README.md"
   ],
-  "keywords": ["monoset", "design-system", "scaffold", "starter"],
+  "keywords": [
+    "monoset",
+    "design-system",
+    "scaffold",
+    "starter"
+  ],
   "engines": {
     "node": ">=20"
   }

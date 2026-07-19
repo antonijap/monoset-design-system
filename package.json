@@ -12,11 +12,13 @@
     "build": "npm run build --workspaces --if-present",
     "dev": "npm run dev --workspace=website",
     "test": "npm run test --workspaces --if-present",
+    "test:workflows": "node --test scripts/workflow-boundaries.test.mjs",
+    "test:react:v1": "pnpm --filter @monoset/react test && pnpm --filter @monoset/react test:contracts:types && pnpm --filter @monoset/react test:e2e && pnpm --filter @monoset/react verify:package",
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "changeset": "changeset",
     "version": "changeset version",
-    "release": "npm run build && changeset publish"
+    "release": "pnpm build && pnpm exec changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.10",

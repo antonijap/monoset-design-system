@@ -8,9 +8,11 @@
     "predev": "node scripts/build-search-index.mjs",
     "dev": "vite",
     "build": "vite build",
+    "test": "node --test scripts/*.test.mjs src/__tests__/*.test.js",
     "lint": "eslint .",
     "preview": "vite preview",
-    "size-limit": "size-limit",
+    "size-limit": "node scripts/check-route-budgets.mjs && size-limit",
+    "check:route-budgets": "node scripts/check-route-budgets.mjs",
     "lhci": "lhci autorun"
   },
   "dependencies": {
@@ -19,7 +21,7 @@
     "@monoset/motion-native": "*",
     "@monoset/native": "*",
     "@monoset/react": "workspace:*",
-    "@monoset/tokens": "*",
+    "@monoset/tokens": "workspace:^0.2.0",
     "@orama/orama": "^3.1.18",
     "framer-motion": "^12.38.0",
     "lucide-react": "^0.462.0",
@@ -29,8 +31,7 @@
     "react-dom": "^19.2.4",
     "react-native-svg": "^15.8.0",
     "react-native-web": "^0.19.13",
-    "react-router-dom": "^7.14.1",
-    "shiki": "^4.2.0"
+    "react-router-dom": "^7.14.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",

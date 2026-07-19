@@ -10,14 +10,11 @@ export interface SwitchProps
 export const Switch = forwardRef<
   React.ElementRef<typeof RSwitch.Root>,
   SwitchProps
->(function Switch({ label, className, checked, defaultChecked, ...rest }, ref) {
-  const isChecked = checked ?? defaultChecked ?? false;
+>(function Switch({ label, className, ...rest }, ref) {
   return (
-    <label className={cx("ms-switch", className)} data-state={isChecked ? "checked" : "unchecked"}>
+    <label className={cx("ms-switch", className)}>
       <RSwitch.Root
         ref={ref}
-        checked={checked}
-        defaultChecked={defaultChecked}
         className="ms-switch__track"
         {...rest}
       >

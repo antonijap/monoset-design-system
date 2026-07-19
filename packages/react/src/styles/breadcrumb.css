@@ -1,0 +1,12 @@
+/* ==========================================================================
+   Breadcrumb
+   ========================================================================== */
+.ms-breadcrumb { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--fg3); }
+.ms-breadcrumb__list {
+  display: inline-flex; align-items: center; gap: 6px;
+  list-style: none; margin: 0; padding: 0;
+}
+.ms-breadcrumb__entry { display: inline-flex; align-items: center; gap: 6px; }
+.ms-breadcrumb__item { color: inherit; }
+.ms-breadcrumb__item[aria-current="page"] { color: var(--fg1); font-weight: 500; }
+.ms-breadcrumb__sep { color: var(--fg4); }

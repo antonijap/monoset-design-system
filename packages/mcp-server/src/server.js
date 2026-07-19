@@ -1,4 +1,4 @@
-// Monoset MCP server — stdio transport.
+// Monoset MCP server, using stdio transport.
 //
 // Tools exposed to the agent:
 //   - list_components               Names of all components in @monoset/react
@@ -8,9 +8,9 @@
 //   - search_docs(query)            Full-text search across the docs
 //
 // Data sources:
-//   - ../data/components.json       Generated from @monoset/react/src (names + first-line docstring)
+//   - ../data/components.json       Generated from root exports and website docs metadata
 //   - @monoset/tokens/src/tokens.json  The design tokens
-//   - ../data/search-index.json     Copy of the website's Orama-shaped docs index
+//   - ../data/search-index.json     Generated from the website docs source
 //
 // Kept intentionally simple: one file, stdio transport, synchronous file loads.
 
@@ -32,6 +32,11 @@ function loadJson(p) {
   } catch {
     return null;
   }
+}
+
+const serverVersion = loadJson(resolve(here, "..", "package.json"))?.version;
+if (!serverVersion) {
+  throw new Error("Could not read the MCP server version from package.json");
 }
 
 const components =
@@ -93,7 +98,7 @@ const allTokens = flattenTokens(tokens);
 
 export async function main() {
   const server = new Server(
-    { name: "monoset-mcp", version: "0.1.0" },
+    { name: "monoset-mcp", version: serverVersion },
     { capabilities: { tools: {} } },
   );
 
@@ -108,7 +113,7 @@ export async function main() {
       {
         name: "get_component",
         description:
-          "Describe one component: its import path, props surface, and a short example.",
+          "Show one exported React component with its import path and documentation link.",
         inputSchema: {
           type: "object",
           properties: { name: { type: "string" } },

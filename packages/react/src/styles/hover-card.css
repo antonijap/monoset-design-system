@@ -1,0 +1,16 @@
+/* ==========================================================================
+   HoverCard
+   ========================================================================== */
+.ms-hovercard {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--fg1);
+  max-width: min(320px, calc(100vw - 24px));
+  max-height: min(480px, var(--radix-hover-card-content-available-height, calc(100dvh - 24px)));
+  overflow: auto;
+  z-index: var(--z-dropdown);
+}

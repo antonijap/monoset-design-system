@@ -14,11 +14,11 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
 ) {
   return (
     <div
+      {...rest}
       ref={ref}
       role={urgent ? "alert" : "status"}
       aria-live={urgent ? "assertive" : "polite"}
       className={cx("ms-alert", className)}
-      {...rest}
     >
       <span className="ms-alert__icon" aria-hidden>
         {icon ?? <Info size={16} strokeWidth={2} />}

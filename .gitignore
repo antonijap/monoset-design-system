@@ -18,6 +18,7 @@ dist-ssr
 task_plan.md
 findings.md
 progress.md
+docs/plans/
 
 # Local IDE/agent configs
 .claude/

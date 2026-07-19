@@ -1,0 +1,5 @@
+/* ==========================================================================
+   AspectRatio
+   ========================================================================== */
+.ms-aspect-ratio { overflow: hidden; border-radius: var(--radius-md); }
+.ms-aspect-ratio > * { width: 100%; height: 100%; object-fit: cover; display: block; }

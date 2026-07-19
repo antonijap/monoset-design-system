@@ -19,11 +19,9 @@
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="googlebot" content="index, follow" />
 
-    <!-- Theme bootstrap. Applies the `monoset-dark` class to the docs-layout
-         container the instant React mounts it, so the docs area flips
-         without a flash. Landing is never touched. Only reads localStorage;
-         OS preference alone doesn't force dark mode on users who haven't
-         opted in. -->
+    <!-- Theme bootstrap. Waits for the docs route, then applies its stored
+         theme to the document root so body portals share the same tokens.
+         ThemeToggle removes the class when docs unmount. Landing stays light. -->
     <script>
       (function () {
         try {
@@ -35,10 +33,10 @@
             }
           };
           var existing = document.querySelector('[data-ms="docs-layout"]');
-          if (existing) { apply(existing); return; }
+          if (existing) { apply(document.documentElement); return; }
           var mo = new MutationObserver(function () {
             var el = document.querySelector('[data-ms="docs-layout"]');
-            if (el) { apply(el); mo.disconnect(); }
+            if (el) { apply(document.documentElement); mo.disconnect(); }
           });
           mo.observe(document.body || document.documentElement, {
             childList: true, subtree: true

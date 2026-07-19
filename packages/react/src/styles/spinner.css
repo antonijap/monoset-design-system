@@ -1,0 +1,13 @@
+/* ==========================================================================
+   Spinner
+   ========================================================================== */
+.ms-spinner {
+  display: inline-block;
+  border: 2px solid var(--border);
+  border-top-color: var(--fg1);
+  border-radius: 50%;
+  animation: ms-spin 600ms linear infinite;
+}
+@keyframes ms-spin {
+  to { transform: rotate(360deg); }
+}

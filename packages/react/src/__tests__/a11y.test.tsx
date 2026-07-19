@@ -1,5 +1,6 @@
 import { describe, it } from "vitest";
-import { render } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { axe } from "vitest-axe";
 import {
   Button,
@@ -46,6 +47,7 @@ import {
   MultiCombobox,
   PinInput,
   Calendar,
+  CalendarDate,
 } from "../index";
 
 // Each test renders the component in a minimal-but-complete accessible
@@ -67,7 +69,8 @@ describe("a11y", () => {
   });
 
   it("Avatar has no violations", async () => {
-    const { container } = render(<Avatar name="Ada Turing" />);
+    const { container } = render(<Avatar name="Ada Turing" initials="AT" />);
+    expect(await screen.findByText("AT")).toBeInTheDocument();
     expect(await axe(container)).toHaveNoViolations();
   });
 
@@ -90,19 +93,22 @@ describe("a11y", () => {
 
   it("Field + Input has no violations (explicit label)", async () => {
     const { container } = render(
-      <Field label="Email" help="We'll send a confirmation.">
-        {({ id, describedBy }) => (
-          <Input id={id} aria-describedby={describedBy} type="email" />
-        )}
+      <Field label="Email" description="We'll send a confirmation.">
+        <Input type="email" />
       </Field>,
     );
+    expect(screen.getByLabelText("Email")).toHaveAttribute(
+      "aria-describedby",
+      expect.stringContaining("-description"),
+    );
+    expect(screen.getByText("We'll send a confirmation.")).toBeInTheDocument();
     expect(await axe(container)).toHaveNoViolations();
   });
 
   it("Field + Textarea has no violations", async () => {
     const { container } = render(
       <Field label="Notes">
-        {({ id }) => <Textarea id={id} />}
+        <Textarea />
       </Field>,
     );
     expect(await axe(container)).toHaveNoViolations();
@@ -139,6 +145,9 @@ describe("a11y", () => {
         <TabsContent value="b">Content B</TabsContent>
       </Tabs>,
     );
+    await waitFor(() => {
+      expect(container.querySelector(".ms-tabs__indicator")).toBeInTheDocument();
+    });
     expect(await axe(container)).toHaveNoViolations();
   });
 
@@ -149,8 +158,9 @@ describe("a11y", () => {
 
   it("EmptyState has no violations", async () => {
     const { container } = render(
-      <EmptyState title="No results" description="Try a different search." />,
+      <EmptyState title="No results" body="Try a different search." />,
     );
+    expect(screen.getByText("Try a different search.")).toBeInTheDocument();
     expect(await axe(container)).toHaveNoViolations();
   });
 
@@ -206,6 +216,7 @@ describe("a11y", () => {
   });
 
   it("Combobox has no violations", async () => {
+    const user = userEvent.setup();
     const { container } = render(
       <Combobox
         aria-label="Country"
@@ -217,6 +228,11 @@ describe("a11y", () => {
       />,
     );
     expect(await axe(container)).toHaveNoViolations();
+    await user.click(container.querySelector<HTMLButtonElement>(".ms-combobox__button")!);
+    expect(await screen.findByRole("listbox")).toBeInTheDocument();
+    expect(await axe(container)).toHaveNoViolations();
+    expect(await axe(document.querySelector<HTMLElement>(".ms-combobox__panel")!))
+      .toHaveNoViolations();
   });
 
   it("AppShell has no violations", async () => {
@@ -306,6 +322,7 @@ describe("a11y", () => {
   });
 
   it("MultiCombobox has no violations", async () => {
+    const user = userEvent.setup();
     const { container } = render(
       <MultiCombobox
         aria-label="Tags"
@@ -313,9 +330,15 @@ describe("a11y", () => {
           { value: "a", label: "Alpha" },
           { value: "b", label: "Beta" },
         ]}
+        defaultValue={["a"]}
       />,
     );
     expect(await axe(container)).toHaveNoViolations();
+    await user.click(container.querySelector<HTMLButtonElement>(".ms-multicombobox__button")!);
+    expect(await screen.findByRole("listbox")).toBeInTheDocument();
+    expect(await axe(container)).toHaveNoViolations();
+    expect(await axe(document.querySelector<HTMLElement>(".ms-multicombobox__panel")!))
+      .toHaveNoViolations();
   });
 
   it("PinInput has no violations", async () => {
@@ -325,7 +348,7 @@ describe("a11y", () => {
 
   it("Calendar has no violations", async () => {
     const { container } = render(
-      <Calendar defaultValue={new Date(2026, 5, 10)} aria-label="Choose a date" />,
+      <Calendar defaultValue={new CalendarDate(2026, 6, 10)} aria-label="Choose a date" />,
     );
     expect(await axe(container)).toHaveNoViolations();
   });

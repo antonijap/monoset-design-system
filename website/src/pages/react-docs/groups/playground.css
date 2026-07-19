@@ -1,0 +1,33 @@
+.ms-pg-w {
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) 280px;
+}
+
+.ms-pg-p,
+.ms-pg-c {
+  min-width: 0;
+}
+
+.ms-pg-c {
+  border-left: 1px solid var(--border-subtle);
+}
+
+.ms-pg-a:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .ms-pg-w {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ms-pg-p {
+    overflow-x: auto;
+  }
+
+  .ms-pg-c {
+    border-left: 0;
+    border-top: 1px solid var(--border-subtle);
+  }
+}

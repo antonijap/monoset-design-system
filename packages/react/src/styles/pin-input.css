@@ -1,0 +1,29 @@
+/* ==========================================================================
+   PinInput
+   ========================================================================== */
+.ms-pininput {
+  display: inline-flex;
+  gap: clamp(4px, 2vw, 8px);
+  width: fit-content;
+  max-width: 100%;
+}
+.ms-pininput__cell {
+  box-sizing: border-box;
+  flex: 1 1 44px;
+  width: 44px; min-width: 0; height: 52px; padding: 0; text-align: center;
+  font-family: inherit; font-size: 20px; font-weight: 500;
+  color: var(--fg1); background: var(--bg);
+  border: 1px solid var(--border); border-radius: var(--radius-md);
+  outline: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+.ms-pininput__cell:focus-visible {
+  border-color: var(--fg1); box-shadow: var(--focus-ring);
+}
+.ms-pininput--invalid .ms-pininput__cell { border-color: var(--status-danger); }
+.ms-pininput--readonly .ms-pininput__cell { background: var(--bg-subtle); cursor: default; }
+.ms-pininput__cell[disabled] {
+  background: var(--bg-muted); color: var(--fg4); cursor: not-allowed;
+}

@@ -1,7 +1,7 @@
 {
   "button": {
     "name": "Button",
-    "files": ["Button.tsx"],
+    "files": ["Button.tsx", "ReducedMotionContext.ts"],
     "cssSection": "Button",
     "deps": [],
     "internalDeps": ["cx"]
@@ -64,14 +64,14 @@
   },
   "select": {
     "name": "Select",
-    "files": ["Select.tsx"],
+    "files": ["Select.tsx", "PortalContext.tsx"],
     "cssSection": "Select trigger",
     "deps": ["@radix-ui/react-select"],
     "internalDeps": ["cx"]
   },
   "dialog": {
     "name": "Dialog",
-    "files": ["Dialog.tsx"],
+    "files": ["Dialog.tsx", "PortalContext.tsx"],
     "cssSection": "Dialog / Modal",
     "deps": ["@radix-ui/react-dialog"],
     "internalDeps": ["cx"]
@@ -94,26 +94,26 @@
     "name": "Toast",
     "files": ["Toast.tsx"],
     "cssSection": "Toast",
-    "deps": ["@radix-ui/react-toast"],
+    "deps": ["@radix-ui/react-toast", "framer-motion"],
     "internalDeps": ["cx"]
   },
   "tooltip": {
     "name": "Tooltip",
-    "files": ["Tooltip.tsx"],
+    "files": ["Tooltip.tsx", "PortalContext.tsx"],
     "cssSection": "Popover / Tooltip / DropdownMenu shared",
     "deps": ["@radix-ui/react-tooltip"],
     "internalDeps": ["cx"]
   },
   "popover": {
     "name": "Popover",
-    "files": ["Popover.tsx"],
+    "files": ["Popover.tsx", "PortalContext.tsx"],
     "cssSection": "Popover / Tooltip / DropdownMenu shared",
     "deps": ["@radix-ui/react-popover"],
     "internalDeps": ["cx"]
   },
   "dropdown-menu": {
     "name": "DropdownMenu",
-    "files": ["DropdownMenu.tsx"],
+    "files": ["DropdownMenu.tsx", "PortalContext.tsx"],
     "cssSection": "Popover / Tooltip / DropdownMenu shared",
     "deps": ["@radix-ui/react-dropdown-menu"],
     "internalDeps": ["cx"]
@@ -202,13 +202,6 @@
     "deps": [],
     "internalDeps": ["cx"]
   },
-  "form": {
-    "name": "Form",
-    "files": ["Form.tsx"],
-    "cssSection": null,
-    "deps": [],
-    "internalDeps": ["cx"]
-  },
   "theme": {
     "name": "Theme",
     "files": ["Theme.tsx"],
@@ -225,42 +218,46 @@
   },
   "monoset-provider": {
     "name": "MonosetProvider",
-    "files": ["MonosetProvider.tsx"],
+    "files": [
+      "MonosetProvider.tsx",
+      "PortalContext.tsx",
+      "ReducedMotionContext.ts"
+    ],
     "cssSection": null,
     "deps": ["framer-motion"],
     "internalDeps": ["tooltip", "toast", "theme"]
   },
   "sheet": {
     "name": "Sheet",
-    "files": ["Sheet.tsx"],
+    "files": ["Sheet.tsx", "PortalContext.tsx"],
     "cssSection": "Sheet",
     "deps": ["@radix-ui/react-dialog"],
     "internalDeps": ["cx"]
   },
   "command-palette": {
     "name": "CommandPalette",
-    "files": ["CommandPalette.tsx"],
+    "files": ["CommandPalette.tsx", "PortalContext.tsx"],
     "cssSection": "Command palette",
     "deps": ["@radix-ui/react-dialog"],
     "internalDeps": ["cx"]
   },
   "app-shell": {
     "name": "AppShell",
-    "files": ["AppShell.tsx"],
+    "files": ["AppShell.tsx", "PortalContext.tsx"],
     "cssSection": "AppShell",
-    "deps": ["@radix-ui/react-dialog"],
+    "deps": ["lucide-react"],
     "internalDeps": ["cx"]
   },
   "combobox": {
     "name": "Combobox",
-    "files": ["Combobox.tsx"],
+    "files": ["Combobox.tsx", "PortalContext.tsx"],
     "cssSection": "Combobox",
     "deps": ["@radix-ui/react-popover"],
     "internalDeps": ["cx"]
   },
   "hover-card": {
     "name": "HoverCard",
-    "files": ["HoverCard.tsx"],
+    "files": ["HoverCard.tsx", "PortalContext.tsx"],
     "cssSection": "HoverCard",
     "deps": ["@radix-ui/react-hover-card"],
     "internalDeps": ["cx"]

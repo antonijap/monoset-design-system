@@ -10,7 +10,13 @@
   ],
   "license": "MIT",
   "files": [
-    "src",
+    "src/tokens.js",
+    "src/tokens.d.ts",
+    "src/tokens.json",
+    "src/index.css",
+    "src/variables.css",
+    "src/base.css",
+    "src/typography.css",
     "dist"
   ],
   "exports": {
@@ -19,16 +25,22 @@
       "require": "./src/tokens.js",
       "types": "./src/tokens.d.ts"
     },
-    "./css": "./src/colors_and_type.css",
+    "./css": "./src/index.css",
+    "./variables.css": "./src/variables.css",
+    "./base.css": "./src/base.css",
+    "./typography.css": "./src/typography.css",
     "./json": "./src/tokens.json"
   },
   "main": "./src/tokens.js",
   "types": "./src/tokens.d.ts",
   "scripts": {
     "build": "echo 'No build step , CSS + JSON shipped as source'",
-    "test": "echo 'No tests yet'"
+    "test": "vitest run"
   },
   "sideEffects": [
-    "*.css"
-  ]
+    "**/*.css"
+  ],
+  "devDependencies": {
+    "vitest": "^2.1.9"
+  }
 }

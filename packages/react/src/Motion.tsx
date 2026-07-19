@@ -1,137 +1,91 @@
 import {
   forwardRef,
   useRef,
-  Children,
-  type ReactNode,
+  type ComponentPropsWithoutRef,
   type CSSProperties,
+  type ReactNode,
 } from "react";
-import { motion, useInView } from "framer-motion";
+import {
+  motion,
+  useComposedRefs,
+  useInView,
+  useReducedMotionConfig,
+  type MotionProps,
+  type UseInViewOptions,
+} from "framer-motion";
 import { fadeUp } from "@monoset/motion";
 
-/* ------------------------------------------------------------------ */
-/*  Reveal                                                            */
-/* ------------------------------------------------------------------ */
+type RevealVariants = NonNullable<MotionProps["variants"]>;
+type RevealNativeProps = Omit<
+  ComponentPropsWithoutRef<"div">,
+  "children" | keyof MotionProps
+>;
 
-export interface RevealProps {
+export type RevealProps = RevealNativeProps & {
   children: ReactNode;
-  /** Animation variant object with `hidden` and `visible` keys. Default: fadeUp */
-  variant?: Record<string, any>;
-  /** Trigger once or every time the element enters the viewport. Default: true */
-  once?: boolean;
-  /** IntersectionObserver margin. Default: "-80px" */
-  margin?: string;
-  /** Delay in seconds before animation starts. Default: 0 */
-  delay?: number;
-  className?: string;
   style?: CSSProperties;
+  /** Animation variants with `hidden` and `visible` states. */
+  variant?: RevealVariants;
+  /** Trigger once or every time the element enters the viewport. */
+  once?: boolean;
+  /** IntersectionObserver margin. */
+  margin?: UseInViewOptions["margin"];
+  /** Delay in seconds before the visible animation starts. */
+  delay?: number;
+};
+
+function addDelay(variants: RevealVariants, delay: number): RevealVariants {
+  const visible = variants.visible;
+  if (!delay || !visible || typeof visible === "function") return variants;
+
+  return {
+    ...variants,
+    visible: {
+      ...visible,
+      transition: {
+        ...visible.transition,
+        delay,
+      },
+    },
+  };
 }
 
-export const Reveal = forwardRef<HTMLDivElement, RevealProps>(
-  (
-    {
-      children,
-      variant = fadeUp,
-      once = true,
-      margin = "-80px",
-      delay = 0,
-      className,
-      style,
-    },
-    forwardedRef,
-  ) => {
-    const localRef = useRef<HTMLDivElement>(null);
-    const ref = (forwardedRef as React.RefObject<HTMLDivElement>) ?? localRef;
-    const inView = useInView(ref, { once, margin: margin as any });
-
-    const resolvedVariant = delay
-      ? {
-          ...variant,
-          visible: {
-            ...variant.visible,
-            transition: {
-              ...variant.visible?.transition,
-              delay,
-            },
-          },
-        }
-      : variant;
-
-    return (
-      <motion.div
-        ref={ref}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
-        variants={resolvedVariant}
-        className={className}
-        style={style}
-      >
-        {children}
-      </motion.div>
-    );
+export const Reveal = forwardRef<HTMLDivElement, RevealProps>(function Reveal(
+  {
+    children,
+    variant = fadeUp as RevealVariants,
+    once = true,
+    margin = "-80px",
+    delay = 0,
+    ...rest
   },
-);
+  forwardedRef,
+) {
+  const localRef = useRef<HTMLDivElement>(null);
+  const ref = useComposedRefs(localRef, forwardedRef);
+  const inView = useInView(localRef, { once, margin });
+  const reducedMotion = useReducedMotionConfig();
+  const resolvedVariant = addDelay(variant, delay);
+
+  if (reducedMotion) {
+    return (
+      <div {...rest} ref={ref} data-reduced-motion="true">
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      {...rest}
+      ref={ref}
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      variants={resolvedVariant}
+    >
+      {children}
+    </motion.div>
+  );
+});
 
 Reveal.displayName = "Reveal";
-
-/* ------------------------------------------------------------------ */
-/*  StaggerList                                                       */
-/* ------------------------------------------------------------------ */
-
-export interface StaggerListProps {
-  children: ReactNode;
-  /** Stagger delay between children in seconds. Default: 0.04 */
-  stagger?: number;
-  /** Trigger once when in viewport. Default: true */
-  once?: boolean;
-  /** IntersectionObserver margin. Default: "-80px" */
-  margin?: string;
-  className?: string;
-  style?: CSSProperties;
-}
-
-const childVariants = {
-  hidden: fadeUp.hidden,
-  visible: fadeUp.visible,
-} as const;
-
-export const StaggerList = forwardRef<HTMLDivElement, StaggerListProps>(
-  (
-    {
-      children,
-      stagger = 0.04,
-      once = true,
-      margin = "-80px",
-      className,
-      style,
-    },
-    forwardedRef,
-  ) => {
-    const localRef = useRef<HTMLDivElement>(null);
-    const ref = (forwardedRef as React.RefObject<HTMLDivElement>) ?? localRef;
-    const inView = useInView(ref, { once, margin: margin as any });
-
-    const containerVariants = {
-      hidden: {},
-      visible: {
-        transition: { staggerChildren: stagger },
-      },
-    };
-
-    return (
-      <motion.div
-        ref={ref}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
-        variants={containerVariants}
-        className={className}
-        style={style}
-      >
-        {Children.map(children, (child) => (
-          <motion.div variants={childVariants}>{child}</motion.div>
-        ))}
-      </motion.div>
-    );
-  },
-);
-
-StaggerList.displayName = "StaggerList";

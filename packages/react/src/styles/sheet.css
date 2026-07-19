@@ -1,0 +1,39 @@
+/* ==========================================================================
+   Sheet
+   ========================================================================== */
+.ms-sheet-scrim {
+  position: fixed; inset: 0; background: color-mix(in srgb, var(--mono-1000) 40%, transparent);
+  z-index: var(--z-overlay);
+}
+.ms-sheet {
+  position: fixed;
+  background: var(--bg);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-xl);
+  z-index: var(--z-modal);
+  display: flex; flex-direction: column;
+  max-width: 100vw; max-height: 100dvh;
+  overflow: hidden;
+}
+.ms-sheet--right  { top: 0; right: 0;  bottom: 0; }
+.ms-sheet--left   { top: 0; left: 0;   bottom: 0; }
+.ms-sheet--top    { top: 0; left: 0;   right: 0;  }
+.ms-sheet--bottom { bottom: 0; left: 0; right: 0; }
+.ms-sheet__header {
+  padding: 20px 24px 0;
+}
+.ms-sheet__title { font-size: 16px; font-weight: 600; margin: 0 0 4px; color: var(--fg1); }
+.ms-sheet__desc  { font-size: 13px; color: var(--fg3); margin: 0; line-height: 1.55; }
+.ms-sheet__body  { flex: 1; overflow: auto; padding: 20px 24px 24px; }
+
+/* Sheet close button */
+.ms-sheet__close {
+  position: absolute; top: 16px; right: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; padding: 0;
+  background: transparent; border: none; border-radius: var(--radius-sm);
+  color: var(--fg3); cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard);
+}
+.ms-sheet__close:hover { color: var(--fg1); background: var(--bg-muted); }
+.ms-sheet__close:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }

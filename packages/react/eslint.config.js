@@ -14,8 +14,7 @@ export default tseslint.config(
       "@typescript-eslint/no-explicit-any": "warn",
       // Empty prop interfaces that only extend another type are a deliberate pattern.
       "@typescript-eslint/no-empty-object-type": "off",
-      // Compiler-oriented rule: reading a ref at render for a snapshot value (e.g. the
-      // Form hook's isDirty) is safe in this non-compiler React 18 library. Advisory only.
+      // Compiler-oriented ref checks are advisory in this non-compiler React 18 library.
       "react-hooks/refs": "warn",
       "@typescript-eslint/no-unused-vars": [
         "error",

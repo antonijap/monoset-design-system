@@ -1,0 +1,7 @@
+/* ==========================================================================
+   Input + Field
+   ========================================================================== */
+.ms-field { display: flex; flex-direction: column; gap: 6px; }
+.ms-field__label { font-size: 12px; font-weight: 500; color: var(--fg2); }
+.ms-field__description { font-size: 12px; color: var(--fg3); }
+.ms-field__error { font-size: 12px; color: var(--status-danger); }

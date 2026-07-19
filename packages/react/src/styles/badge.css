@@ -1,0 +1,11 @@
+/* ==========================================================================
+   Badge
+   ========================================================================== */
+.ms-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 500; line-height: 1;
+  padding: 3px 9px; border-radius: var(--radius-full);
+}
+.ms-badge--neutral { background: var(--bg-muted); color: var(--fg2); }
+.ms-badge--solid   { background: var(--bg-inverse); color: var(--fg-inverse); }
+.ms-badge--outline { background: var(--bg); color: var(--fg2); border: 1px solid var(--border); }

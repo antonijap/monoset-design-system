@@ -1,5 +1,4 @@
 :root {
-  --sidebar-w: 260px;
   --header-h: 60px;
 }
 
@@ -22,6 +21,108 @@ a { color: inherit; text-decoration: none; }
 ::selection { background: var(--mono-900); color: #fff; }
 
 img { max-width: 100%; display: block; }
+
+.ms-docs-layout__body {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+}
+
+.ms-docs-layout__body--compact {
+  grid-template-columns: 232px 1fr;
+}
+
+.ms-docs-nav {
+  --docs-nav-selected: var(--mono-200);
+
+  width: 100%;
+  height: 100%;
+  padding: 16px 0;
+  overflow-y: auto;
+}
+
+.monoset-dark .ms-docs-nav,
+[data-monoset-theme="dark"] .ms-docs-nav {
+  --docs-nav-selected: var(--mono-700);
+}
+
+.ms-docs-nav__group {
+  padding: 12px 12px 4px;
+}
+
+.ms-docs-nav__section {
+  padding: 0 8px 8px;
+  color: var(--fg3);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ms-docs-nav__item {
+  display: flex;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: 5px;
+  color: var(--fg2);
+  font-size: 13px;
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.ms-docs-nav__item:hover {
+  background: var(--bg-subtle);
+}
+
+.ms-docs-nav__item[aria-current="page"] {
+  background: var(--bg-muted);
+  color: var(--fg1);
+  font-weight: 500;
+}
+
+.ms-docs-nav--compact {
+  padding: 8px 0;
+}
+
+.ms-docs-nav--compact .ms-docs-nav__group {
+  padding: 8px 10px 2px;
+}
+
+.ms-docs-nav--compact .ms-docs-nav__section {
+  padding: 0 6px 5px;
+}
+
+.ms-docs-nav--compact .ms-docs-nav__item {
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
+.ms-docs-nav--compact .ms-docs-nav__item:hover {
+  background: var(--bg-muted);
+}
+
+.ms-docs-nav--compact .ms-docs-nav__item[aria-current="page"] {
+  background: var(--docs-nav-selected);
+}
+
+.ms-docs-nav--mobile .ms-docs-nav__item {
+  min-height: 44px;
+}
+
+@media (forced-colors: active) {
+  .ms-docs-nav__item[aria-current="page"] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+
+  .ms-docs-nav__item:focus-visible {
+    outline: 3px solid CanvasText;
+    outline-offset: 2px;
+  }
+}
 
 /* ============================================================================
    Wide-only bento side columns (hide on anything narrower than ~1400)
@@ -192,22 +293,4 @@ img { max-width: 100%; display: block; }
   [data-ms="hero-title"] { font-size: 34px !important; }
   [data-ms="bento-analytics"] [data-ms="analytics-value"] { font-size: 28px !important; }
   [data-ms="bento-typography-aa"] { font-size: 60px !important; }
-}
-
-/* Shiki code blocks: our container owns the chrome (bg, padding, radius); the
-   highlighter only colors tokens. */
-.ms-docs-code pre {
-  margin: 0;
-  background: transparent !important;
-  overflow-x: auto;
-  line-height: 1.7;
-  font-size: 13px;
-  font-family: var(--font-mono);
-}
-.ms-docs-code code {
-  font-family: inherit;
-  font-size: inherit;
-  background: transparent;
-  padding: 0;
-  border-radius: 0;
 }

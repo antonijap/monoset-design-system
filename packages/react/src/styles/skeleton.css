@@ -1,0 +1,12 @@
+/* ==========================================================================
+   Skeleton
+   ========================================================================== */
+.ms-skeleton {
+  background: var(--bg-muted);
+  border-radius: var(--radius-sm);
+  animation: ms-pulse 1.6s var(--ease-standard) infinite;
+}
+@keyframes ms-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}

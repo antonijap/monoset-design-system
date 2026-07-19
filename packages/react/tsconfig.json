@@ -21,5 +21,9 @@
     }
   },
   "include": ["src"],
-  "exclude": ["**/*.test.*", "**/*.stories.*"]
+  "exclude": [
+    "**/*.test.*",
+    "**/*.stories.*",
+    "src/__tests__/contracts.types.tsx"
+  ]
 }

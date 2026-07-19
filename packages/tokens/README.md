@@ -1,6 +1,6 @@
 # @monoset/tokens
 
-Raw design tokens for Monoset: colors, type, spacing, radii, shadows, motion.
+CSS variables and raw token values for Monoset.
 
 ## Install
 
@@ -8,12 +8,25 @@ Raw design tokens for Monoset: colors, type, spacing, radii, shadows, motion.
 npm install @monoset/tokens
 ```
 
-## Usage
+## CSS entries
 
-### CSS (recommended)
+Import only the layers your app needs:
 
 ```css
-@import "@monoset/tokens/css";
+@import "@monoset/tokens/variables.css";
+@import "@monoset/tokens/base.css";
+@import "@monoset/tokens/typography.css";
+```
+
+- `variables.css` contains token declarations and dark-theme values.
+- `base.css` adds optional page colors, smoothing, selection, and divider defaults.
+- `typography.css` adds optional type and text-element defaults.
+- `css` is the compatibility entry. It imports all three layers in that order.
+
+The package does not bundle fonts or download them at runtime. The font-family variables include `Inter` and `JetBrains Mono` in their fallback stacks. Load those fonts in your app, or override `--font-sans` and `--font-mono`.
+
+```css
+@import "@monoset/tokens/variables.css";
 
 .my-button {
   background: var(--mono-1000);
@@ -24,7 +37,7 @@ npm install @monoset/tokens
 }
 ```
 
-### JavaScript
+## JavaScript
 
 ```js
 import { mono, space, radius, shadow } from "@monoset/tokens";
@@ -37,7 +50,7 @@ const styles = {
 };
 ```
 
-### JSON (for Figma Tokens Studio, Style Dictionary, etc.)
+## JSON
 
 ```js
 import tokens from "@monoset/tokens/json";
@@ -46,21 +59,20 @@ import tokens from "@monoset/tokens/json";
 ## What's included
 
 | Category | Tokens |
-|----------|--------|
-| Color    | `--mono-0` → `--mono-1000` (12 steps) + semantic (`--bg`, `--fg1-4`, `--border*`, `--accent`) |
-| Type     | `--text-xs` → `--text-5xl`, weights, leading, tracking, two families |
-| Space    | `--space-0` → `--space-14` (4px grid) |
-| Radius   | `--radius-none` → `--radius-xl` + `--radius-full` |
-| Shadow   | `--shadow-xs` → `--shadow-xl` + `--shadow-inset` |
-| Motion   | `--duration-fast/base/slow` + `--ease-standard/emphasis/exit` |
-| Layout   | `--container-sm` → `--container-2xl`, `--z-*` |
+| --- | --- |
+| Color | `--mono-0` to `--mono-1000` plus semantic surface, text, border, and accent values |
+| Type | `--text-xs` to `--text-5xl`, weights, leading, tracking, and font families |
+| Space | `--space-0` to `--space-14` |
+| Radius | `--radius-none` to `--radius-xl` plus `--radius-full` |
+| Shadow | `--shadow-xs` to `--shadow-xl` plus `--shadow-inset` |
+| Motion | durations and easing curves |
+| Layout | container widths and z-index values |
 
 ## Dark theme
 
-Monoset ships a dark variant via `[data-theme="dark"]`. Flip the attribute on any subtree to invert the ramp.
+Add either selector to the subtree that needs dark values:
 
 ```html
-<div data-theme="dark">
-  <!-- monoset tokens now resolve to dark values -->
-</div>
+<div class="monoset-dark"></div>
+<div data-monoset-theme="dark"></div>
 ```

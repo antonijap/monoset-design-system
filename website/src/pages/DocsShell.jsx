@@ -6,162 +6,29 @@ import {
 } from '../ui/docs.jsx';
 import { PAGE_META } from './docs-meta.js';
 import { NATIVE_PAGE_META } from './native-meta.js';
+import { NAV, NATIVE_NAV } from './docs-navigation.js';
 import ThemeToggle from '../components/ThemeToggle.jsx';
 import { usePlatform } from '../lib/platform.jsx';
 import { VERSION } from '../version.js';
 
-const DocsContent = lazy(() => import('./docs.jsx'));
+const DocsContent = lazy(() => import('./react-docs/docs.jsx'));
 const NativeDocsContent = lazy(() => import('./native-docs.jsx'));
 
-const NAV = [
-  { section: "Getting Started", items: [
-    { id:"introduction", label:"Introduction" },
-    { id:"installation", label:"Installation" },
-    { id:"usage",        label:"Basic usage" },
-  ]},
-  { section: "Foundations", items: [
-    { id:"colors",     label:"Colors" },
-    { id:"typography", label:"Typography" },
-    { id:"spacing",    label:"Spacing & radii" },
-    { id:"motion",     label:"Motion" },
-  ]},
-  { section: "Form", items: [
-    { id:"buttons",   label:"Button" },
-    { id:"inputs",    label:"Input" },
-    { id:"select",    label:"Select" },
-    { id:"combobox",  label:"Combobox" },
-    { id:"multicombobox", label:"Multi-select" },
-    { id:"datepicker", label:"DatePicker" },
-    { id:"calendar", label:"Calendar" },
-    { id:"numberinput", label:"Number input" },
-    { id:"pininput", label:"Pin input" },
-    { id:"password", label:"Password input" },
-    { id:"fileupload", label:"File upload" },
-    { id:"toggles",   label:"Checkbox & Switch" },
-    { id:"radio",     label:"Radio group" },
-    { id:"slider",    label:"Slider" },
-    { id:"toggle",    label:"Toggle group" },
-  ]},
-  { section: "Display", items: [
-    { id:"badges",    label:"Badge" },
-    { id:"cards",     label:"Card" },
-    { id:"avatars",   label:"Avatar" },
-    { id:"table",     label:"Table" },
-    { id:"alerts",    label:"Alert & Toast" },
-    { id:"kbd",       label:"Kbd" },
-    { id:"spinner",   label:"Spinner" },
-    { id:"skeleton",  label:"Skeleton" },
-    { id:"empty",     label:"Empty state" },
-    { id:"progress",  label:"Progress" },
-    { id:"accordion", label:"Accordion" },
-    { id:"collapsible", label:"Collapsible" },
-    { id:"carousel",  label:"Carousel" },
-  ]},
-  { section: "Overlay", items: [
-    { id:"dialog",    label:"Dialog" },
-    { id:"sheet",     label:"Sheet" },
-    { id:"popover",   label:"Popover" },
-    { id:"tooltip",   label:"Tooltip" },
-    { id:"hovercard", label:"HoverCard" },
-    { id:"dropdown",  label:"Dropdown menu" },
-    { id:"contextmenu", label:"Context menu" },
-    { id:"command",   label:"Command palette" },
-  ]},
-  { section: "Navigation", items: [
-    { id:"tabs",      label:"Tabs" },
-    { id:"navmenu",   label:"Navigation menu" },
-    { id:"breadcrumb",label:"Breadcrumb" },
-    { id:"paging",    label:"Pagination" },
-    { id:"stepper",   label:"Stepper" },
-  ]},
-  { section: "Layout", items: [
-    { id:"layout",    label:"Layout" },
-    { id:"appshell",  label:"AppShell" },
-    { id:"separator", label:"Separator" },
-    { id:"aspectratio", label:"Aspect ratio" },
-  ]},
-  { section: "Tools", items: [
-    { id:"cli",       label:"CLI" },
-    { id:"playground", label:"Playground" },
-  ]},
-  { section: "Guides", items: [
-    { id:"llm",       label:"LLM naming prompt" },
-    { id:"theming",   label:"Theming" },
-    { id:"settings",  label:"Settings page" },
-    { id:"a11y",      label:"Accessibility" },
-    { id:"mcp",       label:"MCP server" },
-    { id:"nextjs",    label:"Next.js & Remix" },
-    { id:"dashboard", label:"Dashboard" },
-    { id:"datatable", label:"Data table" },
-  ]},
-];
+function Sidebar({ active, setPage, mobile = false, compact = false, onClose, nav = NAV }) {
+  const className = [
+    "ms-docs-nav",
+    compact && "ms-docs-nav--compact",
+    mobile && "ms-docs-nav--mobile",
+  ].filter(Boolean).join(" ");
 
-const NATIVE_NAV = [
-  { section: "Getting Started", items: [
-    { id:"introduction", label:"Introduction" },
-    { id:"installation", label:"Installation" },
-    { id:"usage",        label:"Basic usage" },
-  ]},
-  { section: "Foundations", items: [
-    { id:"tokens", label:"Tokens" },
-    { id:"motion", label:"Motion" },
-  ]},
-  { section: "Display", items: [
-    { id:"avatar",   label:"Avatar" },
-    { id:"badge",    label:"Badge" },
-    { id:"alert",    label:"Alert" },
-    { id:"divider",  label:"Divider" },
-    { id:"empty",    label:"Empty state" },
-    { id:"list",     label:"List item" },
-    { id:"chip",     label:"Chip" },
-    { id:"progress", label:"Progress" },
-    { id:"skeleton", label:"Skeleton" },
-    { id:"spinner",  label:"Spinner" },
-  ]},
-  { section: "Form", items: [
-    { id:"buttons",     label:"Button" },
-    { id:"inputs",      label:"Input" },
-    { id:"passwordn",   label:"Password input" },
-    { id:"numberinputn",label:"Number input" },
-    { id:"pininputn",   label:"Pin input" },
-    { id:"checkbox",    label:"Checkbox" },
-    { id:"radio",       label:"Radio group" },
-    { id:"switch",      label:"Switch" },
-    { id:"slider",      label:"Slider" },
-    { id:"segmented",   label:"Segmented control" },
-    { id:"comboboxn",   label:"Combobox" },
-    { id:"datepickern", label:"DatePicker" },
-    { id:"calendarn", label:"Calendar" },
-  ]},
-  { section: "Layout", items: [
-    { id:"cards",     label:"Card" },
-    { id:"layout",    label:"Stack & Inline" },
-    { id:"accordionn",label:"Accordion" },
-    { id:"appshell",  label:"AppShell" },
-  ]},
-  { section: "Overlay & navigation", items: [
-    { id:"sheet",      label:"Sheet" },
-    { id:"bottomsheet", label:"Bottom sheet" },
-    { id:"dialog",     label:"Dialog" },
-    { id:"toast",      label:"Toast" },
-    { id:"actionsheet",label:"Action sheet" },
-    { id:"popovern",   label:"Popover" },
-    { id:"tooltipn",   label:"Tooltip" },
-    { id:"tabsn",      label:"Tabs" },
-    { id:"tabbar",     label:"Tab bar" },
-    { id:"navheader",  label:"Navigation header" },
-  ]},
-];
-
-function Sidebar({ active, setPage, mobile, onClose, nav = NAV }) {
   return (
-    <div style={{ width:"100%", padding:"16px 0", overflowY:"auto", height:"100%" }}>
+    <nav aria-label="Documentation" className={className}>
       {mobile && (
         <>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
                         padding:"0 20px 16px", borderBottom:"1px solid var(--border-subtle)" }}>
             <span style={{ fontSize:14, fontWeight:600 }}>Docs</span>
-            <button onClick={onClose} style={{ background:"none",border:"none",cursor:"pointer",color:"var(--fg2)",padding:4 }}>
+            <button type="button" aria-label="Close documentation navigation" onClick={onClose} style={{ background:"none",border:"none",cursor:"pointer",color:"var(--fg2)",padding:4 }}>
               <Icon name="x" size={18}/>
             </button>
           </div>
@@ -171,31 +38,25 @@ function Sidebar({ active, setPage, mobile, onClose, nav = NAV }) {
         </>
       )}
       {nav.map(group => (
-        <div key={group.section} style={{ padding:"12px 12px 4px" }}>
-          <div style={{ fontSize:10, fontWeight:600, letterSpacing:"0.1em", textTransform:"uppercase",
-                        color:"var(--fg3)", padding:"0 8px 8px" }}>{group.section}</div>
+        <div key={group.section} className="ms-docs-nav__group">
+          <div className="ms-docs-nav__section">{group.section}</div>
           {group.items.map(item => (
-            <div key={item.id} data-nav-id={item.id} onClick={() => { setPage(item.id); if(onClose) onClose(); }}
-              style={{ padding:"7px 10px", borderRadius:5, fontSize:13, cursor:"pointer",
-                       background: active===item.id ? "var(--bg-muted)" : "transparent",
-                       color: active===item.id ? "var(--fg1)" : "var(--fg2)",
-                       fontWeight: active===item.id ? 500 : 400,
-                       transition:"background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard)" }}
-              onMouseEnter={e => { if(active!==item.id) e.currentTarget.style.background="var(--bg-subtle)"; }}
-              onMouseLeave={e => { if(active!==item.id) e.currentTarget.style.background="transparent"; }}>
+            <a key={item.id} data-nav-id={item.id} href={`/${item.id}`} aria-current={active===item.id ? "page" : undefined}
+              onClick={(event) => { event.preventDefault(); setPage(item.id); if(onClose) onClose(); }}
+              className="ms-docs-nav__item">
               {item.label}
-            </div>
+            </a>
           ))}
         </div>
       ))}
-    </div>
+    </nav>
   );
 }
 
 function PlatformToggle({ dataMs = "docs-platform", fullWidth = false }) {
   const { platform, setPlatform } = usePlatform();
   return (
-    <div role="tablist" aria-label="Platform" data-ms={dataMs} style={{
+    <div role="group" aria-label="Platform" data-ms={dataMs} style={{
       display: fullWidth ? "flex" : "inline-flex",
       width: fullWidth ? "100%" : "auto",
       padding:2, background:"var(--bg-subtle)",
@@ -203,7 +64,7 @@ function PlatformToggle({ dataMs = "docs-platform", fullWidth = false }) {
       height: fullWidth ? 36 : 30, boxSizing:"border-box",
     }}>
       {[["react","React"],["native","Native"]].map(([k,label]) => (
-        <button key={k} role="tab" aria-selected={platform===k}
+        <button key={k} type="button" aria-pressed={platform===k}
           onClick={() => setPlatform(k)}
           style={{ position:"relative", border:"none", background: platform===k?"var(--bg)":"transparent",
             color: platform===k?"var(--fg1)":"var(--fg3)", fontFamily:"inherit",
@@ -236,7 +97,7 @@ function NativeBanner() {
         Previews on supported pages re-render via <code style={{ fontFamily:"var(--font-mono)", fontSize:11 }}>react-native-web</code>.
         v0.1 covers Button, Card, Input, Switch, Spinner, Skeleton, and Layout.
       </span>
-      <button onClick={() => setPlatform('react')} style={{
+      <button type="button" onClick={() => setPlatform('react')} style={{
         background:"none", border:"none", cursor:"pointer", color:"var(--fg3)",
         fontSize:11, padding:"4px 8px", borderRadius:4, fontFamily:"inherit" }}>
         Switch back
@@ -272,42 +133,11 @@ export default function DocsLayout({ page, setPage, onHome }) {
     }
   }, [safePage, isNative, meta]);
 
-  // Arrow up/down moves through the sidebar pages. Skipped whenever the key
-  // belongs to something else: text fields, menus, selects, dialogs, grids.
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
-      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
-      const t = e.target;
-      if (t instanceof Element && t.closest(
-        'input, textarea, select, [contenteditable="true"], [role="dialog"], [role="alertdialog"], ' +
-        '[role="menu"], [role="listbox"], [role="combobox"], [role="grid"], [role="gridcell"], ' +
-        '[role="slider"], [role="spinbutton"], [role="radiogroup"], [role="tablist"], [role="tab"], ' +
-        '[role="option"], [role="menuitem"]',
-      )) return;
-      const flat = nav.flatMap((g) => g.items.map((i) => i.id));
-      const idx = flat.indexOf(safePage);
-      if (idx < 0) return;
-      const next = e.key === "ArrowDown" ? Math.min(flat.length - 1, idx + 1) : Math.max(0, idx - 1);
-      if (next !== idx) {
-        e.preventDefault();
-        setPage(flat[next]);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [nav, safePage, setPage]);
-
-  // Keep the active item visible as arrow keys walk the sidebar.
-  useEffect(() => {
-    document.querySelector(`[data-nav-id="${safePage}"]`)?.scrollIntoView({ block: "nearest" });
-  }, [safePage]);
-
   return (
     <div data-ms="docs-layout" style={{ height:"100vh", display:"flex", flexDirection:"column", background:"var(--bg)", color:"var(--fg1)" }}>
       <header data-ms="docs-header" style={{ height:60, borderBottom:"1px solid var(--border-subtle)", background:"var(--bg)",
                        display:"flex", alignItems:"center", padding:"0 24px", gap:12, flexShrink:0, zIndex:100 }}>
-        <button onClick={onHome} style={{ display:"flex", alignItems:"center", gap:8, background:"none", border:"none",
+        <button type="button" onClick={onHome} style={{ display:"flex", alignItems:"center", gap:8, background:"none", border:"none",
                                           cursor:"pointer", padding:0, fontFamily:"inherit" }}>
           <img src="/assets/monoset-mark.svg" width="22" height="22" alt=""/>
           <span style={{ fontSize:15, fontWeight:600, letterSpacing:"-0.01em", color:"var(--fg1)" }}>Monoset</span>
@@ -362,17 +192,18 @@ export default function DocsLayout({ page, setPage, onHome }) {
             <Icon name="github" size={15}/>
           </a>
           <ThemeToggle/>
-          <button data-ms="docs-mobile-btn" onClick={() => setMobileNavOpen(true)}
+          <button data-ms="docs-mobile-btn" type="button" aria-label="Open documentation navigation" onClick={() => setMobileNavOpen(true)}
             style={{ display:"none", background:"none", border:"none", cursor:"pointer", padding:4, alignItems:"center", justifyContent:"center", color:"var(--fg1)" }}>
             <Icon name="menu" size={20}/>
           </button>
         </div>
       </header>
 
-      <div style={{ flex:1, display:"grid", gridTemplateColumns:"var(--sidebar-w) 1fr", overflow:"hidden", minHeight:0 }}>
+      <div className={`ms-docs-layout__body${isNative ? "" : " ms-docs-layout__body--compact"}`}
+        style={{ flex:1, overflow:"hidden", minHeight:0 }}>
         <aside data-ms="docs-sidebar" style={{ borderRight:"1px solid var(--border-subtle)", background:"var(--bg-subtle)",
                         overflowY:"auto", flexShrink:0 }}>
-          <Sidebar active={safePage} setPage={p => setPage(p)} nav={nav}/>
+          <Sidebar active={safePage} setPage={p => setPage(p)} compact={!isNative} nav={nav}/>
         </aside>
         <div data-ms="docs-content" ref={contentRef} style={{ overflowY:"auto", padding:"32px 48px 80px" }}>
           <div style={{ maxWidth:720 }}>
@@ -399,8 +230,8 @@ export default function DocsLayout({ page, setPage, onHome }) {
             exit={{ opacity: 0 }}
             transition={{ duration: DUR.base, ease: EASE_STANDARD }}
             style={{ position:"fixed", inset:0, zIndex:200 }}>
-            <div onClick={() => setMobileNavOpen(false)}
-                 style={{ position:"absolute", inset:0, background:"rgb(0 0 0 / 0.4)" }}/>
+            <button type="button" aria-label="Close documentation navigation" onClick={() => setMobileNavOpen(false)}
+                 style={{ position:"absolute", inset:0, background:"rgb(0 0 0 / 0.4)", border:0, padding:0 }}/>
             <motion.div
               initial={{ x: 320 }} animate={{ x: 0 }} exit={{ x: 320 }}
               transition={{ duration: DUR.slow, ease: EASE_EMPHASIS }}

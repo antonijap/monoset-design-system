@@ -1,0 +1,22 @@
+/* ==========================================================================
+   Tabs
+   ========================================================================== */
+.ms-tabs__list {
+  position: relative;
+  display: flex; gap: 24px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.ms-tabs__trigger {
+  position: relative;
+  padding: 10px 0;
+  font-size: 13px; font-weight: 400;
+  color: var(--fg3); background: none; border: none;
+  cursor: pointer; font-family: inherit;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+.ms-tabs__trigger[data-state="active"] { color: var(--fg1); font-weight: 500; }
+.ms-tabs__trigger:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: var(--radius-xs); }
+.ms-tabs__indicator {
+  position: absolute; bottom: -1px; left: 0;
+  height: 2px; background: var(--fg1);
+}

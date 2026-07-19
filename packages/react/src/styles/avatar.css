@@ -1,0 +1,14 @@
+/* ==========================================================================
+   Avatar
+   ========================================================================== */
+.ms-avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bg-inverse); color: var(--fg-inverse);
+  font-weight: 600; font-size: 12px;
+  border-radius: 50%; overflow: hidden;
+  position: relative; flex-shrink: 0;
+}
+.ms-avatar--sm { width: 24px; height: 24px; font-size: 10px; }
+.ms-avatar--md { width: 32px; height: 32px; font-size: 12px; }
+.ms-avatar--lg { width: 44px; height: 44px; font-size: 14px; }
+.ms-avatar__img { width: 100%; height: 100%; object-fit: cover; }

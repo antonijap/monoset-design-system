@@ -1,147 +1,132 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, type AriaAttributes, type ReactNode } from "react";
+import { CalendarDate, getLocalTimeZone } from "@internationalized/date";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Button,
+  Calendar as AriaCalendar,
+  CalendarCell as Cell,
+  CalendarGrid as Grid,
+  CalendarGridBody as Body,
+  CalendarGridHeader as Header,
+  CalendarHeaderCell as HeaderCell,
+  CalendarHeading as Heading,
+  I18nProvider,
+} from "react-aria-components";
 import { cx } from "./cx";
 
+export type FirstDayOfWeek = "sun" | "mon" | "tue" | "wed" | "thu" | "fri" | "sat";
+
 export interface CalendarProps {
-  /** Selected date. Controlled. */
-  value?: Date | null;
-  defaultValue?: Date | null;
-  onValueChange?: (date: Date) => void;
-  /** Visible month. Controlled. */
-  month?: Date;
-  defaultMonth?: Date;
-  onMonthChange?: (month: Date) => void;
-  /** Earliest selectable date (inclusive). */
-  min?: Date;
-  /** Latest selectable date (inclusive). */
-  max?: Date;
-  /** Locale for month + weekday labels. Defaults to the browser's locale. */
+  [dataAttribute: `data-${string}`]: string | number | boolean | undefined;
+  value?: CalendarDate | null;
+  defaultValue?: CalendarDate | null;
+  onValueChange?: (date: CalendarDate) => void;
+  focusedValue?: CalendarDate | null;
+  defaultFocusedValue?: CalendarDate | null;
+  onFocusChange?: (date: CalendarDate) => void;
+  min?: CalendarDate | null;
+  max?: CalendarDate | null;
+  isDateUnavailable?: (date: CalendarDate) => boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+  invalid?: boolean;
+  autoFocus?: boolean;
   locale?: string;
-  /** 0 = Sunday, 1 = Monday. Default: 1. */
-  weekStartsOn?: 0 | 1;
+  firstDayOfWeek?: FirstDayOfWeek;
+  weeksInMonth?: number;
+  id?: string;
+  "aria-label"?: AriaAttributes["aria-label"];
+  "aria-labelledby"?: AriaAttributes["aria-labelledby"];
   className?: string;
-  "aria-label"?: string;
 }
 
-function startOfDay(d: Date) {
-  const c = new Date(d);
-  c.setHours(0, 0, 0, 0);
-  return c;
+export function calendarDateFromNativeDate(date: Date): CalendarDate {
+  return new CalendarDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 }
-function sameDay(a: Date, b: Date) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+
+export function calendarDateToNativeDate(
+  date: CalendarDate,
+  timeZone = getLocalTimeZone(),
+): Date {
+  return date.toDate(timeZone);
 }
-function addMonths(d: Date, n: number) {
-  const c = new Date(d);
-  c.setMonth(c.getMonth() + n);
-  return c;
-}
-function weekdayLabels(locale: string | undefined, weekStartsOn: 0 | 1) {
-  const fmt = new Intl.DateTimeFormat(locale, { weekday: "short" });
-  const base = new Date(2021, 0, 4); // a Monday
-  const labels: string[] = [];
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(base);
-    d.setDate(base.getDate() + i);
-    labels.push(fmt.format(d));
-  }
-  if (weekStartsOn === 0) labels.unshift(labels.pop() as string); // Sunday first
-  return labels;
+
+function CalendarLocale({ locale, children }: { locale?: string; children: ReactNode }) {
+  return locale ? <I18nProvider locale={locale}>{children}</I18nProvider> : children;
 }
 
 export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(
-  { value, defaultValue, onValueChange, month, defaultMonth, onMonthChange, min, max, locale, weekStartsOn = 1, className, "aria-label": ariaLabel },
+  {
+    value,
+    defaultValue,
+    onValueChange,
+    focusedValue,
+    defaultFocusedValue,
+    onFocusChange,
+    min,
+    max,
+    isDateUnavailable,
+    disabled,
+    readOnly,
+    invalid,
+    autoFocus,
+    locale,
+    firstDayOfWeek,
+    weeksInMonth = 6,
+    id,
+    className,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
+    ...dataProps
+  },
   ref,
 ) {
-  const isControlled = value !== undefined;
-  const [internalSel, setInternalSel] = useState<Date | null>(defaultValue ?? null);
-  const selected = isControlled ? value ?? null : internalSel;
-
-  const monthControlled = month !== undefined;
-  const [internalMonth, setInternalMonth] = useState<Date>(() => month ?? defaultMonth ?? selected ?? new Date());
-  const view = monthControlled ? month : internalMonth;
-
-  const setView = (d: Date) => {
-    if (!monthControlled) setInternalMonth(d);
-    onMonthChange?.(d);
-  };
-  const select = (d: Date) => {
-    if (!isControlled) setInternalSel(d);
-    onValueChange?.(d);
-  };
-
-  const isDisabled = (d: Date) => {
-    if (min && startOfDay(d) < startOfDay(min)) return true;
-    if (max && startOfDay(d) > startOfDay(max)) return true;
-    return false;
-  };
-
-  // 6 rows × 7 columns, starting on weekStartsOn.
-  const firstOfMonth = new Date(view.getFullYear(), view.getMonth(), 1);
-  const startWeekday = (firstOfMonth.getDay() - weekStartsOn + 7) % 7;
-  const gridStart = new Date(firstOfMonth);
-  gridStart.setDate(firstOfMonth.getDate() - startWeekday);
-
-  const weeks: Date[][] = [];
-  for (let w = 0; w < 6; w++) {
-    const row: Date[] = [];
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(gridStart);
-      d.setDate(gridStart.getDate() + w * 7 + i);
-      row.push(d);
-    }
-    weeks.push(row);
-  }
-
-  const monthLabel = view.toLocaleDateString(locale, { month: "long", year: "numeric" });
-  const today = startOfDay(new Date());
-
   return (
-    <div ref={ref} className={cx("ms-calendar", className)} aria-label={ariaLabel}>
-      <div className="ms-calendar__header">
-        <button type="button" aria-label="Previous month" onClick={() => setView(addMonths(view, -1))} className="ms-calendar__nav">
-          <ChevronLeft size={16} strokeWidth={2} aria-hidden />
-        </button>
-        <span className="ms-calendar__month">{monthLabel}</span>
-        <button type="button" aria-label="Next month" onClick={() => setView(addMonths(view, 1))} className="ms-calendar__nav">
-          <ChevronRight size={16} strokeWidth={2} aria-hidden />
-        </button>
-      </div>
-      <div className="ms-calendar__weekdays" aria-hidden>
-        {weekdayLabels(locale, weekStartsOn).map((w, i) => <span key={i}>{w}</span>)}
-      </div>
-      <div role="grid" aria-label={monthLabel} className="ms-calendar__grid">
-        {weeks.map((week, wi) => (
-          <div role="row" key={wi} className="ms-calendar__row">
-            {week.map((d) => {
-              const inMonth = d.getMonth() === view.getMonth();
-              const isSelected = selected && sameDay(d, selected);
-              const isToday = sameDay(d, today);
-              const off = isDisabled(d);
-              return (
-                <button
-                  key={d.toISOString()}
-                  type="button"
-                  role="gridcell"
-                  aria-selected={!!isSelected}
-                  aria-current={isToday ? "date" : undefined}
-                  aria-label={d.toLocaleDateString(locale, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
-                  disabled={off}
-                  onClick={() => select(d)}
-                  className={cx(
-                    "ms-calendar__cell",
-                    !inMonth && "ms-calendar__cell--outside",
-                    isSelected && "ms-calendar__cell--selected",
-                    isToday && "ms-calendar__cell--today",
-                  )}
-                >
-                  {d.getDate()}
-                </button>
-              );
-            })}
-          </div>
-        ))}
-      </div>
-    </div>
+    <CalendarLocale locale={locale}>
+      <AriaCalendar<CalendarDate>
+        {...dataProps}
+        ref={ref}
+        id={id}
+        value={value}
+        defaultValue={defaultValue}
+        onChange={onValueChange}
+        focusedValue={focusedValue}
+        defaultFocusedValue={defaultFocusedValue}
+        onFocusChange={onFocusChange}
+        minValue={min}
+        maxValue={max}
+        isDateUnavailable={
+          isDateUnavailable ? (date) => isDateUnavailable(date as CalendarDate) : undefined
+        }
+        isDisabled={disabled}
+        isReadOnly={readOnly}
+        data-readonly={readOnly || undefined}
+        isInvalid={invalid}
+        autoFocus={autoFocus}
+        firstDayOfWeek={firstDayOfWeek}
+        weeksInMonth={weeksInMonth}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        className={cx("ms-calendar", className)}
+      >
+        <div className="ms-calendar__header">
+          <Button slot="previous" className="ms-calendar__nav">
+            <ChevronLeft size={16} strokeWidth={2} aria-hidden />
+          </Button>
+          <Heading className="ms-calendar__month" />
+          <Button slot="next" className="ms-calendar__nav">
+            <ChevronRight size={16} strokeWidth={2} aria-hidden />
+          </Button>
+        </div>
+        <Grid className="ms-calendar__grid" weekdayStyle="short">
+          <Header className="ms-calendar__weekdays">
+            {(day) => <HeaderCell className="ms-calendar__weekday">{day}</HeaderCell>}
+          </Header>
+          <Body className="ms-calendar__body">
+            {(date) => <Cell date={date} className="ms-calendar__cell" />}
+          </Body>
+        </Grid>
+      </AriaCalendar>
+    </CalendarLocale>
   );
 });

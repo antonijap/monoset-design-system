@@ -1,7 +1,7 @@
 {
   "name": "@monoset/react",
-  "version": "0.7.0",
-  "description": "Monoset React component library. Monotone, minimal, unopinionated.",
+  "version": "1.0.0",
+  "description": "Brand-neutral React components for Monoset.",
   "keywords": [
     "design-system",
     "react",
@@ -9,64 +9,70 @@
     "monoset",
     "monotone"
   ],
+  "homepage": "https://monoset.design",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antonijap/monoset-design-system.git",
+    "directory": "packages/react"
+  },
+  "bugs": "https://github.com/antonijap/monoset-design-system/issues",
   "license": "MIT",
   "type": "module",
   "files": [
     "dist",
-    "src/styles.css"
+    "src/styles.css",
+    "src/styles"
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
-    "./styles.css": "./src/styles.css"
+    "./motion": {
+      "import": {
+        "types": "./dist/motion.d.ts",
+        "default": "./dist/motion.js"
+      },
+      "require": {
+        "types": "./dist/motion.d.cts",
+        "default": "./dist/motion.cjs"
+      }
+    },
+    "./styles.css": "./src/styles.css",
+    "./styles/*.css": "./src/styles/*.css"
   },
+  "sideEffects": [
+    "**/*.css"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:e2e": "pnpm --dir ../../website exec vite build --config ../packages/react/fixtures/consumer/vite.config.ts && node --test e2e/react-v1.e2e.ts",
+    "verify:package": "node scripts/verify-package.mjs",
+    "test:contracts:types": "tsc --project tsconfig.contracts.json --pretty false",
+    "test:watch": "vitest",
+    "prepublishOnly": "node ../../scripts/require-pnpm-publish.mjs"
   },
   "peerDependencies": {
-    "@radix-ui/react-accordion": ">=1",
-    "@radix-ui/react-aspect-ratio": ">=1",
-    "@radix-ui/react-avatar": ">=1",
-    "@radix-ui/react-checkbox": ">=1",
-    "@radix-ui/react-collapsible": ">=1",
-    "@radix-ui/react-context-menu": ">=2",
-    "@radix-ui/react-dialog": ">=1",
-    "@radix-ui/react-dropdown-menu": ">=2",
-    "@radix-ui/react-hover-card": ">=1",
-    "@radix-ui/react-navigation-menu": ">=1",
-    "@radix-ui/react-popover": ">=1",
-    "@radix-ui/react-progress": ">=1",
-    "@radix-ui/react-radio-group": ">=1",
-    "@radix-ui/react-select": ">=2",
-    "@radix-ui/react-separator": ">=1",
-    "@radix-ui/react-slider": ">=1",
-    "@radix-ui/react-switch": ">=1",
-    "@radix-ui/react-tabs": ">=1",
-    "@radix-ui/react-toast": ">=1",
-    "@radix-ui/react-toggle": ">=1",
-    "@radix-ui/react-toggle-group": ">=1",
-    "@radix-ui/react-tooltip": ">=1",
-    "framer-motion": ">=11",
-    "lucide-react": ">=0.400",
     "react": ">=18",
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@monoset/motion": "*",
-    "@monoset/tokens": "*"
-  },
-  "devDependencies": {
+    "@internationalized/date": "^3.6.0",
+    "@monoset/motion": "workspace:^0.2.1",
+    "@monoset/tokens": "workspace:^0.2.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-aspect-ratio": "^1.1.1",
     "@radix-ui/react-avatar": "^1.1.1",
@@ -82,6 +88,7 @@
     "@radix-ui/react-radio-group": "^1.2.1",
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-separator": "^1.1.0",
+    "@radix-ui/react-slot": "^1.2.5",
     "@radix-ui/react-slider": "^1.3.6",
     "@radix-ui/react-switch": "^1.1.1",
     "@radix-ui/react-tabs": "^1.1.1",
@@ -89,6 +96,11 @@
     "@radix-ui/react-toggle": "^1.1.10",
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.1.4",
+    "framer-motion": "^12.0.0",
+    "lucide-react": "^0.462.0",
+    "react-aria-components": "^1.19.0"
+  },
+  "devDependencies": {
     "@eslint/js": "^9.39.4",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
@@ -98,9 +110,7 @@
     "@vitest/coverage-v8": "^2.1.5",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "framer-motion": "^12.0.0",
     "happy-dom": "^20.9.0",
-    "lucide-react": "^0.462.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tsup": "^8.3.5",

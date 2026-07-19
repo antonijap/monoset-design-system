@@ -1,0 +1,38 @@
+/* ==========================================================================
+   Select trigger
+   ========================================================================== */
+.ms-select {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg); color: var(--fg1);
+  border: 1px solid var(--border); border-radius: var(--radius-md);
+  font-size: 13px; font-family: inherit;
+  cursor: pointer;
+  min-width: 160px; justify-content: space-between;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+.ms-select:focus-visible { border-color: var(--fg1); box-shadow: var(--focus-ring); outline: none; }
+.ms-select[data-placeholder] { color: var(--fg3); }
+.ms-select[data-disabled] { background: var(--bg-muted); color: var(--fg4); cursor: not-allowed; }
+.ms-select__chevron { display: inline-flex; color: var(--fg3); flex-shrink: 0; transition: transform var(--duration-base) var(--ease-standard); }
+.ms-select[data-state="open"] .ms-select__chevron { transform: rotate(180deg); }
+.ms-select__content {
+  max-height: min(320px, var(--radix-select-content-available-height, calc(100vh - 24px)));
+  overflow: hidden;
+}
+.ms-select__content [data-radix-select-viewport] {
+  max-height: min(272px, var(--radix-select-content-available-height, calc(100vh - 72px)));
+}
+.ms-select__item { --_ms-menu-item-padding-right: 32px; position: relative; }
+.ms-select__indicator {
+  position: absolute; right: 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--fg1);
+}
+.ms-select__scroll-up,
+.ms-select__scroll-down {
+  display: flex; align-items: center; justify-content: center;
+  height: 24px; color: var(--fg3); background: var(--bg);
+}

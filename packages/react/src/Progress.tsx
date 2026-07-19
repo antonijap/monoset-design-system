@@ -13,12 +13,17 @@ export interface ProgressProps {
 export function Progress({
   value, max = 100, indeterminate, className, "aria-label": ariaLabel = "Progress",
 }: ProgressProps) {
-  const pct = indeterminate ? undefined : Math.min(100, Math.max(0, ((value ?? 0) / max) * 100));
+  const isIndeterminate = indeterminate ?? value === undefined;
+  const normalizedMax = Number.isFinite(max) && max > 0 ? max : 100;
+  const normalizedValue = Number.isFinite(value)
+    ? Math.min(normalizedMax, Math.max(0, value ?? 0))
+    : 0;
+  const pct = isIndeterminate ? undefined : (normalizedValue / normalizedMax) * 100;
   return (
-    <RProgress.Root value={indeterminate ? null : (value ?? 0)} max={max} aria-label={ariaLabel} className={cx("ms-progress", className)}>
+    <RProgress.Root value={isIndeterminate ? null : normalizedValue} max={normalizedMax} aria-label={ariaLabel} className={cx("ms-progress", className)}>
       <RProgress.Indicator
         className="ms-progress__indicator"
-        style={indeterminate
+        style={isIndeterminate
           ? { width: "40%", animation: "ms-indeterminate 1.4s infinite" }
           : { width: `${pct}%` }}
       />

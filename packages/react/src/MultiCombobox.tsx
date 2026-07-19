@@ -1,195 +1,529 @@
-import * as RPopover from "@radix-ui/react-popover";
-import { forwardRef, useRef, useState, useId, type KeyboardEvent } from "react";
-import { Check, X } from "lucide-react";
+import {
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type AriaAttributes,
+  type ClipboardEvent,
+  type KeyboardEvent,
+  type MutableRefObject,
+} from "react";
+import { Check, ChevronDown, X } from "lucide-react";
+import {
+  Button,
+  ComboBox as AriaComboBox,
+  ComboBoxStateContext,
+  Group,
+  Input,
+  ListBox,
+  ListBoxItem,
+  Popover,
+} from "react-aria-components";
+import { useMonosetPortalContainer } from "./PortalContext";
 import { cx } from "./cx";
 
 export interface MultiComboboxOption {
   value: string;
   label: string;
+  /** Text announced by the combobox and used to disambiguate duplicate labels. */
+  textValue?: string;
   description?: string;
   disabled?: boolean;
+  /** Extra terms used by search but not displayed. */
   keywords?: string[];
 }
 
 export interface MultiComboboxProps {
+  [dataAttribute: `data-${string}`]: string | number | boolean | undefined;
   options: MultiComboboxOption[];
-  /** Currently selected values. Controlled. */
   value?: string[];
   defaultValue?: string[];
   onValueChange?: (value: string[]) => void;
+  inputValue?: string;
+  defaultInputValue?: string;
+  onInputValueChange?: (value: string) => void;
   placeholder?: string;
-  searchPlaceholder?: string;
   emptyMessage?: string;
   filter?: (query: string, option: MultiComboboxOption) => boolean;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
   disabled?: boolean;
+  readOnly?: boolean;
+  required?: boolean;
+  invalid?: boolean;
+  name?: string;
+  form?: string;
+  autoComplete?: string;
   id?: string;
+  title?: string;
   className?: string;
-  "aria-label"?: string;
-  "aria-labelledby"?: string;
+  inputClassName?: string;
+  popoverClassName?: string;
+  "aria-label"?: AriaAttributes["aria-label"];
+  "aria-labelledby"?: AriaAttributes["aria-labelledby"];
+  "aria-describedby"?: AriaAttributes["aria-describedby"];
+  "aria-errormessage"?: AriaAttributes["aria-errormessage"];
+  "aria-invalid"?: AriaAttributes["aria-invalid"];
+  "aria-required"?: AriaAttributes["aria-required"];
 }
 
-function defaultFilter(query: string, option: MultiComboboxOption): boolean {
-  const q = query.toLowerCase();
+function optionTextValue(option: MultiComboboxOption): string {
+  return option.textValue ?? option.label;
+}
+
+function defaultMultiComboboxFilter(
+  query: string,
+  option: MultiComboboxOption,
+): boolean {
+  const normalizedQuery = query.trim().toLocaleLowerCase();
+  if (!normalizedQuery) return true;
+
+  return [optionTextValue(option), option.label, option.description, ...(option.keywords ?? [])]
+    .filter((term): term is string => Boolean(term))
+    .some((term) => term.toLocaleLowerCase().includes(normalizedQuery));
+}
+
+function normalizedValues(values: string[] | undefined, options: MultiComboboxOption[]) {
+  if (values === undefined) return undefined;
+
+  const available = new Set(options.map((option) => option.value));
+  return values.filter((value, index) => available.has(value) && values.indexOf(value) === index);
+}
+
+function createOptionsByTextValue(options: MultiComboboxOption[]) {
+  const normalizedTextValues = new Set<string>();
+  const values = new Set<string>();
+  const optionsByTextValue = new Map<string, MultiComboboxOption>();
+
+  for (const option of options) {
+    if (values.has(option.value)) {
+      throw new Error(
+        `MultiCombobox options must have a unique value. Duplicate value: "${option.value}".`,
+      );
+    }
+    values.add(option.value);
+    const textValue = optionTextValue(option);
+    const normalizedTextValue = textValue.toLocaleLowerCase();
+    if (normalizedTextValues.has(normalizedTextValue)) {
+      throw new Error(
+        `MultiCombobox options must have a unique textValue. Duplicate effective text value: "${textValue}".`,
+      );
+    }
+    normalizedTextValues.add(normalizedTextValue);
+    optionsByTextValue.set(textValue, option);
+  }
+
+  return optionsByTextValue;
+}
+
+const useIsomorphicLayoutEffect = typeof document === "undefined" ? useEffect : useLayoutEffect;
+
+function OpenStateSync({
+  open,
+  defaultOpen,
+  syncingRef,
+}: {
+  open?: boolean;
+  defaultOpen?: boolean;
+  syncingRef: MutableRefObject<boolean>;
+}) {
+  const state = useContext(ComboBoxStateContext);
+  const appliedDefault = useRef(false);
+
+  // RAC 1.19 exposes open-change events but no controlled open props, so the
+  // wrapper keeps its compact public open contract synchronized with RAC state.
+  useIsomorphicLayoutEffect(() => {
+    if (!state) return;
+
+    const requestedOpen = open ?? (!appliedDefault.current && defaultOpen ? true : undefined);
+    appliedDefault.current = true;
+    if (requestedOpen === undefined || state.isOpen === requestedOpen) return;
+
+    syncingRef.current = true;
+    state.setOpen(requestedOpen);
+    syncingRef.current = false;
+  }, [defaultOpen, open, state, state?.isOpen, syncingRef]);
+
+  return null;
+}
+
+function selectedStringValues(value: unknown): string[] {
+  return Array.isArray(value) ? value.map(String) : [];
+}
+
+function SelectionFormInputs({
+  name,
+  form,
+  disabled,
+}: {
+  name?: string;
+  form?: string;
+  disabled?: boolean;
+}) {
+  const state = useContext(ComboBoxStateContext);
+  if (!state || !name || disabled) return null;
+
+  return selectedStringValues(state.value).map((value) => (
+    <input key={value} type="hidden" name={name} form={form} value={value} />
+  ));
+}
+
+function SelectedTags({
+  options,
+  disabled,
+  readOnly,
+}: {
+  options: MultiComboboxOption[];
+  disabled?: boolean;
+  readOnly?: boolean;
+}) {
+  const state = useContext(ComboBoxStateContext);
+  const selectedValues = selectedStringValues(state?.value);
+  const optionsByValue = new Map(options.map((option) => [option.value, option]));
+  const selected = selectedValues
+    .map((value) => optionsByValue.get(value))
+    .filter((option): option is MultiComboboxOption => Boolean(option));
+  if (selected.length === 0) return null;
+
   return (
-    option.label.toLowerCase().includes(q) ||
-    !!option.description?.toLowerCase().includes(q) ||
-    !!option.keywords?.some((k) => k.toLowerCase().includes(q))
+    <div className="ms-multicombobox__tags">
+      {selected.map((option) => {
+        const removable = !disabled && !readOnly && !option.disabled;
+        return (
+          <span key={option.value} className="ms-multicombobox__tag">
+            <span className="ms-multicombobox__tag-label">{option.label}</span>
+            {removable && (
+              <button
+                type="button"
+                aria-label={`Remove ${optionTextValue(option)}`}
+                disabled={state?.isOpen}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => {
+                  state?.setValue(selectedValues.filter((value) => value !== option.value));
+                }}
+                className="ms-multicombobox__tag-remove"
+              >
+                <X size={12} strokeWidth={2} aria-hidden />
+              </button>
+            )}
+          </span>
+        );
+      })}
+    </div>
   );
 }
 
-export const MultiCombobox = forwardRef<HTMLButtonElement, MultiComboboxProps>(
-  function MultiCombobox({ options, value, defaultValue = [], onValueChange, placeholder = "Select…", searchPlaceholder = "Search…", emptyMessage = "No results.", filter = defaultFilter, disabled, id, className, ...ariaProps }, ref) {
-    const isControlled = value !== undefined;
-    const [internal, setInternal] = useState<string[]>(defaultValue);
-    const selected = isControlled ? value! : internal;
+function MultiComboboxInput({
+  options,
+  placeholder,
+  autoComplete,
+  className,
+  disabled,
+  readOnly,
+}: {
+  options: MultiComboboxOption[];
+  placeholder: string;
+  autoComplete?: string;
+  className?: string;
+  disabled?: boolean;
+  readOnly?: boolean;
+}) {
+  const state = useContext(ComboBoxStateContext);
+  const setInputRef = useCallback((element: HTMLInputElement | null) => {
+    // React Aria deliberately defaults comboboxes to `off`; an explicit public
+    // value is restored here after its context props are applied.
+    if (element) element.setAttribute("autocomplete", autoComplete ?? "off");
+  }, [autoComplete]);
 
-    const [open, setOpen] = useState(false);
-    const [query, setQuery] = useState("");
-    const [cursor, setCursor] = useState(0);
-    const inputRef = useRef<HTMLInputElement>(null);
-    const listId = useId();
+  const removeLastTag = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (
+      event.key !== "Backspace" ||
+      disabled ||
+      readOnly ||
+      !state ||
+      state.inputValue !== ""
+    ) return;
 
-    const filtered = query.trim() ? options.filter((o) => filter(query, o)) : options;
-    // Clamp the highlighted index during render so the visible highlight and the
-    // Enter target always agree, even on the keystroke where `filtered` shrinks
-    // before the bounds effect runs.
-    const activeIndex = Math.min(cursor, Math.max(0, filtered.length - 1));
-
-    // Reset search + cursor when the popover opens (handled in the event, not an
-    // effect). activeIndex above keeps the cursor in bounds during render.
-    const handleOpenChange = (next: boolean) => {
-      setOpen(next);
-      if (next) {
-        setQuery("");
-        setCursor(0);
-        requestAnimationFrame(() => inputRef.current?.focus());
+    const optionsByValue = new Map(options.map((option) => [option.value, option]));
+    const selected = selectedStringValues(state.value);
+    let removableIndex = -1;
+    for (let index = selected.length - 1; index >= 0; index -= 1) {
+      const value = selected[index];
+      const option = optionsByValue.get(value);
+      if (option != null && !option.disabled) {
+        removableIndex = index;
+        break;
       }
-    };
+    }
+    if (removableIndex < 0) return;
 
-    const setSelected = (next: string[]) => {
-      if (!isControlled) setInternal(next);
+    event.preventDefault();
+    state.setValue(selected.filter((_, index) => index !== removableIndex));
+  };
+
+  const pasteOptions = (event: ClipboardEvent<HTMLInputElement>) => {
+    if (disabled || readOnly || !state) return;
+
+    const pastedText = event.clipboardData.getData("text");
+    const tokens = pastedText
+      .split(/[,\r\n]+/)
+      .map((token) => token.trim())
+      .filter(Boolean);
+    if (tokens.length === 0) return;
+
+    event.preventDefault();
+    const selected = selectedStringValues(state.value);
+    const next = [...selected];
+    const unmatched: string[] = [];
+
+    for (const token of tokens) {
+      const normalizedToken = token.toLocaleLowerCase();
+      const valueMatch = options.find(
+        (option) => !option.disabled && option.value.toLocaleLowerCase() === normalizedToken,
+      );
+      const textValueMatch = options.find(
+        (option) => !option.disabled && optionTextValue(option).toLocaleLowerCase() === normalizedToken,
+      );
+      const labelMatches = options.filter(
+        (option) => !option.disabled && option.label.toLocaleLowerCase() === normalizedToken,
+      );
+      const match = valueMatch ?? textValueMatch ?? (labelMatches.length === 1 ? labelMatches[0] : undefined);
+
+      if (!match) {
+        unmatched.push(token);
+      } else if (!next.includes(match.value)) {
+        next.push(match.value);
+      }
+    }
+
+    if (next.length !== selected.length) state.setValue(next);
+    state.setInputValue(unmatched.join(", "));
+  };
+
+  return (
+    <Input
+      ref={setInputRef}
+      className={cx("ms-combobox__input", "ms-multicombobox__input", className)}
+      placeholder={placeholder}
+      autoComplete={autoComplete}
+      onKeyDown={removeLastTag}
+      onPaste={pasteOptions}
+    />
+  );
+}
+
+export const MultiCombobox = forwardRef<HTMLDivElement, MultiComboboxProps>(
+  function MultiCombobox(
+    {
+      options,
+      value,
+      defaultValue,
+      onValueChange,
+      inputValue,
+      defaultInputValue,
+      onInputValueChange,
+      placeholder = "Select…",
+      emptyMessage = "No results.",
+      filter = defaultMultiComboboxFilter,
+      open,
+      defaultOpen,
+      onOpenChange,
+      disabled,
+      readOnly,
+      required,
+      invalid,
+      name,
+      form,
+      autoComplete,
+      id,
+      title,
+      className,
+      inputClassName,
+      popoverClassName,
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledBy,
+      "aria-describedby": ariaDescribedBy,
+      "aria-errormessage": ariaErrorMessage,
+      "aria-invalid": ariaInvalid,
+      "aria-required": ariaRequired,
+      ...dataProps
+    },
+    ref,
+  ) {
+    const portalContainer = useMonosetPortalContainer();
+    const syncingOpenRef = useRef(false);
+    const isInvalid = invalid || ariaInvalid === true || ariaInvalid === "true";
+    const isRequired = required || ariaRequired === true || ariaRequired === "true";
+    const optionsByTextValue = createOptionsByTextValue(options);
+    const [uncontrolledValue, setUncontrolledValue] = useState(
+      () => normalizedValues(defaultValue, options) ?? [],
+    );
+    const [uncontrolledInputValue, setUncontrolledInputValue] = useState(defaultInputValue ?? "");
+    const initialValueRef = useRef(uncontrolledValue);
+    const initialInputValueRef = useRef(uncontrolledInputValue);
+    const controlledValue = useMemo(
+      () => normalizedValues(value ?? uncontrolledValue, options) ?? [],
+      [options, uncontrolledValue, value],
+    );
+    const currentInputValue = inputValue ?? uncontrolledInputValue;
+    const rootRef = useRef<HTMLDivElement | null>(null);
+
+    const setRootRef = useCallback((element: HTMLDivElement | null) => {
+      rootRef.current = element;
+      if (element) {
+        if (id) element.id = id;
+        else element.removeAttribute("id");
+        if (title) element.title = title;
+        else element.removeAttribute("title");
+      }
+
+      if (typeof ref === "function") ref(element);
+      else if (ref) ref.current = element;
+    }, [id, ref, title]);
+
+    useEffect(() => {
+      const owner = form
+        ? document.getElementById(form)
+        : rootRef.current?.closest("form");
+      if (!(owner instanceof HTMLFormElement)) return;
+
+      const reset = () => {
+        if (value === undefined) setUncontrolledValue(initialValueRef.current);
+        if (inputValue === undefined) setUncontrolledInputValue(initialInputValueRef.current);
+      };
+      owner.addEventListener("reset", reset);
+      return () => owner.removeEventListener("reset", reset);
+    }, [form, inputValue, value]);
+
+    const changeValue = (nextValue: string[]) => {
+      const next = normalizedValues(nextValue, options) ?? [];
+      if (
+        next.length === controlledValue.length &&
+        next.every((nextValue, index) => nextValue === controlledValue[index])
+      ) return;
+      if (value === undefined) setUncontrolledValue(next);
       onValueChange?.(next);
     };
 
-    const toggle = (val: string) => {
-      const next = selected.includes(val) ? selected.filter((v) => v !== val) : [...selected, val];
-      setSelected(next);
+    const changeInputValue = (nextInputValue: string) => {
+      if (inputValue === undefined) setUncontrolledInputValue(nextInputValue);
+      onInputValueChange?.(nextInputValue);
     };
-
-    const removeAt = (val: string) => setSelected(selected.filter((v) => v !== val));
-
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowDown") { e.preventDefault(); setCursor((c) => (c + 1) % Math.max(1, filtered.length)); }
-      else if (e.key === "ArrowUp") { e.preventDefault(); setCursor((c) => (c - 1 + filtered.length) % Math.max(1, filtered.length)); }
-      else if (e.key === "Enter") {
-        e.preventDefault();
-        const opt = filtered[activeIndex];
-        if (opt && !opt.disabled) toggle(opt.value);
-      }
-    };
-
-    const labelOf = (val: string) => options.find((o) => o.value === val)?.label || val;
 
     return (
-      <RPopover.Root open={open} onOpenChange={handleOpenChange}>
-        <RPopover.Trigger asChild disabled={disabled}>
-          <button
-            ref={ref}
-            id={id}
-            type="button"
-            role="combobox"
-            aria-expanded={open}
-            aria-haspopup="listbox"
-            aria-controls={listId}
+      <AriaComboBox<MultiComboboxOption, "multiple">
+        {...dataProps}
+        ref={setRootRef}
+        defaultItems={options}
+        selectionMode="multiple"
+        value={controlledValue}
+        onChange={(nextValue) => {
+          const next = nextValue.map(String);
+          const addedOption = next.some((nextValue) => !controlledValue.includes(nextValue));
+          changeValue(next);
+          if (addedOption) changeInputValue("");
+        }}
+        inputValue={currentInputValue}
+        onInputChange={changeInputValue}
+        onOpenChange={(nextOpen) => {
+          if (!syncingOpenRef.current) onOpenChange?.(nextOpen);
+        }}
+        isDisabled={disabled}
+        isReadOnly={readOnly}
+        isRequired={isRequired}
+        isInvalid={isInvalid}
+        name={undefined}
+        form={form}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-describedby={ariaDescribedBy}
+        aria-errormessage={ariaErrorMessage}
+        allowsCustomValue={false}
+        allowsEmptyCollection
+        formValue="key"
+        menuTrigger="input"
+        defaultFilter={(textValue, query) => {
+          const option = optionsByTextValue.get(textValue);
+          return option ? filter(query, option) : false;
+        }}
+        className={cx("ms-combobox", "ms-multicombobox", className)}
+      >
+        <SelectionFormInputs name={name} form={form} disabled={disabled} />
+        <OpenStateSync
+          open={open}
+          defaultOpen={defaultOpen}
+          syncingRef={syncingOpenRef}
+        />
+        <Group className={cx("ms-combobox__group", "ms-multicombobox__group")}>
+          <SelectedTags
+            options={options}
             disabled={disabled}
-            className={cx("ms-combobox__trigger", "ms-multicombobox__trigger", className)}
-            {...ariaProps}
+            readOnly={readOnly}
+          />
+          <MultiComboboxInput
+            options={options}
+            placeholder={placeholder}
+            autoComplete={autoComplete}
+            className={inputClassName}
+            disabled={disabled}
+            readOnly={readOnly}
+          />
+          <Button className={cx("ms-combobox__button", "ms-multicombobox__button")}>
+            <ChevronDown size={14} strokeWidth={2} aria-hidden />
+          </Button>
+        </Group>
+        <Popover
+          UNSTABLE_portalContainer={portalContainer ?? undefined}
+          placement="bottom start"
+          offset={6}
+          className={cx("ms-combobox__panel", "ms-multicombobox__panel", popoverClassName)}
+        >
+          <ListBox<MultiComboboxOption>
+            className="ms-combobox__list"
+            selectionBehavior="toggle"
+            renderEmptyState={() => <div className="ms-combobox__empty">{emptyMessage}</div>}
           >
-            {selected.length === 0 ? (
-              <span className="ms-combobox__value ms-combobox__value--placeholder">{placeholder}</span>
-            ) : (
-              <span className="ms-multicombobox__tags">
-                {selected.map((v) => (
-                  <span key={v} className="ms-multicombobox__tag">
-                    {labelOf(v)}
-                    <button
-                      type="button"
-                      aria-label={`Remove ${labelOf(v)}`}
-                      onClick={(e) => { e.stopPropagation(); removeAt(v); }}
-                      className="ms-multicombobox__tag-remove"
+            {(option) => (
+              <ListBoxItem
+                id={option.value}
+                textValue={optionTextValue(option)}
+                isDisabled={option.disabled}
+                className={({ isFocused, isSelected }) =>
+                  cx(
+                    "ms-combobox__option",
+                    isFocused && "ms-combobox__option--active",
+                    isSelected && "ms-combobox__option--selected",
+                  )
+                }
+              >
+                {({ isSelected }) => (
+                  <>
+                    <span
+                      className={cx(
+                        "ms-multicombobox__check",
+                        isSelected && "ms-multicombobox__check--on",
+                      )}
                     >
-                      <X size={12} strokeWidth={2} aria-hidden />
-                    </button>
-                  </span>
-                ))}
-              </span>
-            )}
-            <ChevronDown/>
-          </button>
-        </RPopover.Trigger>
-        <RPopover.Portal>
-          <RPopover.Content
-            sideOffset={6}
-            align="start"
-            className="ms-combobox__panel"
-            onOpenAutoFocus={(e) => e.preventDefault()}
-            style={{ width: "var(--radix-popover-trigger-width)" }}
-          >
-            <div className="ms-combobox__input-wrap">
-              <SearchIcon/>
-              <input
-                ref={inputRef}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={onKey}
-                placeholder={searchPlaceholder}
-                aria-controls={listId}
-                aria-autocomplete="list"
-                autoComplete="off"
-                spellCheck={false}
-                className="ms-combobox__input"
-              />
-            </div>
-            <div id={listId} role="listbox" aria-multiselectable className="ms-combobox__list">
-              {filtered.length === 0 ? (
-                <div className="ms-combobox__empty">{emptyMessage}</div>
-              ) : filtered.map((opt, i) => {
-                const isSel = selected.includes(opt.value);
-                const isActive = i === activeIndex;
-                return (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    role="option"
-                    aria-selected={isSel}
-                    aria-disabled={opt.disabled || undefined}
-                    data-active={isActive ? "" : undefined}
-                    onMouseEnter={() => setCursor(i)}
-                    onClick={() => !opt.disabled && toggle(opt.value)}
-                    className={cx("ms-combobox__option", isActive && "ms-combobox__option--active", isSel && "ms-combobox__option--selected")}
-                    tabIndex={-1}
-                  >
-                    <span className={cx("ms-multicombobox__check", isSel && "ms-multicombobox__check--on")}>
-                      {isSel ? <Check size={14} strokeWidth={2} aria-hidden /> : null}
+                      {isSelected && <Check size={14} strokeWidth={2} aria-hidden />}
                     </span>
                     <span className="ms-combobox__option-text">
-                      <span className="ms-combobox__option-label">{opt.label}</span>
-                      {opt.description && <span className="ms-combobox__option-desc">{opt.description}</span>}
+                      <span className="ms-combobox__option-label">{option.label}</span>
+                      {option.description && (
+                        <span className="ms-combobox__option-desc">{option.description}</span>
+                      )}
                     </span>
-                  </button>
-                );
-              })}
-            </div>
-          </RPopover.Content>
-        </RPopover.Portal>
-      </RPopover.Root>
+                  </>
+                )}
+              </ListBoxItem>
+            )}
+          </ListBox>
+        </Popover>
+      </AriaComboBox>
     );
   },
 );
-
-function ChevronDown() {
-  return (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="m6 9 6 6 6-6"/></svg>);
-}
-function SearchIcon() {
-  return (<svg className="ms-combobox__search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>);
-}

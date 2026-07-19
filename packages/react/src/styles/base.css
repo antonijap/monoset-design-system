@@ -1,0 +1,18 @@
+/* ==========================================================================
+   @monoset/react component styles
+   All classes are prefixed `.ms-` to avoid collision with consumer styles.
+   Tokens come from @monoset/tokens/css. Ensure that is imported first.
+   ========================================================================== */
+
+/* ---- Utilities --------------------------------------------------------- */
+.ms-sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* ---- Focus ring (shared) ---------------------------------------------- */
+.ms-focus-visible:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}

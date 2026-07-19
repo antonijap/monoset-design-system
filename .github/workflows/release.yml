@@ -23,26 +23,32 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.2
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: pnpm
           registry-url: https://registry.npmjs.org
 
       - name: Install deps
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build packages
         run: |
-          npm run build --workspace=@monoset/tokens --if-present
-          npm run build --workspace=@monoset/motion
-          npm run build --workspace=@monoset/react
+          pnpm --filter @monoset/tokens build
+          pnpm --filter @monoset/motion build
+          pnpm --filter @monoset/react build
 
       - name: Create release PR or publish
         uses: changesets/action@v1
         with:
-          publish: npx changeset publish
-          version: npx changeset version
+          publish: pnpm exec changeset publish
+          version: pnpm exec changeset version
           commit: "chore(release): version packages"
           title: "chore(release): version packages"
         env:

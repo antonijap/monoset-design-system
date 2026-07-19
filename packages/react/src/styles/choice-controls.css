@@ -1,0 +1,90 @@
+/* ==========================================================================
+   Checkbox + Switch
+   ========================================================================== */
+.ms-check {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; cursor: pointer;
+  min-height: 24px;
+  user-select: none;
+}
+.ms-check__box {
+  width: 16px; height: 16px; border-radius: 3px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--accent-fg);
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+.ms-check__box[data-state="checked"],
+.ms-check__box[data-state="indeterminate"] {
+  background: var(--accent); border-color: var(--accent);
+}
+.ms-check__indicator { display: inline-grid; place-items: center; }
+.ms-check__visual {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-emphasis);
+}
+.ms-check__indicator[data-state="checked"] .ms-check__visual--checked,
+.ms-check__indicator[data-state="indeterminate"] .ms-check__visual--indeterminate {
+  opacity: 1;
+  transform: scale(1);
+}
+.ms-check:focus-within .ms-check__box { outline: 2px solid var(--ring); outline-offset: 2px; }
+.ms-check:has(.ms-check__box[data-disabled]),
+.ms-switch:has(.ms-switch__track[data-disabled]) {
+  color: var(--fg4);
+  cursor: not-allowed;
+}
+.ms-check__box[data-disabled],
+.ms-switch__track[data-disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ms-switch {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 13px; cursor: pointer; user-select: none;
+  min-height: 24px;
+}
+.ms-switch__track {
+  all: unset; box-sizing: border-box;
+  width: 32px; height: 18px; border-radius: 999px; position: relative;
+  background: var(--border); display: inline-block; cursor: pointer;
+  transition: background var(--duration-base) var(--ease-standard);
+}
+.ms-switch__track[data-state="checked"] { background: var(--accent); }
+.ms-switch__thumb {
+  position: absolute; top: 2px; left: 2px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--fg1); box-shadow: var(--shadow-md);
+  transition: transform var(--duration-base) var(--ease-emphasis);
+}
+.ms-switch__thumb[data-state="checked"] {
+  transform: translateX(14px);
+  background: var(--accent-fg);
+}
+.ms-switch:focus-within .ms-switch__track { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+/* ==========================================================================
+   Radio
+   ========================================================================== */
+.ms-radio-group { display: flex; flex-direction: column; gap: 8px; }
+.ms-radio { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; font-size: 13px; }
+.ms-radio__dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  padding: 0;
+  border: 1px solid var(--border-strong); background: var(--bg);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+.ms-radio__dot[data-state="checked"] { border-color: var(--accent); }
+.ms-radio__dot[data-state="checked"]::after {
+  content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+  flex-shrink: 0;
+}

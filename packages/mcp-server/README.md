@@ -1,8 +1,8 @@
 # @monoset/mcp-server
 
-A Model Context Protocol server that exposes the Monoset design system to agents (Claude Desktop, Cursor, Windsurf, etc).
+An MCP server for the Monoset component catalog, tokens, and docs search.
 
-Ask an agent "what Monoset components exist?" or "show me the mono-600 token" and it gets a structured, up-to-date answer instead of hallucinating.
+Use it to look up exported components, token values, and links into the current docs.
 
 ## Tools
 

@@ -1,0 +1,90 @@
+/* ==========================================================================
+   NumberInput
+   ========================================================================== */
+.ms-numberinput {
+  display: inline-flex;
+  align-items: stretch;
+  min-height: 36px;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: var(--fg1);
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    background var(--duration-fast) var(--ease-standard);
+}
+.ms-numberinput:focus-within {
+  border-color: var(--ring);
+  box-shadow: var(--focus-ring);
+}
+.ms-numberinput[data-invalid] { border-color: var(--status-danger); }
+.ms-numberinput[data-readonly] { background: var(--bg-subtle); }
+.ms-numberinput[data-disabled],
+.ms-numberinput--disabled {
+  background: var(--bg-muted);
+  color: var(--fg4);
+  opacity: 0.6;
+}
+.ms-numberinput__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36px;
+  min-width: 36px;
+  min-height: 36px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: 0;
+  outline: none;
+  appearance: none;
+  background: var(--bg-subtle);
+  color: var(--fg1);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.ms-numberinput__btn:hover:not([disabled]),
+.ms-numberinput__btn[data-hovered]:not([data-disabled]) { background: var(--bg-muted); }
+.ms-numberinput__btn[data-focus-visible] {
+  outline: 2px solid var(--ring);
+  outline-offset: -3px;
+}
+.ms-numberinput__btn[disabled],
+.ms-numberinput__btn[data-disabled] { color: var(--fg4); cursor: not-allowed; }
+.ms-numberinput__btn:first-of-type { border-right: 1px solid var(--border-subtle); }
+.ms-numberinput__btn:last-of-type { border-left: 1px solid var(--border-subtle); }
+.ms-numberinput__input {
+  flex: 1 1 60px;
+  min-width: 60px;
+  min-height: 36px;
+  margin: 0;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+.ms-numberinput__input::-webkit-outer-spin-button,
+.ms-numberinput__input::-webkit-inner-spin-button {
+  -webkit-appearance: none; margin: 0;
+}
+.ms-numberinput__input:focus-visible { box-shadow: none; }
+.ms-numberinput[data-readonly] .ms-numberinput__input { cursor: default; }
+.ms-numberinput[data-disabled] .ms-numberinput__input,
+.ms-numberinput--disabled .ms-numberinput__input { cursor: not-allowed; }

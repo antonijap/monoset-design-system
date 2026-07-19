@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
 
-// One source of truth: document.documentElement.dataset.theme.
-// A small inline <script> in index.html primes this before CSS so there's
-// no flash on first paint.
-
-// Dark mode is scoped to the docs area only (landing stays as-designed).
-// We read the preference from localStorage and toggle the `monoset-dark`
-// class on the docs-layout container. The CSS rule lives in the shipped
-// @monoset/tokens package.
+// Dark mode belongs to the docs route, but the class lives on the document
+// root so body-level component portals inherit the same tokens. The mount
+// effect removes it when the docs unmount, keeping the landing page light.
 function readTheme() {
   if (typeof document === "undefined") return "light";
   try {
@@ -20,8 +15,7 @@ function readTheme() {
 
 function writeTheme(theme) {
   if (typeof document === "undefined") return;
-  const layout = document.querySelector('[data-ms="docs-layout"]');
-  if (layout) layout.classList.toggle("monoset-dark", theme === "dark");
+  document.documentElement.classList.toggle("monoset-dark", theme === "dark");
   try {
     localStorage.setItem("monoset-theme", theme);
   } catch { /* ignore */ }
@@ -34,9 +28,10 @@ function writeTheme(theme) {
 export default function ThemeToggle({ size = 16 }) {
   const [theme, setTheme] = useState(readTheme);
 
-  // On mount, sync the docs-layout container with the stored preference.
+  // Own the document theme only while the docs shell is mounted.
   useEffect(() => {
     writeTheme(readTheme());
+    return () => document.documentElement.classList.remove("monoset-dark");
   }, []);
 
   useEffect(() => {

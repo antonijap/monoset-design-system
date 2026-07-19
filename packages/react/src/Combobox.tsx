@@ -1,20 +1,35 @@
-import * as RPopover from "@radix-ui/react-popover";
 import {
-  type KeyboardEvent,
-  useState,
-  useRef,
-  useEffect,
-  useId,
   forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  type AriaAttributes,
+  type MutableRefObject,
 } from "react";
-import { Check, ChevronDown, Search } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
+import {
+  Button,
+  ComboBox as AriaComboBox,
+  ComboBoxStateContext,
+  Group,
+  Input,
+  ListBox,
+  ListBoxItem,
+  Popover,
+} from "react-aria-components";
+import { useMonosetPortalContainer } from "./PortalContext";
 import { cx } from "./cx";
-
-/* ─── Types ─────────────────────────────────────────────────────── */
 
 export interface ComboboxOption {
   value: string;
   label: string;
+  /**
+   * Unique text used for filtering, announcements, and the selected input value.
+   * Required when two options share the same visible label.
+   */
+  textValue?: string;
   description?: string;
   disabled?: boolean;
   /** Extra terms used by search but not displayed. */
@@ -22,199 +37,246 @@ export interface ComboboxOption {
 }
 
 export interface ComboboxProps {
+  [dataAttribute: `data-${string}`]: string | number | boolean | undefined;
   options: ComboboxOption[];
-  /** Controlled value. */
-  value?: string;
-  /** Called with the new value when an option is picked. */
-  onValueChange?: (value: string) => void;
-  /** Placeholder text on the trigger when nothing is selected. Default: "Select..." */
+  value?: string | null;
+  defaultValue?: string | null;
+  onValueChange?: (value: string | null) => void;
+  inputValue?: string;
+  defaultInputValue?: string;
+  onInputValueChange?: (value: string) => void;
   placeholder?: string;
-  /** Placeholder text inside the search input. Default: "Search..." */
-  searchPlaceholder?: string;
-  /** Text shown when no options match the query. Default: "No results." */
   emptyMessage?: string;
-  /** Custom filter function. Receives the query and an option, return true to keep. */
   filter?: (query: string, option: ComboboxOption) => boolean;
-  /** Disabled state for the whole control. */
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
   disabled?: boolean;
-  /** Forwarded to the trigger button. */
+  readOnly?: boolean;
+  required?: boolean;
+  invalid?: boolean;
+  name?: string;
+  form?: string;
+  autoComplete?: string;
   id?: string;
+  title?: string;
   className?: string;
-  "aria-label"?: string;
-  "aria-labelledby"?: string;
-  "aria-describedby"?: string;
-  "aria-invalid"?: boolean;
+  inputClassName?: string;
+  popoverClassName?: string;
+  "aria-label"?: AriaAttributes["aria-label"];
+  "aria-labelledby"?: AriaAttributes["aria-labelledby"];
+  "aria-describedby"?: AriaAttributes["aria-describedby"];
+  "aria-errormessage"?: AriaAttributes["aria-errormessage"];
+  "aria-invalid"?: AriaAttributes["aria-invalid"];
+  "aria-required"?: AriaAttributes["aria-required"];
 }
 
-/* ─── Helpers ───────────────────────────────────────────────────── */
+function defaultComboboxFilter(query: string, option: ComboboxOption): boolean {
+  const normalizedQuery = query.trim().toLocaleLowerCase();
+  if (!normalizedQuery) return true;
 
-function defaultFilter(query: string, option: ComboboxOption): boolean {
-  const q = query.toLowerCase();
-  if (option.label.toLowerCase().includes(q)) return true;
-  if (option.description?.toLowerCase().includes(q)) return true;
-  if (option.keywords?.some((k) => k.toLowerCase().includes(q))) return true;
-  return false;
+  return [option.textValue, option.label, option.description, ...(option.keywords ?? [])]
+    .filter((term): term is string => Boolean(term))
+    .some((term) => term.toLocaleLowerCase().includes(normalizedQuery));
 }
 
-/* ─── Component ─────────────────────────────────────────────────── */
+const useIsomorphicLayoutEffect = typeof document === "undefined" ? useEffect : useLayoutEffect;
 
-export const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
-  function Combobox(
-    {
-      options,
-      value,
-      onValueChange,
-      placeholder = "Select…",
-      searchPlaceholder = "Search…",
-      emptyMessage = "No results.",
-      filter = defaultFilter,
-      disabled,
-      id,
-      className,
-      ...ariaProps
-    },
-    ref,
-  ) {
-    const [open, setOpen] = useState(false);
-    const [query, setQuery] = useState("");
-    const [cursor, setCursor] = useState(0);
-    const inputRef = useRef<HTMLInputElement>(null);
-    const listRef = useRef<HTMLDivElement>(null);
-    const listId = useId();
+function OpenStateSync({
+  open,
+  defaultOpen,
+  syncingRef,
+}: {
+  open?: boolean;
+  defaultOpen?: boolean;
+  syncingRef: MutableRefObject<boolean>;
+}) {
+  const state = useContext(ComboBoxStateContext);
+  const appliedDefault = useRef(false);
 
-    const filtered = query.trim()
-      ? options.filter((opt) => filter(query, opt))
-      : options;
+  // RAC 1.19 exposes open-change events but no controlled open props, so the
+  // wrapper keeps its compact public open contract synchronized with RAC state.
+  useIsomorphicLayoutEffect(() => {
+    if (!state) return;
 
-    const selected = options.find((opt) => opt.value === value) || null;
+    const requestedOpen = open ?? (!appliedDefault.current && defaultOpen ? true : undefined);
+    appliedDefault.current = true;
+    if (requestedOpen === undefined || state.isOpen === requestedOpen) return;
 
-    // Reset on open
-    useEffect(() => {
-      if (open) {
-        setQuery("");
-        // Query resets to "" on open, so the visible list is the full options
-        // array; index into that, not the stale filtered list from the last query.
-        setCursor(Math.max(0, options.findIndex((opt) => opt.value === value)));
-        requestAnimationFrame(() => inputRef.current?.focus());
-      }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [open]);
+    syncingRef.current = true;
+    state.setOpen(requestedOpen);
+    syncingRef.current = false;
+  }, [defaultOpen, open, state, state?.isOpen, syncingRef]);
 
-    // Keep cursor in bounds
-    useEffect(() => {
-      setCursor((c) => Math.min(c, Math.max(0, filtered.length - 1)));
-    }, [filtered.length]);
+  return null;
+}
 
-    // Scroll active item into view
-    useEffect(() => {
-      const el = listRef.current?.querySelector("[data-active]");
-      el?.scrollIntoView({ block: "nearest" });
-    }, [cursor]);
-
-    const select = (option: ComboboxOption) => {
-      if (option.disabled) return;
-      onValueChange?.(option.value);
-      setOpen(false);
-    };
-
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        setCursor((c) => (c + 1) % Math.max(1, filtered.length));
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        setCursor((c) => (c - 1 + filtered.length) % Math.max(1, filtered.length));
-      } else if (e.key === "Enter") {
-        e.preventDefault();
-        const opt = filtered[cursor];
-        if (opt) select(opt);
-      }
-    };
-
-    return (
-      <RPopover.Root open={open} onOpenChange={setOpen}>
-        <RPopover.Trigger asChild disabled={disabled}>
-          <button
-            ref={ref}
-            id={id}
-            type="button"
-            role="combobox"
-            aria-expanded={open}
-            aria-controls={listId}
-            aria-haspopup="listbox"
-            disabled={disabled}
-            className={cx("ms-combobox__trigger", className)}
-            {...ariaProps}
-          >
-            <span className={cx("ms-combobox__value", !selected && "ms-combobox__value--placeholder")}>
-              {selected ? selected.label : placeholder}
-            </span>
-            <ChevronDown size={14} strokeWidth={2} aria-hidden="true" />
-          </button>
-        </RPopover.Trigger>
-
-        <RPopover.Portal>
-          <RPopover.Content
-            sideOffset={6}
-            align="start"
-            className="ms-combobox__panel"
-            onOpenAutoFocus={(e) => e.preventDefault()}
-            style={{ width: "var(--radix-popover-trigger-width)" }}
-          >
-            <div className="ms-combobox__input-wrap">
-              <Search className="ms-combobox__search-icon" size={14} strokeWidth={2} aria-hidden="true" />
-              <input
-                ref={inputRef}
-                className="ms-combobox__input"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={onKey}
-                placeholder={searchPlaceholder}
-                aria-autocomplete="list"
-                aria-controls={listId}
-                autoComplete="off"
-                spellCheck={false}
-              />
-            </div>
-            <div ref={listRef} id={listId} role="listbox" className="ms-combobox__list">
-              {filtered.length === 0 ? (
-                <div className="ms-combobox__empty">{emptyMessage}</div>
-              ) : (
-                filtered.map((opt, i) => {
-                  const isSelected = opt.value === value;
-                  const isActive = i === cursor;
-                  return (
-                    <button
-                      key={opt.value}
-                      role="option"
-                      aria-selected={isSelected}
-                      aria-disabled={opt.disabled || undefined}
-                      data-active={isActive ? "" : undefined}
-                      className={cx(
-                        "ms-combobox__option",
-                        isActive && "ms-combobox__option--active",
-                        isSelected && "ms-combobox__option--selected",
-                      )}
-                      onMouseEnter={() => setCursor(i)}
-                      onClick={() => select(opt)}
-                      tabIndex={-1}
-                      type="button"
-                    >
-                      <span className="ms-combobox__option-text">
-                        <span className="ms-combobox__option-label">{opt.label}</span>
-                        {opt.description && (
-                          <span className="ms-combobox__option-desc">{opt.description}</span>
-                        )}
-                      </span>
-                      {isSelected && <Check className="ms-combobox__check" size={14} strokeWidth={2} aria-hidden="true" />}
-                    </button>
-                  );
-                })
-              )}
-            </div>
-          </RPopover.Content>
-        </RPopover.Portal>
-      </RPopover.Root>
-    );
+export const Combobox = forwardRef<HTMLDivElement, ComboboxProps>(function Combobox(
+  {
+    options,
+    value,
+    defaultValue,
+    onValueChange,
+    inputValue,
+    defaultInputValue,
+    onInputValueChange,
+    placeholder = "Select…",
+    emptyMessage = "No results.",
+    filter = defaultComboboxFilter,
+    open,
+    defaultOpen,
+    onOpenChange,
+    disabled,
+    readOnly,
+    required,
+    invalid,
+    name,
+    form,
+    autoComplete,
+    id,
+    title,
+    className,
+    inputClassName,
+    popoverClassName,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
+    "aria-describedby": ariaDescribedBy,
+    "aria-errormessage": ariaErrorMessage,
+    "aria-invalid": ariaInvalid,
+    "aria-required": ariaRequired,
+    ...dataProps
   },
-);
+  ref,
+) {
+  const portalContainer = useMonosetPortalContainer();
+  const syncingOpenRef = useRef(false);
+  const isInvalid = invalid || ariaInvalid === true || ariaInvalid === "true";
+  const isRequired = required || ariaRequired === true || ariaRequired === "true";
+  const optionsByTextValue = new Map<string, ComboboxOption>();
+  const normalizedTextValues = new Set<string>();
+  const values = new Set<string>();
+
+  for (const option of options) {
+    if (values.has(option.value)) {
+      throw new Error(
+        `Combobox options must have a unique value. Duplicate value: "${option.value}".`,
+      );
+    }
+    values.add(option.value);
+    const textValue = option.textValue ?? option.label;
+    const normalizedTextValue = textValue.toLocaleLowerCase();
+    if (normalizedTextValues.has(normalizedTextValue)) {
+      throw new Error(
+        `Combobox options must have a unique textValue. Duplicate effective text value: "${textValue}".`,
+      );
+    }
+    normalizedTextValues.add(normalizedTextValue);
+    optionsByTextValue.set(textValue, option);
+  }
+
+  const setRootRef = useCallback((element: HTMLDivElement | null) => {
+    if (element) {
+      if (id) element.id = id;
+      else element.removeAttribute("id");
+      if (title) element.title = title;
+      else element.removeAttribute("title");
+    }
+
+    if (typeof ref === "function") ref(element);
+    else if (ref) ref.current = element;
+  }, [id, ref, title]);
+  const setInputRef = useCallback((element: HTMLInputElement | null) => {
+    // React Aria deliberately defaults comboboxes to `off`; an explicit public
+    // value is restored here after its context props are applied.
+    if (element) element.setAttribute("autocomplete", autoComplete ?? "off");
+  }, [autoComplete]);
+
+  return (
+    <AriaComboBox<ComboboxOption>
+      {...dataProps}
+      ref={setRootRef}
+      defaultItems={options}
+      value={value}
+      defaultValue={defaultValue}
+      onChange={(nextValue) => onValueChange?.(nextValue == null ? null : String(nextValue))}
+      inputValue={inputValue}
+      defaultInputValue={defaultInputValue}
+      onInputChange={onInputValueChange}
+      onOpenChange={(nextOpen) => {
+        if (!syncingOpenRef.current) onOpenChange?.(nextOpen);
+      }}
+      isDisabled={disabled}
+      isReadOnly={readOnly}
+      isRequired={isRequired}
+      isInvalid={isInvalid}
+      name={disabled ? undefined : name}
+      form={form}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
+      aria-errormessage={ariaErrorMessage}
+      allowsCustomValue={false}
+      allowsEmptyCollection
+      formValue="key"
+      menuTrigger="input"
+      defaultFilter={(textValue, query) => {
+        const option = optionsByTextValue.get(textValue);
+        return option ? filter(query, option) : false;
+      }}
+      className={cx("ms-combobox", className)}
+    >
+      <OpenStateSync open={open} defaultOpen={defaultOpen} syncingRef={syncingOpenRef} />
+      <Group className="ms-combobox__group">
+        <Input
+          ref={setInputRef}
+          className={cx("ms-combobox__input", inputClassName)}
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+        />
+        <Button className="ms-combobox__button">
+          <ChevronDown size={14} strokeWidth={2} aria-hidden />
+        </Button>
+      </Group>
+      <Popover
+        UNSTABLE_portalContainer={portalContainer ?? undefined}
+        placement="bottom start"
+        offset={6}
+        className={cx("ms-combobox__panel", popoverClassName)}
+      >
+        <ListBox<ComboboxOption>
+          className="ms-combobox__list"
+          renderEmptyState={() => <div className="ms-combobox__empty">{emptyMessage}</div>}
+        >
+          {(option) => (
+            <ListBoxItem
+              id={option.value}
+              textValue={option.textValue ?? option.label}
+              isDisabled={option.disabled}
+              className={({ isFocused, isSelected }) =>
+                cx(
+                  "ms-combobox__option",
+                  isFocused && "ms-combobox__option--active",
+                  isSelected && "ms-combobox__option--selected",
+                )
+              }
+            >
+              {({ isSelected }) => (
+                <>
+                  <span className="ms-combobox__option-text">
+                    <span className="ms-combobox__option-label">{option.label}</span>
+                    {option.description && (
+                      <span className="ms-combobox__option-desc">{option.description}</span>
+                    )}
+                  </span>
+                  {isSelected && (
+                    <Check className="ms-combobox__check" size={14} strokeWidth={2} aria-hidden />
+                  )}
+                </>
+              )}
+            </ListBoxItem>
+          )}
+        </ListBox>
+      </Popover>
+    </AriaComboBox>
+  );
+});
