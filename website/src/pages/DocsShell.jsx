@@ -9,7 +9,7 @@ import { NATIVE_PAGE_META } from './native-meta.js';
 import { NAV, NATIVE_NAV } from './docs-navigation.js';
 import ThemeToggle from '../components/ThemeToggle.jsx';
 import { usePlatform } from '../lib/platform.jsx';
-import { VERSION } from '../version.js';
+import { NATIVE_VERSION, REACT_VERSION } from '../version.js';
 
 const DocsContent = lazy(() => import('./react-docs/docs.jsx'));
 const NativeDocsContent = lazy(() => import('./native-docs.jsx'));
@@ -94,8 +94,7 @@ function NativeBanner() {
       <span style={{ width:6, height:6, borderRadius:"50%", background:"var(--fg1)" }}/>
       <span style={{ flex:1 }}>
         <strong style={{ color:"var(--fg1)", fontWeight:500 }}>React Native mode.</strong>{" "}
-        Previews on supported pages re-render via <code style={{ fontFamily:"var(--font-mono)", fontSize:11 }}>react-native-web</code>.
-        v0.1 covers Button, Card, Input, Switch, Spinner, Skeleton, and Layout.
+        Supported previews re-render via <code style={{ fontFamily:"var(--font-mono)", fontSize:11 }}>react-native-web</code>.
       </span>
       <button type="button" onClick={() => setPlatform('react')} style={{
         background:"none", border:"none", cursor:"pointer", color:"var(--fg3)",
@@ -114,6 +113,11 @@ export default function DocsLayout({ page, setPage, onHome }) {
   const meta = isNative ? NATIVE_PAGE_META : PAGE_META;
   const nav  = isNative ? NATIVE_NAV : NAV;
   const Content = isNative ? NativeDocsContent : DocsContent;
+  const version = isNative ? NATIVE_VERSION : REACT_VERSION;
+  const versionHref = isNative
+    ? "https://www.npmjs.com/package/@monoset/native"
+    : "https://www.npmjs.com/package/@monoset/react";
+  const versionLabel = `View ${isNative ? "@monoset/native" : "@monoset/react"} on npm`;
   // If the current slug has no entry in this platform's meta, fall back to introduction.
   const safePage = meta[page] ? page : 'introduction';
 
@@ -147,10 +151,10 @@ export default function DocsLayout({ page, setPage, onHome }) {
           <span style={{ fontSize:13, color:"var(--fg3)" }}>Docs</span>
         </span>
         <a
-          href="https://github.com/antonijap/monoset-design-system/releases"
+          href={versionHref}
           target="_blank"
           rel="noreferrer noopener"
-          aria-label="View releases on GitHub"
+          aria-label={versionLabel}
           data-ms="docs-version"
           style={{ marginLeft:4, fontSize:11, fontWeight:500, color:"var(--fg3)",
                    background:"var(--bg-subtle)", border:"1px solid var(--border-subtle)",
@@ -158,7 +162,7 @@ export default function DocsLayout({ page, setPage, onHome }) {
                    transition:"color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard)" }}
           onMouseEnter={e => { e.currentTarget.style.color="var(--fg1)"; e.currentTarget.style.background="var(--bg-muted)"; }}
           onMouseLeave={e => { e.currentTarget.style.color="var(--fg3)"; e.currentTarget.style.background="var(--bg-subtle)"; }}>
-          {VERSION}
+          {version}
         </a>
         <div style={{ marginLeft:"auto", display:"flex", gap:8, alignItems:"center" }}>
           <PlatformToggle/>

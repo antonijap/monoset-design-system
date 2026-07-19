@@ -11,3 +11,16 @@
   Fixes: NumberInput uncontrolled mode works, Spinner and Skeleton no longer leak their animation loops, Toast clears its timers, Combobox resets its search on every dismissal, Popover positions edge-aware and stays anchored in any modal host, and PinInput keeps digits in their slots when editing.
 
   Every animation now respects the OS Reduce Motion setting, and hit targets plus accessibility labels were brought up to standard.
+
+## 0.3.0
+
+### Minor Changes
+
+- Add DatePicker, Tabs, Popover, Combobox, NumberInput, PinInput, PasswordInput, Accordion, NavigationHeader, ActionSheet, AppShell, and Tooltip.
+
+## 0.2.0
+
+### Minor Changes
+
+- Initial release of the React Native component package with layout primitives, surfaces, form controls, display components, overlays, and navigation.
+- Use React Native `StyleSheet` and built-in `Animated`, with separate token and style exports.

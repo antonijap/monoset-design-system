@@ -208,8 +208,8 @@ describe("React package installation policy", () => {
   });
 
   it("retains workspace ranges and CSS side effects", () => {
-    expect(packageJson.dependencies["@monoset/motion"]).toBe("workspace:^0.2.1");
-    expect(packageJson.dependencies["@monoset/tokens"]).toBe("workspace:^0.2.0");
+    expect(packageJson.dependencies["@monoset/motion"]).toBe("workspace:^1.0.0");
+    expect(packageJson.dependencies["@monoset/tokens"]).toBe("workspace:^1.0.0");
     expect(packageJson.sideEffects).toEqual(["**/*.css"]);
   });
 
@@ -361,8 +361,8 @@ describe("React package publish policy", () => {
 
         const tarballPath = resolve(packDirectory, tarball!);
         const packedManifest = readPackedManifest(tarballPath);
-        expect(packedManifest.dependencies["@monoset/motion"]).toBe("^0.2.1");
-        expect(packedManifest.dependencies["@monoset/tokens"]).toBe("^0.2.0");
+        expect(packedManifest.dependencies["@monoset/motion"]).toBe("^1.0.0");
+        expect(packedManifest.dependencies["@monoset/tokens"]).toBe("^1.0.0");
 
         const packedEntries = readPackedArchive(tarballPath);
         for (const fileName of [

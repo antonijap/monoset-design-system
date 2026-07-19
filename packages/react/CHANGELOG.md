@@ -1,5 +1,14 @@
 # @monoset/react
 
+## 1.0.1
+
+### Patch Changes
+
+- Target the stable token and motion packages.
+- Updated dependencies
+  - @monoset/motion@1.0.0
+  - @monoset/tokens@1.0.0
+
 ## 1.0.0
 
 ### Major Changes
@@ -29,6 +38,13 @@
 
 - Updated dependencies
   - @monoset/tokens@0.2.0
+
+## 0.6.0
+
+### Minor Changes
+
+- Add DatePicker, NumberInput, PinInput, PasswordInput, FileUpload, Stepper, NavigationMenu, ContextMenu, MultiCombobox, and Carousel.
+- Add `@radix-ui/react-context-menu` and `@radix-ui/react-navigation-menu` as peer dependencies.
 
 ## 0.5.1
 

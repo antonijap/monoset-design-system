@@ -1,6 +1,6 @@
 {
   "name": "@monoset/mcp-server",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "MCP server for the Monoset component catalog, tokens, and docs search.",
   "license": "MIT",
   "type": "module",

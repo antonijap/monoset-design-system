@@ -35,6 +35,9 @@ jobs:
       - name: Verify workflow policy
         run: pnpm test:workflows
 
+      - name: Verify release versions
+        run: pnpm test:versions
+
       - name: Build packages
         run: |
           pnpm --filter @monoset/tokens build

@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Code, InlineCode, H1, H2, H3, P, Lead, Divider, Preview } from '../../../ui/docs.jsx';
+import { REACT_VERSION } from '../../../version.js';
 
 function PlatformPreview({ web, bg }) {
   return <Preview bg={bg}>{web}</Preview>;
@@ -35,7 +36,7 @@ function PageLayout() {
       <P>Horizontal with wrap. Good for tag lists, button rows, or any set of items that should flow left to right and wrap naturally.</P>
       <Preview bg="var(--bg)">
         <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
-          {["design","monotone","v1.0","react","tokens","motion","layout"].map(t => (
+          {["design","monotone",REACT_VERSION,"react","tokens","motion","layout"].map(t => (
             <span key={t} style={{ fontSize:12, color:"var(--fg2)", background:"var(--bg-muted)", borderRadius:4, padding:"3px 8px" }}>{t}</span>
           ))}
         </div>
@@ -43,7 +44,7 @@ function PageLayout() {
       <Code language="jsx">{`<Inline gap={2}>
   <Badge>design</Badge>
   <Badge>monotone</Badge>
-  <Badge>v1.0</Badge>
+  <Badge>${REACT_VERSION}</Badge>
 </Inline>`}</Code>
 
       <H2 id="grid">Grid</H2>

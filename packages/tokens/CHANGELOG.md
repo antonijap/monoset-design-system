@@ -1,5 +1,11 @@
 # @monoset/tokens
 
+## 1.0.0
+
+### Major Changes
+
+- Mark the current token API as stable for React projects.
+
 ## 0.2.0
 
 ### Minor Changes

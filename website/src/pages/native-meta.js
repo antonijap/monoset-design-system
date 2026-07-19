@@ -17,7 +17,7 @@ export const NATIVE_PAGE_META = {
   spinner:      { title: "Spinner", desc: "Rotating ring for waits over 400ms." },
   skeleton:     { title: "Skeleton", desc: "Pulsing placeholder shape while real content loads." },
 
-  // v0.2 — display
+  // Display
   avatar:       { title: "Avatar", desc: "Circle with initials or an image. Three sizes." },
   badge:        { title: "Badge", desc: "Small pill for status, counts, and category labels." },
   alert:        { title: "Alert", desc: "Inline status message with title, body, and a variant." },
@@ -27,19 +27,19 @@ export const NATIVE_PAGE_META = {
   chip:         { title: "Chip", desc: "Small pressable pill for filters and tags." },
   progress:     { title: "Progress", desc: "Animated progress bar." },
 
-  // v0.2 — form
+  // Form
   checkbox:     { title: "Checkbox", desc: "Animated checkmark in a square box. Use it inside form submits." },
   radio:        { title: "Radio group", desc: "Pick one from a few options. Group + radio item." },
   slider:       { title: "Slider", desc: "Drag-to-adjust numeric value." },
   segmented:    { title: "Segmented control", desc: "iOS-style group of mutually exclusive choices." },
 
-  // v0.2 — overlay & navigation
+  // Overlay & navigation
   sheet:        { title: "Sheet", desc: "Bottom sheet over a scrim. Built on RN Modal." },
   dialog:       { title: "Dialog", desc: "Centered modal for confirmations and short flows." },
   toast:        { title: "Toast", desc: "Transient banner anchored to the bottom of the screen." },
   tabbar:       { title: "Tab bar", desc: "Bottom navigation for the app's primary destinations." },
 
-  // v0.3
+  // Extended components
   datepickern:  { title: "DatePicker", desc: "Calendar bottom sheet for picking a single date." },
   calendarn:    { title: "Calendar", desc: "Standalone month grid. Always visible. DatePicker is built on it." },
   bottomsheet:  { title: "Bottom sheet", desc: "Slide-up sheet with grabber and drag-to-dismiss." },

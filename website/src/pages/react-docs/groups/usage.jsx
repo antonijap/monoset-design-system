@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Button, Badge, Field, Input, Card } from '@monoset/react';
 import { Code, InlineCode, H1, H2, P, Lead, Preview } from '../../../ui/docs.jsx';
+import { REACT_VERSION } from '../../../version.js';
 import '@monoset/react/styles/button.css';
 import '@monoset/react/styles/badge.css';
 import '@monoset/react/styles/field.css';
@@ -58,7 +59,7 @@ function PageUsage() {
         <div className="monoset-dark" style={{ display:"flex", gap:8 }}>
           <Button variant="primary">Save</Button>
           <Button variant="secondary">Cancel</Button>
-          <Badge variant="outline">v1.0</Badge>
+          <Badge variant="outline">{REACT_VERSION}</Badge>
         </div>
       </Preview>
     </div>

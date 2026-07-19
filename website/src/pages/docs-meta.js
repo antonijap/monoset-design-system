@@ -49,7 +49,7 @@ export const PAGE_META = {
   dashboard:    { title: "Building a dashboard", desc: "Sidebar, stat cards, and a data table in one layout." },
   datatable:    { title: "Data table with filters", desc: "Searchable, sortable, filterable table with row selection and bulk actions." },
 
-  // v0.6 components
+  // Date and input components
   datepicker:   { title: "DatePicker", desc: "Calendar in a popover for picking a single date." },
   calendar:     { title: "Calendar", desc: "Standalone month grid. Inline, always visible. DatePicker is built on it." },
   numberinput:  { title: "Number input", desc: "Text input with +/- stepper buttons for numeric fields." },

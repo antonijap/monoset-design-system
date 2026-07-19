@@ -161,10 +161,10 @@ importers:
         specifier: ^3.6.0
         version: 3.12.2
       '@monoset/motion':
-        specifier: workspace:^0.2.1
+        specifier: workspace:^1.0.0
         version: link:../motion
       '@monoset/tokens':
-        specifier: workspace:^0.2.0
+        specifier: workspace:^1.0.0
         version: link:../tokens
       '@radix-ui/react-accordion':
         specifier: ^1.2.12
@@ -321,7 +321,7 @@ importers:
         specifier: workspace:*
         version: link:../packages/react
       '@monoset/tokens':
-        specifier: workspace:^0.2.0
+        specifier: workspace:^1.0.0
         version: link:../packages/tokens
       '@orama/orama':
         specifier: ^3.1.18

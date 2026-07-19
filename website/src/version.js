@@ -1,5 +1,5 @@
-import pkg from "../../packages/react/package.json";
+import reactPkg from "../../packages/react/package.json";
+import nativePkg from "../../packages/native/package.json";
 
-// "0.7.0" -> "v0.7". Single source of truth so the site badge
-// can't drift from the published @monoset/react version again.
-export const VERSION = `v${pkg.version.split(".").slice(0, 2).join(".")}`;
+export const REACT_VERSION = `v${reactPkg.version}`;
+export const NATIVE_VERSION = `v${nativePkg.version}`;

@@ -9,7 +9,7 @@ A minimal, monotone, brand-neutral design system. Tokens and React components fo
 
 **Scaffold a new project:** `npm create monoset-app@latest`
 
-![Monoset landing page](./assets/hero.png)
+![Monoset landing page](./website/public/assets/hero.png)
 
 ## Why
 

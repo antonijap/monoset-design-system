@@ -72,7 +72,7 @@ function PageIntroduction() {
     <div>
       <div className="eyebrow">Getting started</div>
       <H1>Monoset Native</H1>
-      <Lead>The Monoset philosophy on React Native. Variant API on the surface, vanilla <InlineCode>StyleSheet</InlineCode> inside. Same component names as the web kit. v0.1 ships the eight components you'd reach for on day one of any new app.</Lead>
+      <Lead>The Monoset philosophy on React Native. Variant API on the surface, vanilla <InlineCode>StyleSheet</InlineCode> inside. Same component names as the web kit.</Lead>
 
       <H2 id="preview">A real screen, in &lt; 40 lines</H2>
       <P>This is one component composing the rest. Read the <InlineCode>basic usage</InlineCode> page for the source. Every part of it is visible above, and none is custom-styled.</P>
@@ -501,7 +501,7 @@ function PageLayout() {
               <Inline gap={3} align="center">
                 <Avatar name="Grace Hopper"/>
                 <View style={{ flex: 1 }}>
-                  <T.Body>Grace shipped v1.2.0</T.Body>
+                  <T.Body>Grace shipped the account screen</T.Body>
                   <View style={{ marginTop: 2 }}><T.Body dim>2 minutes ago</T.Body></View>
                 </View>
               </Inline>
@@ -663,7 +663,7 @@ function PageSkeleton() {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   v0.2 component pages
+   Display and form component pages
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* ─── Page: Avatar ─────────────────────────────────────────────── */
@@ -1368,7 +1368,7 @@ function PageTabBar() {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   v0.3 component pages
+   Additional component pages
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* ─── Page: PasswordInput ─────────────────────────────────────── */
@@ -1968,7 +1968,7 @@ const PAGES = {
   // Foundations
   tokens:       PageTokens,
   motion:       PageMotion,
-  // v0.1 components
+  // Core components
   buttons:      PageButtons,
   cards:        PageCards,
   inputs:       PageInputs,
@@ -1976,7 +1976,7 @@ const PAGES = {
   switch:       PageSwitch,
   spinner:      PageSpinner,
   skeleton:     PageSkeleton,
-  // v0.2 display
+  // Display
   avatar:       PageAvatar,
   badge:        PageBadge,
   alert:        PageAlert,
@@ -1985,17 +1985,17 @@ const PAGES = {
   list:         PageList,
   chip:         PageChip,
   progress:     PageProgress,
-  // v0.2 form
+  // Form
   checkbox:     PageCheckbox,
   radio:        PageRadio,
   slider:       PageSlider,
   segmented:    PageSegmented,
-  // v0.2 overlay & navigation
+  // Overlay & navigation
   sheet:        PageSheet,
   dialog:       PageDialog,
   toast:        PageToast,
   tabbar:       PageTabBar,
-  // v0.3
+  // Extended components
   passwordn:    PagePasswordN,
   numberinputn: PageNumberInputN,
   pininputn:    PagePinInputN,

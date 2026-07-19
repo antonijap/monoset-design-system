@@ -72,6 +72,7 @@ test('every CI job installs and runs through pnpm', () => {
 })
 
 test('CI enforces the React v1 release gates', () => {
+  assert.equal(occurrences(ci, /run:\s*pnpm test:versions/g), 1)
   assert.equal(
     occurrences(ci, /run:\s*pnpm --filter @monoset\/react verify:package/g),
     1,

@@ -1,6 +1,6 @@
 {
   "name": "@monoset/motion",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "description": "Motion presets and shared timing values for Framer Motion.",
   "keywords": [
     "design-system",

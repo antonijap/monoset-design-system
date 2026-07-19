@@ -19,8 +19,8 @@ function listSourceFiles(directory) {
 }
 
 test("template targets the React v1 component and current token packages", () => {
-  assert.equal(templatePackage.dependencies["@monoset/react"], "^1.0.0");
-  assert.equal(templatePackage.dependencies["@monoset/tokens"], "^0.2.0");
+  assert.equal(templatePackage.dependencies["@monoset/react"], "^1.0.1");
+  assert.equal(templatePackage.dependencies["@monoset/tokens"], "^1.0.0");
 });
 
 test("template avatars are named or explicitly decorative", () => {

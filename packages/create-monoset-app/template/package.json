@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@monoset/react": "^1.0.0",
-    "@monoset/tokens": "^0.2.0",
+    "@monoset/react": "^1.0.1",
+    "@monoset/tokens": "^1.0.0",
     "framer-motion": "^12",
     "react": "^19",
     "react-dom": "^19"

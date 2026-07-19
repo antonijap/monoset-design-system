@@ -1,6 +1,6 @@
 {
   "name": "create-monoset-app",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Scaffold a new app pre-configured with Monoset tokens and components.",
   "license": "MIT",
   "type": "module",

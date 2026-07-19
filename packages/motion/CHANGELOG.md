@@ -1,5 +1,11 @@
 # @monoset/motion
 
+## 1.0.0
+
+### Major Changes
+
+- Mark the current motion presets and timing values as stable.
+
 ## 0.2.1
 
 ### Patch Changes

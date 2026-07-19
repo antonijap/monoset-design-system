@@ -12,6 +12,10 @@ const groupSources = [...new Set(Object.values(REACT_DOC_ROUTES))].map((modulePa
 );
 const docs = groupSources.join("\n");
 const shell = read("../pages/DocsShell.jsx");
+const versionSource = read("../version.js");
+const nativeDocs = read("../pages/native-docs.jsx");
+const nativeMeta = read("../pages/native-meta.js");
+const docsMeta = read("../pages/docs-meta.js");
 const indexCss = read("../index.css");
 const searchIndex = JSON.parse(read("../../public/search-index.json"));
 const landing = read("../pages/Landing.jsx");
@@ -21,6 +25,8 @@ const rootReadme = read("../../../README.md");
 const reactReadme = read("../../../packages/react/README.md");
 const mcpComponents = JSON.parse(read("../../../packages/mcp-server/data/components.json"));
 const websitePackage = JSON.parse(read("../../package.json"));
+const reactPackage = JSON.parse(read("../../../packages/react/package.json"));
+const nativePackage = JSON.parse(read("../../../packages/native/package.json"));
 const workspaceLock = read("../../../pnpm-lock.yaml");
 const docsUi = read("../ui/docs.jsx");
 const publicReactDocs = [docs, landing, rootReadme, reactReadme].join("\n");
@@ -29,6 +35,10 @@ const playgroundCssUrl = new URL("../pages/react-docs/groups/playground.css", im
 const playgroundCss = existsSync(playgroundCssUrl) ? readFileSync(playgroundCssUrl, "utf8") : "";
 const clipboardHookUrl = new URL("../ui/useClipboardCopy.js", import.meta.url);
 const clipboardHook = existsSync(clipboardHookUrl) ? readFileSync(clipboardHookUrl, "utf8") : "";
+const rootHeroUrl = new URL("../../../assets/hero.png", import.meta.url);
+const rootOgUrl = new URL("../../../assets/og.png", import.meta.url);
+const canonicalHeroUrl = new URL("../../public/assets/hero.png", import.meta.url);
+const canonicalOgUrl = new URL("../../public/assets/og.png", import.meta.url);
 const reactDocsSource = (path) => read(`../pages/react-docs/${path}`);
 const reactDocsRoot = new URL("../pages/react-docs/", import.meta.url);
 const allReactDocsModules = readdirSync(reactDocsRoot, { recursive: true })
@@ -127,6 +137,41 @@ test("the landing page uses honest v1 and typography copy", () => {
   assert.doesNotMatch(landing, /No opinions supplied/);
   assert.match(landing, /Brand-neutral by design/);
   assert.doesNotMatch(landing, /Every surface, keyboard-first/);
+});
+
+test("public React and Native versions come from their exact package versions", () => {
+  assert.match(versionSource, /import reactPkg from "\.\.\/\.\.\/packages\/react\/package\.json"/);
+  assert.match(versionSource, /import nativePkg from "\.\.\/\.\.\/packages\/native\/package\.json"/);
+  assert.match(versionSource, /export const REACT_VERSION = `v\$\{reactPkg\.version\}`/);
+  assert.match(versionSource, /export const NATIVE_VERSION = `v\$\{nativePkg\.version\}`/);
+  assert.equal(`v${reactPackage.version}`, "v1.0.1");
+  assert.equal(`v${nativePackage.version}`, "v0.4.0");
+});
+
+test("the docs badge routes each platform to its exact npm package", () => {
+  assert.match(shell, /isNative\s*\?\s*NATIVE_VERSION\s*:\s*REACT_VERSION/);
+  assert.match(shell, /isNative\s*\?\s*["']https:\/\/www\.npmjs\.com\/package\/@monoset\/native["']/);
+  assert.match(shell, /:\s*["']https:\/\/www\.npmjs\.com\/package\/@monoset\/react["']/);
+  assert.doesNotMatch(shell, /github\.com\/antonijap\/monoset-design-system\/releases/);
+});
+
+test("rendered docs use exact package versions without stale release labels", () => {
+  assert.doesNotMatch(allReactDocsModules, /v1\.0(?!\.0)/);
+  assert.match(reactDocsSource("groups/layout.jsx"), /<Badge>\$\{REACT_VERSION\}<\/Badge>/);
+  assert.doesNotMatch(`${shell}\n${nativeDocs}`, /v0\.1|v1\.2\.0/);
+  assert.doesNotMatch(`${docsMeta}\n${nativeMeta}\n${nativeDocs}`, /v0\.[0-9]/);
+});
+
+test("the README uses canonical website marketing images without root duplicates", () => {
+  assert.match(rootReadme, /\.\/website\/public\/assets\/hero\.png/);
+  assert.doesNotMatch(rootReadme, /\.\/assets\/hero\.png/);
+  assert.equal(existsSync(canonicalHeroUrl), true);
+  assert.equal(existsSync(canonicalOgUrl), true);
+  assert.equal(existsSync(rootHeroUrl), false);
+  assert.equal(existsSync(rootOgUrl), false);
+  const pngSignature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+  assert.deepEqual(readFileSync(canonicalHeroUrl).subarray(0, 8), pngSignature);
+  assert.deepEqual(readFileSync(canonicalOgUrl).subarray(0, 8), pngSignature);
 });
 
 test("landing interactions use semantic controls and awaited clipboard feedback", () => {

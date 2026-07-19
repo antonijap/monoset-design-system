@@ -1,6 +1,6 @@
 {
   "name": "@monoset/cli",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Copy Monoset components into your project as source files.",
   "keywords": [
     "monoset",

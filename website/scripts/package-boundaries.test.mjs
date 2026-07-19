@@ -15,7 +15,7 @@ const viteConfig = readFileSync(resolve(websiteRoot, 'vite.config.js'), 'utf8')
 test('website resolves token CSS through the workspace package export', () => {
   assert.equal(
     packageJson.dependencies['@monoset/tokens'],
-    'workspace:^0.2.0',
+    'workspace:^1.0.0',
   )
   assert.doesNotMatch(viteConfig, /@monoset\/tokens\/css/)
 

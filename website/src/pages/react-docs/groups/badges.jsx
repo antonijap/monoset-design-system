@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Badge } from '@monoset/react';
 import { Code, InlineCode, H1, H2, H3, P, Lead, Preview } from '../../../ui/docs.jsx';
+import { REACT_VERSION } from '../../../version.js';
 import '@monoset/react/styles/badge.css';
 
 function PageBadges() {
@@ -34,7 +35,7 @@ function PageBadges() {
       <H2 id="tags">Tags</H2>
       <P>Dismissible tags for filters, categories, or multi-select inputs.</P>
       <Preview>
-        {["design","monotone","v1.0"].map(t => (
+        {["design","monotone",REACT_VERSION].map(t => (
           <span key={t} style={{ fontSize:12, color:"var(--fg2)", background:"var(--bg-muted)", borderRadius:4,
                                   padding:"3px 8px", display:"inline-flex", alignItems:"center", gap:6 }}>
             {t}<span style={{ color:"var(--fg3)", cursor:"pointer" }}>×</span>
