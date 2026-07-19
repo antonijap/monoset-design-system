@@ -93,6 +93,10 @@ test('CI enforces the React v1 release gates', () => {
   )
 })
 
+test('CI supports manual reruns', () => {
+  assert.equal(occurrences(ci, /^  workflow_dispatch:\s*$/gm), 1)
+})
+
 test('workflows do not bypass locked workspace tools', () => {
   const workflows = `${release}\n${ci}`
 
