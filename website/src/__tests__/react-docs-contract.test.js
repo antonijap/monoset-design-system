@@ -144,7 +144,7 @@ test("public React and Native versions come from their exact package versions", 
   assert.match(versionSource, /import nativePkg from "\.\.\/\.\.\/packages\/native\/package\.json"/);
   assert.match(versionSource, /export const REACT_VERSION = `v\$\{reactPkg\.version\}`/);
   assert.match(versionSource, /export const NATIVE_VERSION = `v\$\{nativePkg\.version\}`/);
-  assert.equal(`v${reactPackage.version}`, "v1.0.1");
+  assert.equal(`v${reactPackage.version}`, "v1.0.2");
   assert.equal(`v${nativePackage.version}`, "v0.4.0");
 });
 
@@ -279,6 +279,26 @@ test("React density is compact without changing Native desktop or mobile tap tar
   assert.match(indexCss, /\.ms-docs-nav--mobile \.ms-docs-nav__item\s*\{[^}]*min-height:\s*44px;/);
   assert.ok(shell.includes("compact={!isNative} nav={nav}"));
   assert.ok(shell.includes("mobile onClose={() => setMobileNavOpen(false)} nav={nav}"));
+});
+
+test("the platform switch uses a flush split track and a roomier mobile modifier", () => {
+  const platformToggle = shell.slice(
+    shell.indexOf("function PlatformToggle"),
+    shell.indexOf("function NativeBanner"),
+  );
+
+  assert.match(platformToggle, /className={`ms-platform-toggle\$\{fullWidth \? " ms-platform-toggle--full-width" : ""\}`}/);
+  assert.match(platformToggle, /className={`ms-platform-toggle__segment\$\{platform===k \? " ms-platform-toggle__segment--active" : ""\}`}/);
+  assert.doesNotMatch(platformToggle, /\bstyle=/);
+  assert.match(indexCss, /\.ms-platform-toggle\s*\{[^}]*display:\s*inline-flex;[^}]*height:\s*28px;[^}]*padding:\s*0;[^}]*background:\s*var\(--bg-muted\);[^}]*border:\s*1px solid var\(--border-subtle\);[^}]*border-radius:\s*var\(--radius-md\);[^}]*overflow:\s*hidden;[^}]*box-sizing:\s*border-box;/);
+  assert.match(indexCss, /\.ms-platform-toggle__segment\s*\{[^}]*padding:\s*0 9px;[^}]*border:\s*0;[^}]*border-radius:\s*0;/);
+  assert.match(indexCss, /\.ms-platform-toggle__segment\s*\{[^}]*font-size:\s*var\(--text-xs\);[^}]*font-weight:\s*var\(--weight-regular\);/);
+  assert.match(indexCss, /\.ms-platform-toggle__segment \+ \.ms-platform-toggle__segment\s*\{[^}]*border-left:\s*1px solid var\(--border-subtle\);/);
+  assert.match(indexCss, /\.ms-platform-toggle__segment--active\s*\{[^}]*background:\s*var\(--bg\);[^}]*box-shadow:\s*none;[^}]*font-weight:\s*var\(--weight-medium\);/);
+  assert.match(indexCss, /\.ms-platform-toggle__segment:focus-visible\s*\{[^}]*outline:\s*2px solid var\(--ring\);/);
+  assert.match(indexCss, /\.ms-platform-toggle--full-width\s*\{[^}]*display:\s*flex;[^}]*width:\s*100%;[^}]*height:\s*36px;/);
+  assert.match(indexCss, /\.ms-platform-toggle--full-width \.ms-platform-toggle__segment\s*\{[^}]*flex:\s*1;[^}]*font-size:\s*13px;/);
+  assert.match(indexCss, /\[data-ms="docs-platform-mobile"\]\s*\{[^}]*display:\s*flex !important;/);
 });
 
 test("React tools and guides keep the v1 navigation hierarchy", () => {

@@ -1,5 +1,11 @@
 # @monoset/react
 
+## 1.0.2
+
+### Patch Changes
+
+- Polish the docs platform switch with a flush selected state and a clear divider.
+
 ## 1.0.1
 
 ### Patch Changes

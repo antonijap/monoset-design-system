@@ -56,25 +56,20 @@ function Sidebar({ active, setPage, mobile = false, compact = false, onClose, na
 function PlatformToggle({ dataMs = "docs-platform", fullWidth = false }) {
   const { platform, setPlatform } = usePlatform();
   return (
-    <div role="group" aria-label="Platform" data-ms={dataMs} style={{
-      display: fullWidth ? "flex" : "inline-flex",
-      width: fullWidth ? "100%" : "auto",
-      padding:2, background:"var(--bg-subtle)",
-      border:"1px solid var(--border-subtle)", borderRadius:7,
-      height: fullWidth ? 36 : 30, boxSizing:"border-box",
-    }}>
+    <div
+      role="group"
+      aria-label="Platform"
+      data-ms={dataMs}
+      className={`ms-platform-toggle${fullWidth ? " ms-platform-toggle--full-width" : ""}`}
+    >
       {[["react","React"],["native","Native"]].map(([k,label]) => (
-        <button key={k} type="button" aria-pressed={platform===k}
+        <button
+          key={k}
+          type="button"
+          aria-pressed={platform===k}
           onClick={() => setPlatform(k)}
-          style={{ position:"relative", border:"none", background: platform===k?"var(--bg)":"transparent",
-            color: platform===k?"var(--fg1)":"var(--fg3)", fontFamily:"inherit",
-            fontSize: fullWidth ? 13 : 11,
-            fontWeight: platform===k?500:400,
-            padding: fullWidth ? "0" : "0 10px",
-            flex: fullWidth ? 1 : "none",
-            borderRadius:5, cursor:"pointer",
-            boxShadow: platform===k?"var(--shadow-xs)":"none",
-            transition:"color var(--duration-fast) var(--ease-standard), background var(--duration-fast) var(--ease-standard)" }}>
+          className={`ms-platform-toggle__segment${platform===k ? " ms-platform-toggle__segment--active" : ""}`}
+        >
           {label}
         </button>
       ))}

@@ -112,7 +112,75 @@ img { max-width: 100%; display: block; }
   min-height: 44px;
 }
 
+.ms-platform-toggle {
+  display: inline-flex;
+  align-items: stretch;
+  height: 28px;
+  padding: 0;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.ms-platform-toggle__segment {
+  position: relative;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--fg3);
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-regular);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.ms-platform-toggle__segment + .ms-platform-toggle__segment {
+  border-left: 1px solid var(--border-subtle);
+}
+
+.ms-platform-toggle__segment:hover {
+  color: var(--fg2);
+}
+
+.ms-platform-toggle__segment--active {
+  background: var(--bg);
+  box-shadow: none;
+  color: var(--fg1);
+  font-weight: var(--weight-medium);
+}
+
+.ms-platform-toggle__segment:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+
+.ms-platform-toggle--full-width {
+  display: flex;
+  width: 100%;
+  height: 36px;
+}
+
+.ms-platform-toggle--full-width .ms-platform-toggle__segment {
+  flex: 1;
+  padding: 0;
+  font-size: 13px;
+}
+
 @media (forced-colors: active) {
+  .ms-platform-toggle__segment--active {
+    outline: 1px solid Highlight;
+    outline-offset: -1px;
+  }
+
   .ms-docs-nav__item[aria-current="page"] {
     outline: 2px solid Highlight;
     outline-offset: -2px;
@@ -229,7 +297,7 @@ img { max-width: 100%; display: block; }
   [data-ms="docs-github"]     { display: none !important; }
   [data-ms="docs-platform"]   { display: none !important; }
   /* Mobile drawer hosts the platform toggle */
-  [data-ms="docs-platform-mobile"] { display: inline-flex !important; }
+  [data-ms="docs-platform-mobile"] { display: flex !important; }
 
   /* Docs page headings scale */
   [data-ms="docs-content"] h1 { font-size: 28px !important; }

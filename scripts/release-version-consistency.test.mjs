@@ -30,7 +30,7 @@ const packages = {
 };
 
 test("the stable React stack uses the approved release versions", () => {
-  assert.equal(packages.react.version, "1.0.1");
+  assert.equal(packages.react.version, "1.0.2");
   assert.equal(packages.tokens.version, "1.0.0");
   assert.equal(packages.motion.version, "1.0.0");
   assert.equal(packages.cli.version, "1.0.0");
