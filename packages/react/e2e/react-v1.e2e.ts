@@ -53,6 +53,20 @@ async function openFixture({ width = 1280, height = 900, media = [] } = {}) {
   return page;
 }
 
+async function waitForFilteredOptions(page, inputSelector, query, expectedLabels) {
+  await page.waitForFunction((selector, value, labels) => {
+    const input = document.querySelector(selector);
+    if (!(input instanceof HTMLInputElement) || input.value !== value) return false;
+
+    const controls = input.getAttribute("aria-controls");
+    const listbox = controls ? document.getElementById(controls) : null;
+    const options = [...(listbox?.querySelectorAll('[role="option"]') ?? [])];
+    return options.length === labels.length && labels.every((label, index) => (
+      options[index]?.textContent?.includes(label)
+    ));
+  }, {}, inputSelector, query, expectedLabels);
+}
+
 before(async () => {
   const executablePath = await firstAvailable([
     process.env.PUPPETEER_EXECUTABLE_PATH,
@@ -117,11 +131,13 @@ test("Calendar moves real browser focus with the keyboard", async () => {
 test("Combobox and MultiCombobox expose active options and selected tags", async () => {
   const page = await openFixture();
   try {
+    const singleInput = '[data-gate="combobox"] .ms-combobox__input';
     assert.equal(await page.$$eval('[data-gate="combobox"] [role="combobox"]', (items) => items.length), 2);
 
-    await page.click('[data-gate="combobox"] .ms-combobox__input');
+    await page.click(singleInput);
     await page.keyboard.type("hel");
-    await page.waitForSelector('[role="listbox"] [role="option"]');
+    await waitForFilteredOptions(page, singleInput, "hel", ["Helsinki"]);
+    await page.focus(singleInput);
     await page.keyboard.press("ArrowDown");
     await page.waitForFunction(() => {
       const input = document.querySelector('[data-gate="combobox"] .ms-combobox [role="combobox"]');
@@ -149,7 +165,12 @@ test("Combobox and MultiCombobox expose active options and selected tags", async
     ));
     await page.click('[data-gate="combobox"] .ms-multicombobox__input');
     await page.keyboard.type("lis");
-    await page.waitForSelector('[role="listbox"] [role="option"]');
+    await waitForFilteredOptions(
+      page,
+      '[data-gate="combobox"] .ms-multicombobox__input',
+      "lis",
+      ["Lisbon"],
+    );
     const multiSemantics = await page.$eval(
       '[data-gate="combobox"] .ms-multicombobox__input',
       (input) => ({
@@ -380,9 +401,11 @@ test("forced-colors mode preserves visible keyboard focus indicators", async () 
       assert.notEqual(activeStyle.outlineWidth, "0px", `${name} active option outline is zero-width`);
     };
 
-    await page.click('[data-gate="combobox"] .ms-combobox__input');
+    const comboboxInput = '[data-gate="combobox"] .ms-combobox__input';
+    await page.click(comboboxInput);
     await page.keyboard.type("h");
-    await page.waitForSelector('[role="listbox"] [role="option"]');
+    await waitForFilteredOptions(page, comboboxInput, "h", ["Helsinki"]);
+    await page.focus(comboboxInput);
     await page.keyboard.press("ArrowDown");
     await page.waitForFunction(() => Boolean(
       document.querySelector('[data-gate="combobox"] .ms-combobox__input')
